@@ -12,7 +12,6 @@ import {
   BULK_RESERVES_ADDRESSES,
   BULK_RESERVES_DEPOLYED,
 } from '../constants/contracts.json';
-import chainWeb3 from '../web3SDK/chainWeb3';
 import basicUtil from './basicUtil';
 
 /*==================================================
@@ -23,11 +22,10 @@ import basicUtil from './basicUtil';
   Helper Methods
   ==================================================*/
 
-async function getReserves(address, block, chain) {
+async function getReserves(address, sdk) {
   try {
-    const web3 = chainWeb3.getWeb3(chain);
-    const contract = new web3.eth.Contract(PAIR_ABI, address);
-    const reserves = await contract.methods.getReserves().call(null, block);
+    const contract = new sdk.web3.eth.Contract(PAIR_ABI, address);
+    const reserves = await contract.methods.getReserves().call(null, sdk.block);
     return {
       pool_address: address,
       reserve0: BigNumber(reserves._reserve0.toString()),
@@ -35,9 +33,10 @@ async function getReserves(address, block, chain) {
     };
   } catch {
     try {
-      const web3 = chainWeb3.getWeb3(chain);
-      const contract = new web3.eth.Contract(RESERVES_ABI, address);
-      const reserves = await contract.methods.getReserves().call(null, block);
+      const contract = new sdk.web3.eth.Contract(RESERVES_ABI, address);
+      const reserves = await contract.methods
+        .getReserves()
+        .call(null, sdk.block);
       return {
         pool_address: address,
         reserve0: BigNumber(reserves._reserve0.toString()),
@@ -48,22 +47,22 @@ async function getReserves(address, block, chain) {
   return {};
 }
 
-async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
+async function getPoolsReserves(bulk_reserves_contract, pInfos, sdk) {
   let poolReserves = [];
   try {
-    if (block < BULK_RESERVES_DEPOLYED[chain]) {
+    if (sdk.block < BULK_RESERVES_DEPOLYED[sdk.chain]) {
       poolReserves = await Promise.all(
-        pInfos.map((pool) => getReserves(pool, block, chain)),
+        pInfos.map((pool) => getReserves(pool, sdk)),
       );
     } else {
       try {
         poolReserves = await bulk_reserves_contract.methods
           .getReservesBulk(pInfos)
-          .call(null, block);
+          .call(null, sdk.block);
       } catch (e) {
         console.log(e.message);
         poolReserves = await Promise.all(
-          pInfos.map((pool) => getReserves(pool, block, chain)),
+          pInfos.map((pool) => getReserves(pool, sdk)),
         );
       }
     }
@@ -74,43 +73,32 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
   return poolReserves;
 }
 
-async function getTvl(
-  factoryAddress,
-  block,
-  chain,
-  provider,
-  usePoolMethods = false,
-) {
+async function getTvl(factoryAddress, sdk, usePoolMethods = false) {
   const balances = {};
   const poolBalances = {};
 
   let _pairs = [];
   let _token01 = {};
   try {
-    _pairs = basicUtil.readDataFromFile('cache/pairs.json', chain, provider);
+    _pairs = basicUtil.readDataFromFile('cache/pairs.json', sdk);
   } catch {}
   try {
-    _token01 = basicUtil.readDataFromFile(
-      'cache/token01.json',
-      chain,
-      provider,
-    );
+    _token01 = basicUtil.readDataFromFile('cache/token01.json', sdk);
   } catch {}
 
-  const web3 = chainWeb3.getWeb3(chain);
-  const contract = new web3.eth.Contract(FACTORY_ABI, factoryAddress);
+  const contract = new sdk.web3.eth.Contract(FACTORY_ABI, factoryAddress);
 
-  const bulk_reserves_contract = new web3.eth.Contract(
+  const bulk_reserves_contract = new sdk.web3.eth.Contract(
     BULK_RESERVES_ABI,
-    BULK_RESERVES_ADDRESSES[chain],
+    BULK_RESERVES_ADDRESSES[sdk.chain],
   );
 
   let len = 0;
   try {
     if (!usePoolMethods) {
-      len = await contract.methods.allPairsLength().call(null, block);
+      len = await contract.methods.allPairsLength().call(null, sdk.block);
     } else {
-      len = await contract.methods.allPoolsLength().call(null, block);
+      len = await contract.methods.allPoolsLength().call(null, sdk.block);
     }
     len = Number(len);
   } catch {
@@ -142,7 +130,7 @@ async function getTvl(
   }
 
   if (pairLength < len) {
-    basicUtil.writeDataToFile(poolInfos, 'cache/pairs.json', chain, provider);
+    basicUtil.writeDataToFile(poolInfos, 'cache/pairs.json', sdk);
   }
 
   poolInfos = poolInfos.slice(0, len);
@@ -170,12 +158,7 @@ async function getTvl(
     }
   }
 
-  basicUtil.writeDataToFile(
-    token01Infos,
-    'cache/token01.json',
-    chain,
-    provider,
-  );
+  basicUtil.writeDataToFile(token01Infos, 'cache/token01.json', sdk);
 
   console.time('Getting PairInfo');
 
@@ -189,8 +172,7 @@ async function getTvl(
         getPoolsReserves(
           bulk_reserves_contract,
           poolInfos.slice(start, end),
-          block,
-          chain,
+          sdk,
         ),
       );
     }

@@ -16,23 +16,23 @@ const DEFAULT_DELAY = 5;
   Helper Methods
   ==================================================*/
 
-function getPath(chain, provider) {
-  if (chain === 'ethereum') return `./src/dapps/providers/${provider}`;
-  return `./src/dapps/providers/${chain}_${provider}`;
+function getPath(sdk) {
+  if (sdk.chain === 'ethereum') return `./src/dapps/providers/${sdk.provider}`;
+  return `./src/dapps/providers/${sdk.chain}_${sdk.provider}`;
 }
 
-function getWmainAddress(chain) {
-  return WMAIN_ADDRESS[chain];
+function getWmainAddress(sdk) {
+  return WMAIN_ADDRESS[sdk.chain];
 }
 
-function getDelay(chain) {
-  return CHAINS[chain].delay || DEFAULT_DELAY;
+function getDelay(sdk) {
+  return CHAINS[sdk.chain].delay || DEFAULT_DELAY;
 }
 
-async function writeDataToFile(data, fileName, chain, provider) {
+async function writeDataToFile(data, fileName, sdk) {
   await new Promise<void>(function (resolve) {
     fse.outputFile(
-      `${getPath(chain, provider)}/${fileName}`,
+      `${getPath(sdk)}/${fileName}`,
       JSON.stringify(data, null, 2),
       'utf8',
       function (err) {
@@ -45,10 +45,8 @@ async function writeDataToFile(data, fileName, chain, provider) {
   });
 }
 
-function readDataFromFile(fileName, chain, provider) {
-  return JSON.parse(
-    fse.readFileSync(`${getPath(chain, provider)}/${fileName}`, 'utf8'),
-  );
+function readDataFromFile(fileName, sdk) {
+  return JSON.parse(fse.readFileSync(`${getPath(sdk)}/${fileName}`, 'utf8'));
 }
 
 /*==================================================

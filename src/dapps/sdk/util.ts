@@ -82,20 +82,19 @@ function decodeResult(method_abi, result) {
   }
 }
 
-async function ExecuteCall(target, ABI, method, params, block, chain) {
-  const web3 = chainWeb3.getWeb3(chain);
+async function ExecuteCall(target, ABI, method, params, sdk) {
   try {
-    if (block < MULTICALL_DEPOLYED[chain]) {
-      const contract = new web3.eth.Contract(ABI, target);
+    if (sdk.block < MULTICALL_DEPOLYED[sdk.chain]) {
+      const contract = new sdk.web3.eth.Contract(ABI, target);
       const result = await contract.methods[method](...params).call(
         null,
-        block,
+        sdk.block,
       );
       return result;
     } else {
-      const contract = new web3.eth.Contract(
+      const contract = new sdk.web3.eth.Contract(
         MULTICALL_ABI,
-        MULTICALL_ADDRESSES[chain],
+        MULTICALL_ADDRESSES[sdk.chain],
       );
       const method_abi = ABI.find((abi) => abi.name == method);
       const method_input_params = method_abi.inputs.map((input) => input.type);
@@ -105,7 +104,7 @@ async function ExecuteCall(target, ABI, method, params, block, chain) {
           `${method}(${method_input_params.join(',')})`,
           encodeParameters(method_input_params, params),
         )
-        .call(null, block);
+        .call(null, sdk.block);
       return decodeResult(method_abi, result);
     }
   } catch (e) {
@@ -146,28 +145,22 @@ async function tryExecuteMultiCallsOfTarget(
   }
 }
 
-async function ExecuteMultiCallsOfTarget(
-  target,
-  ABI,
-  method,
-  params,
-  block,
-  chain,
-) {
+async function ExecuteMultiCallsOfTarget(target, ABI, method, params, sdk) {
   const paramLength = params.length;
 
   try {
-    const web3 = chainWeb3.getWeb3(chain);
-
-    if (block < MULTICALL_DEPOLYED[chain]) {
-      const contract = new web3.eth.Contract(ABI, target);
+    if (sdk.block < MULTICALL_DEPOLYED[sdk.chain]) {
+      const contract = new sdk.web3.eth.Contract(ABI, target);
       let executeResults = [];
       for (let first = 0; first < paramLength; first += 25) {
         const last = Math.min(paramLength, first + 25);
         const results = await Promise.all(
           params.slice(first, last).map(async (param) => {
             try {
-              return await contract.methods[method](...param).call(null, block);
+              return await contract.methods[method](...param).call(
+                null,
+                sdk.block,
+              );
             } catch {
               return null;
             }
@@ -177,9 +170,9 @@ async function ExecuteMultiCallsOfTarget(
       }
       return executeResults;
     } else {
-      const contract = new web3.eth.Contract(
+      const contract = new sdk.web3.eth.Contract(
         MULTICALL_ABI,
-        MULTICALL_ADDRESSES[chain],
+        MULTICALL_ADDRESSES[sdk.chain],
       );
       const method_abi = ABI.find((abi) => abi.name == method);
       const method_input_params = method_abi.inputs.map((input) => input.type);
@@ -197,7 +190,7 @@ async function ExecuteMultiCallsOfTarget(
               signature,
               method_input_params,
               params.slice(start, end),
-              block,
+              sdk.block,
             ),
           );
         }
@@ -254,15 +247,12 @@ async function ExecuteDifferentCallsOfTarget(
   ABI,
   methods,
   params,
-  block,
-  chain,
+  sdk,
 ) {
   const paramLength = params.length;
 
   try {
-    const web3 = chainWeb3.getWeb3(chain);
-
-    if (block && block < MULTICALL_DEPOLYED[chain]) {
+    if (sdk.block && sdk.block < MULTICALL_DEPOLYED[sdk.chain]) {
       let executeResults = [];
       for (let first = 0; first < paramLength; first += 25) {
         const last = Math.min(paramLength, first + 25);
@@ -270,10 +260,10 @@ async function ExecuteDifferentCallsOfTarget(
         const results = await Promise.all(
           subParams.slice(first, last).map(async (param, index) => {
             try {
-              const contract = new web3.eth.Contract(ABI, target);
+              const contract = new sdk.web3.eth.Contract(ABI, target);
               return await contract.methods[methods[first + index]](
                 ...param,
-              ).call(null, block);
+              ).call(null, sdk.block);
             } catch {
               return null;
             }
@@ -283,9 +273,9 @@ async function ExecuteDifferentCallsOfTarget(
       }
       return executeResults;
     } else {
-      const contract = new web3.eth.Contract(
+      const contract = new sdk.web3.eth.Contract(
         MULTICALL_ABI,
-        MULTICALL_ADDRESSES[chain],
+        MULTICALL_ADDRESSES[sdk.chain],
       );
       const method_abis = methods.map((method) =>
         ABI.find((abi) => abi.name == method),
@@ -309,7 +299,7 @@ async function ExecuteDifferentCallsOfTarget(
               signatures.slice(start, end),
               method_input_params.slice(start, end),
               params.slice(start, end),
-              block,
+              sdk.block,
             ),
           );
         }
@@ -343,7 +333,7 @@ async function tryExecuteMultiCallsOfMultiTargets(
   signature,
   method_input_params,
   params,
-  block,
+  sdk,
 ) {
   try {
     return await contract.methods
@@ -352,7 +342,7 @@ async function tryExecuteMultiCallsOfMultiTargets(
         Array.from({ length: targets.length }, () => signature),
         params.map((param) => encodeParameters(method_input_params, param)),
       )
-      .call(null, block);
+      .call(null, sdk.block);
   } catch (e) {
     /*logger.error({
       Message: e?.message || '',
@@ -369,15 +359,12 @@ async function ExecuteMultiCallsOfMultiTargets(
   ABI,
   method,
   params,
-  block,
-  chain,
+  sdk,
 ) {
   const targetLength = targets.length;
 
   try {
-    const web3 = chainWeb3.getWeb3(chain);
-
-    if (block < MULTICALL_DEPOLYED[chain]) {
+    if (sdk.block < MULTICALL_DEPOLYED[sdk.chain]) {
       let executeResults = [];
       for (let first = 0; first < targetLength; first += 25) {
         const last = Math.min(targetLength, first + 25);
@@ -385,10 +372,10 @@ async function ExecuteMultiCallsOfMultiTargets(
         const results = await Promise.all(
           targets.slice(first, last).map(async (target, index) => {
             try {
-              const contract = new web3.eth.Contract(ABI, target);
+              const contract = new sdk.web3.eth.Contract(ABI, target);
               return await contract.methods[method](...subParams[index]).call(
                 null,
-                block,
+                sdk.block,
               );
             } catch {
               return null;
@@ -399,9 +386,9 @@ async function ExecuteMultiCallsOfMultiTargets(
       }
       return executeResults;
     } else {
-      const contract = new web3.eth.Contract(
+      const contract = new sdk.web3.eth.Contract(
         MULTICALL_ABI,
-        MULTICALL_ADDRESSES[chain],
+        MULTICALL_ADDRESSES[sdk.chain],
       );
       const method_abi = ABI.find((abi) => abi.name == method);
       const method_input_params = method_abi.inputs.map((input) => input.type);
@@ -419,7 +406,7 @@ async function ExecuteMultiCallsOfMultiTargets(
               signature,
               method_input_params,
               params.slice(start, end),
-              block,
+              sdk.block,
             ),
           );
         }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GetTvlReply } from '../generated/dappradar-proto/defi-providers';
+import chainWeb3 from './sdk/web3SDK/chainWeb3';
 
 @Injectable()
 export class DappsService {
@@ -23,7 +24,15 @@ export class DappsService {
         : `./providers/${chain}_${provider}/index`
     );
 
-    const tvlData = await providerService.tvl(block, chain, provider, date);
+    const sdk = {
+      provider,
+      chain,
+      block,
+      date,
+      web3: chainWeb3.getWeb3(chain),
+    };
+
+    const tvlData = await providerService.tvl(sdk);
     console.log(tvlData);
     return tvlData;
   }

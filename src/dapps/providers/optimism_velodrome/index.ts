@@ -18,16 +18,14 @@ const QUERY_SIZE = 400;
     TVL
     ==================================================*/
 
-async function tvl(block, chain, provider) {
-  if (block < START_BLOCK) {
+async function tvl(sdk) {
+  if (sdk.block < START_BLOCK) {
     return {};
   }
 
   const { balances, poolBalances } = await uniswapV2.getTvl(
     FACTORY_ADDRESS,
-    block,
-    chain,
-    provider,
+    sdk,
   );
 
   util.convertBalancesToFixed(balances);
