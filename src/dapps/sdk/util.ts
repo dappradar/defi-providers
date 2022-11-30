@@ -20,7 +20,7 @@ import MULTICALL_ABI from './helpers/abi/multiCall.json';
 import BEEFY_VAULT_ABI from './helpers/abi/beefyVault.json';
 import SOLARBEAM_STABLE_SWAP_POOL_ABI from './helpers/abi/solarbeamStableSwapPool.json';
 import data from './data';
-import web3 from './web3';
+import chainWeb3 from './web3SDK/chainWeb3';
 import {
   WMAIN_ADDRESS,
   BULK_BALANCE_ADDRESSES,
@@ -83,6 +83,7 @@ function decodeResult(method_abi, result) {
 }
 
 async function ExecuteCall(target, ABI, method, params, block, chain) {
+  const web3 = chainWeb3.getWeb3(chain);
   try {
     if (block < MULTICALL_DEPOLYED[chain]) {
       const contract = new web3.eth.Contract(ABI, target);
@@ -156,6 +157,8 @@ async function ExecuteMultiCallsOfTarget(
   const paramLength = params.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block < MULTICALL_DEPOLYED[chain]) {
       const contract = new web3.eth.Contract(ABI, target);
       let executeResults = [];
@@ -257,6 +260,8 @@ async function ExecuteDifferentCallsOfTarget(
   const paramLength = params.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block && block < MULTICALL_DEPOLYED[chain]) {
       let executeResults = [];
       for (let first = 0; first < paramLength; first += 25) {
@@ -370,6 +375,8 @@ async function ExecuteMultiCallsOfMultiTargets(
   const targetLength = targets.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block < MULTICALL_DEPOLYED[chain]) {
       let executeResults = [];
       for (let first = 0; first < targetLength; first += 25) {
@@ -476,6 +483,8 @@ async function ExecuteDifferentCallsOfMultiTargets(
   const targetLength = targets.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block && block < MULTICALL_DEPOLYED[chain]) {
       let executeResults = [];
       for (let first = 0; first < targetLength; first += 25) {
@@ -584,9 +593,12 @@ async function ExecuteCallOfMultiTargets(
   method,
   param,
   block,
-  chainWeb3 = web3,
+  chainWeb3,
   chain,
 ) {
+  const web3 = chainWeb3.getWeb3(chain);
+
+  ExecuteCallOfMultiTargets;
   const targetLength = targets.length;
 
   try {
@@ -597,7 +609,7 @@ async function ExecuteCallOfMultiTargets(
         const results = await Promise.all(
           targets.slice(first, last).map(async (target) => {
             try {
-              const contract = new chainWeb3.eth.Contract(ABI, target);
+              const contract = new web3.eth.Contract(ABI, target);
               return await contract.methods[method](...param).call(null, block);
             } catch {
               return null;
@@ -724,8 +736,10 @@ function ConvertBalancesToBigNumber(balances) {
   }
 }
 
-async function GetTokenBalance(address, token, block) {
+async function GetTokenBalance(address, token, block, chain) {
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     const contract = new web3.eth.Contract(ERC20_ABI, token);
     const balance = await contract.methods.balanceOf(address).call(null, block);
     return {
@@ -754,6 +768,8 @@ async function GetTokenBalancesOfHolders(holders, tokens, block, chain) {
   const tokenLength = tokens.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block < BULK_BALANCE_DEPOLYED[chain]) {
       for (let first = 0; first < tokenLength; first += 25) {
         const last = Math.min(tokenLength, first + 25);
@@ -762,7 +778,7 @@ async function GetTokenBalancesOfHolders(holders, tokens, block, chain) {
             holders
               .slice(first, last)
               .map((address, index) =>
-                GetTokenBalance(address, tokens[first + index], block),
+                GetTokenBalance(address, tokens[first + index], block, chain),
               ),
           );
           balanceResults = balanceResults.concat(results);
@@ -816,6 +832,8 @@ async function GetTokenBalances(holder, tokens, block, chain) {
   const tokenLength = tokens.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block < MULTIBALANCES_DEPOLYED[chain]) {
       for (let first = 0; first < tokenLength; first += 25) {
         const last = Math.min(tokenLength, first + 25);
@@ -823,7 +841,7 @@ async function GetTokenBalances(holder, tokens, block, chain) {
           const results = await Promise.all(
             tokens
               .slice(first, last)
-              .map((token) => GetTokenBalance(holder, token, block)),
+              .map((token) => GetTokenBalance(holder, token, block, chain)),
           );
           balanceResults = balanceResults.concat(results);
         } catch {}
@@ -874,6 +892,8 @@ async function GetBalancesOfHolders(holders, block, chain) {
   const addressLength = holders.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block < BULK_BALANCE_DEPOLYED[chain]) {
       for (let first = 0; first < addressLength; first += 25) {
         const last = Math.min(addressLength, first + 25);
@@ -933,6 +953,8 @@ async function GetBalancesOfHolders(holders, block, chain) {
 }
 
 async function GetUnderlyingBalance(token, balance, block, chain) {
+  const web3 = chainWeb3.getWeb3(chain);
+
   const key = `${data.CHAINS[chain].prefix}${token}`;
   let tries = 0;
   if (typeof underlyingData[key] == 'number') {
@@ -1324,8 +1346,10 @@ async function ConvertToUnderlyings(tokenBalances, block, chain) {
   return balances;
 }
 
-async function GetTotalSupply(token, block) {
+async function GetTotalSupply(token, block, chain) {
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     const contract = new web3.eth.Contract(ERC20_ABI, token);
     const totalSupply = await contract.methods.totalSupply().call(null, block);
     return {
@@ -1342,6 +1366,8 @@ async function GetTokenTotalSupplies(tokens, block, chain) {
   const tokenLength = tokens.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block < BULK_METADATA_DEPOLYED[chain]) {
       for (let first = 0; first < tokenLength; first += 25) {
         const last = Math.min(tokenLength, first + 25);
@@ -1349,7 +1375,7 @@ async function GetTokenTotalSupplies(tokens, block, chain) {
           const results = await Promise.all(
             tokens
               .slice(first, last)
-              .map((token) => GetTotalSupply(token, block)),
+              .map((token) => GetTotalSupply(token, block, chain)),
           );
           totalSupplyResults = totalSupplyResults.concat(results);
         } catch {}
