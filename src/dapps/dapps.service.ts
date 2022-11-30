@@ -14,6 +14,9 @@ export class DappsService {
     console.log('block', typeof block, block);
     console.log('date', typeof date, date);
 
+    // TO DO: check if chain exists
+    //const chain = 'optimism' && data.CHAINS['optimism'] ? 'optimism' : 'ethereum';
+
     const providerService = await import(
       chain === 'ethereum'
         ? `./providers/${provider}`
