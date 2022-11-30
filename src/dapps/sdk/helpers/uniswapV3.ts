@@ -85,6 +85,6 @@ async function getTvlFromSubgraph(endpoint, block, chain) {
   Exports
   ==================================================*/
 
-module.exports = {
+export default {
   getTvlFromSubgraph,
 };

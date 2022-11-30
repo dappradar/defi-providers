@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
 import {
   GetTvlQuery,
   GetTvlReply,

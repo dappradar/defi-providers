@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 
 const TZKT_API = 'https://api.tzkt.io/v1';
 
-module.exports = {
+export default {
   Tezos: '',
   eth: {
     getBlockNumber: async () => {

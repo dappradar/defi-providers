@@ -12,7 +12,7 @@ import POOL_ABI from './abi/curvePoolAbi.json';
   Helper Methods
   ==================================================*/
 
-async function getTokens(pools) {
+async function getTokens(pools, chain) {
   let poolsTokens = [];
   pools.forEach((pool) =>
     poolsTokens.push(
@@ -22,6 +22,7 @@ async function getTokens(pools) {
         ['coins'],
         Array(8).map((x, i) => i),
         null,
+        chain,
       ),
     ),
   );
@@ -43,6 +44,7 @@ async function getPoolsWithTokens(
   method,
   filePoolCount,
   chainPoolCount,
+  chain,
 ) {
   return getTokens(
     await util
@@ -54,8 +56,10 @@ async function getPoolsWithTokens(
           (x, i) => [filePoolCount + i],
         ),
         null,
+        chain,
       )
       .then((pools) => pools.map((pool) => pool.toLowerCase())),
+    chain,
   );
 }
 
@@ -79,6 +83,7 @@ async function getPools(curveFactory, chain, provider) {
     ['pool_count', 'base_pool_count'],
     [[], []],
     null,
+    chain,
   );
 
   if (Object.keys(pools).length < poolCount) {
@@ -90,6 +95,7 @@ async function getPools(curveFactory, chain, provider) {
           'pool_list',
           Object.keys(pools).length,
           poolCount,
+          chain,
         ),
       ),
     };
@@ -104,6 +110,7 @@ async function getPools(curveFactory, chain, provider) {
           'base_pool_list',
           Object.keys(basePools).length,
           basePoolCount,
+          chain,
         ),
       ),
     };
@@ -136,6 +143,7 @@ async function getTvl(curveFactory, block, chain, provider) {
       ['balances'],
       Array(pools[pool].length).map((x, i) => i.toString()),
       block,
+      chain,
     );
 
     pools[pool].forEach((token, i) => {
@@ -152,6 +160,6 @@ async function getTvl(curveFactory, block, chain, provider) {
   Exports
   ==================================================*/
 
-module.exports = {
+export default {
   getTvl,
 };

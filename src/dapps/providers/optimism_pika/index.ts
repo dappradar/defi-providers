@@ -16,12 +16,17 @@ const TOKENS = ['0x7f5c764cbc14f9669b88837ca1490cca17c31607'];
   TVL
   ==================================================*/
 
-async function tvl(block) {
+async function tvl(block, chain) {
   if (block < START_BLOCK) {
     return {};
   }
   const balances = {};
-  const balanceResults = await util.getTokenBalances(VAULT, TOKENS, block);
+  const balanceResults = await util.getTokenBalances(
+    VAULT,
+    TOKENS,
+    block,
+    chain,
+  );
 
   util.sumMultiBalanceOf(balances, balanceResults);
   util.convertBalancesToFixed(balances);
@@ -34,6 +39,4 @@ async function tvl(block) {
   Exports
   ==================================================*/
 
-module.exports = {
-  tvl,
-};
+export { tvl };

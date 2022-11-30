@@ -63,6 +63,8 @@ async function getTvl(block, chain, provider) {
     'balance',
     [],
     block,
+    null,
+    chain,
   );
 
   const wantBalances = [];
@@ -79,13 +81,13 @@ async function getTvl(block, chain, provider) {
   const tokenBalances = {};
   util.sumMultiBalanceOf(tokenBalances, wantBalances);
 
-  return await util.convertToUnderlyings(tokenBalances, block);
+  return await util.convertToUnderlyings(tokenBalances, block, chain);
 }
 
 /*==================================================
   Exports
   ==================================================*/
 
-module.exports = {
+export default {
   getTvl,
 };

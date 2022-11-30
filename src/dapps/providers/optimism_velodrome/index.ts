@@ -66,8 +66,4 @@ async function getTokenVolumes(tokens, priorBlockNumber) {
     Exports
     ==================================================*/
 
-module.exports = {
-  tvl,
-  getPoolVolumes,
-  getTokenVolumes,
-};
+export { tvl, getPoolVolumes, getTokenVolumes };

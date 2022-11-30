@@ -66,7 +66,7 @@ class Contract {
   }
 }
 
-module.exports = {
+export default {
   nodeUrl: '',
   near: near,
   eth: {

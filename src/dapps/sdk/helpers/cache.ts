@@ -64,4 +64,4 @@ const cache = {
   },
 };
 
-module.exports = cache;
+export default cache;

@@ -23,6 +23,8 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
     'getAllMarkets',
     [],
     block,
+    null,
+    chain,
   );
 
   const allMarkets = [];
@@ -40,15 +42,18 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
       UNITROLLER_ABI,
       'underlying',
       [],
+      block,
+      null,
+      chain,
     );
 
     underlyings.forEach((underlying, index) => {
       qiTokens[newMarkets[index]] = (
-        underlying || basicUtil.getWmainAddress()
+        underlying || basicUtil.getWmainAddress(chain)
       ).toLowerCase();
     });
 
-    basicUtil.writeDataToFile(qiTokens, 'cache/pools.json');
+    basicUtil.writeDataToFile(qiTokens, 'cache/pools.json', chain, provider);
   }
 
   const results = await util.executeCallOfMultiTargets(
@@ -57,6 +62,8 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
     'getCash',
     [],
     block,
+    null,
+    chain,
   );
 
   const tokenBalances = [];
@@ -78,6 +85,6 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
   Exports
   ==================================================*/
 
-module.exports = {
+export default {
   getTvl,
 };

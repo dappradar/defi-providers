@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
 
-module.exports = {
+export default {
   nodeUrl: '',
   eth: {
     getBlockNumber: async () => {

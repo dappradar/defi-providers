@@ -20,7 +20,7 @@ export class DappsService {
     const providerService = await import(
       chain === 'ethereum'
         ? `./providers/${provider}`
-        : `./providers/${chain}_${provider}`
+        : `./providers/${chain}_${provider}/index`
     );
 
     const tvlData = await providerService.tvl(block, chain, provider, date);
