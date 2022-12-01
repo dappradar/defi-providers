@@ -23,7 +23,6 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
     'getAllMarkets',
     [],
     block,
-    null,
     chain,
   );
 
@@ -43,7 +42,6 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
       'underlying',
       [],
       block,
-      null,
       chain,
     );
 
@@ -62,7 +60,6 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
     'getCash',
     [],
     block,
-    null,
     chain,
   );
 

@@ -24,7 +24,7 @@ export class DappsService {
     const tvlData = await providerService.tvl({
       chain: req.chain,
       provider: req.provider,
-      block: req.query.block,
+      block: parseInt(req.query.block),
       date: req.query.date,
     });
     console.log(tvlData);

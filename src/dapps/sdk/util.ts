@@ -5,7 +5,7 @@ Modules
 import fs from 'fs';
 import _ from 'underscore';
 import BigNumber from 'bignumber.js';
-import ethers from 'ethers';
+import { ethers } from 'ethers';
 import ERC20_ABI from './helpers/abi/erc20.json';
 import UNI_ABI from './helpers/abi/uni.json';
 import CURVE128_ABI from './helpers/abi/curve128.json';
@@ -577,6 +577,7 @@ async function tryExecuteCallOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
+    console.log(e);
     /*logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
@@ -593,15 +594,13 @@ async function ExecuteCallOfMultiTargets(
   method,
   param,
   block,
-  chainWeb3,
   chain,
 ) {
-  const web3 = chainWeb3.getWeb3(chain);
-
-  ExecuteCallOfMultiTargets;
   const targetLength = targets.length;
 
   try {
+    const web3 = chainWeb3.getWeb3(chain);
+
     if (block < MULTICALL_DEPOLYED[chain]) {
       let executeResults = [];
       for (let first = 0; first < targetLength; first += 25) {
@@ -620,7 +619,7 @@ async function ExecuteCallOfMultiTargets(
       }
       return executeResults;
     } else {
-      const contract = new chainWeb3.eth.Contract(
+      const contract = new web3.eth.Contract(
         MULTICALL_ABI,
         MULTICALL_ADDRESSES[chain],
       );

@@ -33,7 +33,6 @@ async function tvl(params) {
   util.sumMultiBalanceOf(balances, balanceResults);
   util.convertBalancesToFixed(balances);
 
-  console.log(balances, balances);
   return { balances };
 }
 

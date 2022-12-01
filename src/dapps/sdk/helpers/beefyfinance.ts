@@ -66,7 +66,6 @@ async function getTvl(block, chain, provider) {
     'balance',
     [],
     block,
-    null,
     chain,
   );
 
