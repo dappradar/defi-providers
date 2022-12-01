@@ -4,7 +4,7 @@
 
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
-import web3 from '../../sdk/web3';
+import chainWeb3 from '../web3SDK/chainWeb3';
 import util from '../../sdk/util';
 import basicUtil from '../../sdk/helpers/basicUtil';
 import VAULT_ABI from './abi/beefyVault.json';
@@ -33,8 +33,9 @@ async function getVaults(chain) {
   }
 }
 
-async function getWants(address) {
+async function getWants(address, chain) {
   try {
+    const web3 = chainWeb3.getWeb3(chain);
     const contract = new web3.eth.Contract(VAULT_ABI, address);
     const want = await contract.methods.want().call();
     wants[address] = want.toLowerCase();
@@ -52,7 +53,9 @@ async function getTvl(block, chain, provider) {
 
   const vaults = await getVaults(chain);
   await Promise.all(
-    vaults.filter((vault) => !wants[vault]).map((vault) => getWants(vault)),
+    vaults
+      .filter((vault) => !wants[vault])
+      .map((vault) => getWants(vault, chain)),
   );
 
   basicUtil.writeDataToFile(wants, 'cache/wants.json', chain, provider);

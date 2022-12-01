@@ -16,7 +16,9 @@ const TOKENS = ['0x7f5c764cbc14f9669b88837ca1490cca17c31607'];
   TVL
   ==================================================*/
 
-async function tvl(block, chain) {
+async function tvl(params) {
+  const { block, chain } = params;
+
   if (block < START_BLOCK) {
     return {};
   }

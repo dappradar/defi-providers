@@ -18,7 +18,9 @@ const QUERY_SIZE = 400;
     TVL
     ==================================================*/
 
-async function tvl(block, chain, provider) {
+async function tvl(params) {
+  const { block, chain, provider } = params;
+
   if (block < START_BLOCK) {
     return {};
   }

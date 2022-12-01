@@ -1,29 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { GetTvlReply } from '../generated/dappradar-proto/defi-providers';
+import {
+  GetTvlRequest,
+  GetTvlReply,
+} from '../generated/dappradar-proto/defi-providers';
 
 @Injectable()
 export class DappsService {
-  async getTvl(
-    provider: string,
-    chain: string | undefined,
-    block: string,
-    date: string | undefined,
-  ): Promise<GetTvlReply> {
-    console.log('provider', typeof provider, provider);
-    console.log('chain', typeof chain, chain);
-    console.log('block', typeof block, block);
-    console.log('date', typeof date, date);
+  async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
+    console.log('provider', req.provider);
+    console.log('chain', req.chain);
+    console.log('block', req.query.block);
+    console.log('date', req.query.date);
 
     // TO DO: check if chain exists
     //const chain = 'optimism' && data.CHAINS['optimism'] ? 'optimism' : 'ethereum';
 
     const providerService = await import(
-      chain === 'ethereum'
-        ? `./providers/${provider}`
-        : `./providers/${chain}_${provider}/index`
+      req.chain === 'ethereum'
+        ? `./providers/${req.provider}`
+        : `./providers/${req.chain}_${req.provider}/index`
     );
 
-    const tvlData = await providerService.tvl(block, chain, provider, date);
+    const tvlData = await providerService.tvl({
+      chain: req.chain,
+      provider: req.provider,
+      block: req.query.block,
+      date: req.query.date,
+    });
     console.log(tvlData);
     return tvlData;
   }
