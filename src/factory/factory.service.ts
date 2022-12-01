@@ -4,12 +4,7 @@ import {
   GetTvlReply,
 } from '../generated/dappradar-proto/defi-providers';
 interface IProvider {
-  tvl: ({
-    block,
-    chain,
-    provider,
-    date,
-  }) => { balance: string } | { balance: string; poolBalances: string };
+  tvl: ({ block, chain, provider, date }) => GetTvlReply;
 }
 
 @Injectable()
@@ -36,6 +31,6 @@ export class FactoryService {
       date: req.query.date,
     });
     console.log(tvlData);
-    return tvlData;
+    return { balances: tvlData.balances, poolBalances: tvlData.poolBalances };
   }
 }
