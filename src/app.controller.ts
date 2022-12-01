@@ -12,7 +12,6 @@ export class AppController {
 
   @GrpcMethod('DefiProviders', 'GetTvl')
   async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
-    const tvl = await this.appService.getTvl(req);
-    return tvl;
+    return await this.appService.getTvl(req);
   }
 }

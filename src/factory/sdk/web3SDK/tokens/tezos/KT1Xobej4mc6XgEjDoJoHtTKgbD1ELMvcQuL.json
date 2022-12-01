@@ -1,0 +1,11 @@
+{
+  "totalSupply": [
+    {
+      "key": "total_supply"
+    },
+    {
+      "key": 0,
+      "type": "big_map"
+    }
+  ]
+}
