@@ -1,4 +1,4 @@
-import nearAPI from 'near-api-js';
+import * as nearAPI from 'near-api-js';
 
 let near;
 
@@ -23,6 +23,9 @@ async function getBlock(blockNumber) {
 }
 
 async function callContractFunction(contract, functionName, args, blockNumber) {
+  if (!near) {
+    await init();
+  }
   const response = await near.connection.provider.query({
     request_type: 'call_function',
     block_id: blockNumber,
@@ -34,15 +37,20 @@ async function callContractFunction(contract, functionName, args, blockNumber) {
 }
 
 async function init() {
-  near = await nearAPI.connect({
+  const { connect } = nearAPI;
+
+  const connectionConfig = {
     networkId: 'mainnet',
-    nodeUrl: module.exports.nodeUrl,
-  });
+    nodeUrl: 'https://archival-rpc.mainnet.near.org',
+    //    nodeUrl: module.exports.nodeUrl,
+  };
+
+  near = await connect(connectionConfig);
 }
 
 class Contract {
-  abi: string;
-  address: string;
+  abi;
+  address;
   constructor(abi, address) {
     this.abi = abi;
     this.address = address;
@@ -52,7 +60,7 @@ class Contract {
     return {
       totalSupply: () => {
         return {
-          call: async () => {
+          call: async (options = null, slot = null) => {
             return await callContractFunction(
               this.address,
               'ft_total_supply',
