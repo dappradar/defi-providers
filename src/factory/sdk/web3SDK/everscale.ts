@@ -1,8 +1,10 @@
 import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
+import serviceData from '../data';
+
+const nodeUrl = serviceData[`EVERSCALE_NODE_URL`];
 
 export default {
-  nodeUrl: '',
   eth: {
     getBlockNumber: async () => {
       return Math.floor(Date.now() / 1000);
@@ -21,19 +23,16 @@ export default {
       };
     },
     getBalances: async (account) => {
-      const res = await fetch(
-        `${module.exports.nodeUrl}/address/${account}/balances`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            limit: 100,
-            offset: 0,
-          }),
+      const res = await fetch(`${nodeUrl}/address/${account}/balances`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({
+          limit: 100,
+          offset: 0,
+        }),
+      })
         .then((res) => res.json())
         .then((res) => res.balances);
 
@@ -43,9 +42,11 @@ export default {
       }));
     },
     getTokenData: async (address) => {
+      console.log('address', address);
       const res = await fetch(
-        `${module.exports.nodeUrl}/root_contract/root_address/${address}`,
+        `${nodeUrl}/root_contract/root_address/${address}`,
       ).then((res) => res.json());
+      console.log(res);
       return res;
     },
     Contract: class {
@@ -62,7 +63,7 @@ export default {
             return {
               call: async () => {
                 const res = await fetch(
-                  `${module.exports.nodeUrl}/root_contract/root_address/${this.address}`,
+                  `${nodeUrl}/root_contract/root_address/${this.address}`,
                 ).then((res) => res.json());
                 return BigNumber(res.totalSupply)
                   .times(10 ** res.decimals)

@@ -2,7 +2,6 @@
   Modules
   ==================================================*/
 
-import fs from 'fs';
 import chainWeb3 from '../../sdk/web3SDK/chainWeb3';
 import util from '../../sdk/util';
 import basicUtil from '../../sdk/helpers/basicUtil';
