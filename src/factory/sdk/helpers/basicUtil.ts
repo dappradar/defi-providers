@@ -17,8 +17,8 @@ const DEFAULT_DELAY = 5;
   ==================================================*/
 
 function getPath(chain, provider) {
-  if (chain === 'ethereum') return `./src/dapps/providers/${provider}`;
-  return `./src/dapps/providers/${chain}_${provider}`;
+  if (chain === 'ethereum') return `./src/factory/providers/${provider}`;
+  return `./src/factory/providers/${chain}_${provider}`;
 }
 
 function getWmainAddress(chain) {
