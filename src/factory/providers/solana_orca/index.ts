@@ -11,7 +11,6 @@ import chainWeb3 from '../../sdk/web3SDK/chainWeb3';
   ==================================================*/
 
 async function getTokenAccountBalance(account, chain) {
-  console.log('chain', chain);
   const web3 = chainWeb3.getWeb3(chain);
   const tokenBalance = await web3.call('getTokenAccountBalance', [account]);
 
@@ -41,10 +40,6 @@ async function tvl(params) {
       subPools.map((pool) => getTokenAccountBalance(pool.reserveB, chain)),
     );
 
-    console.log('reserveAResults');
-
-    console.log(reserveAResults);
-
     subPools.forEach((pool, index) => {
       const tokenA = pool.tokenAccountA;
       const tokenB = pool.tokenAccountB;
@@ -67,7 +62,6 @@ async function tvl(params) {
     balances[token] = balances[token].toFixed();
   }
 
-  console.log(balances);
   return { balances };
 }
 

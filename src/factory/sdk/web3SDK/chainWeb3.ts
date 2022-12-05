@@ -26,7 +26,6 @@ export default {
       web3.nodeUrl = node_url;
     } else if (supportChain == 'hedera') {
       web3 = hbarWeb3;
-      web3.nodeUrl = node_url;
     } else if (supportChain == 'near') {
       web3 = nearWeb3;
     } else if (supportChain == 'solana') {
