@@ -31,7 +31,6 @@ export default {
       web3 = nearWeb3;
     } else if (supportChain == 'solana') {
       web3 = solWeb3;
-      web3.nodeUrl = node_url;
     } else if (supportChain == 'stacks') {
       web3 = stxWeb3;
     } else if (supportChain == 'tezos') {

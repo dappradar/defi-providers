@@ -1,8 +1,10 @@
 import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
+import serviceData from '../data';
+
+const nodeUrl = serviceData[`SOLANA_NODE_URL`];
 
 export default {
-  nodeUrl: '',
   eth: {
     getBlockNumber: async () => {
       const res = await module.exports.call('getSlot', []);
@@ -82,7 +84,7 @@ export default {
   },
   call: async (method, params) => {
     try {
-      const res = await fetch(module.exports.nodeUrl, {
+      const res = await fetch(nodeUrl, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

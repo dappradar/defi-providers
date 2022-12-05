@@ -4,7 +4,6 @@
 
 import util from '../../sdk/util';
 import uniswapV2 from '../../sdk/helpers/uniswapV2';
-import chainWeb3 from '../../sdk/web3SDK/chainWeb3';
 
 /*==================================================
     Settings
