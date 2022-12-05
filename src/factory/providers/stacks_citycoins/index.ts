@@ -63,6 +63,4 @@ async function tvl(params) {
   Exports
   ==================================================*/
 
-module.exports = {
-  tvl,
-};
+export { tvl };
