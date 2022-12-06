@@ -1,0 +1,392 @@
+{
+  "0:eaf911b4bc7f9691f9114e32919845a997b3b626add345c67a933ed20b59e9e4": {
+    "name": "EVA",
+    "symbol": "EVA",
+    "decimals": 9
+  },
+  "0:511cf31de79bfa3632dbbda4f3079b52659ddf385de1fe7971d163d55ac7b382": {
+    "name": "LV PLUS",
+    "symbol": "LVP",
+    "decimals": 18
+  },
+  "0:8e3ddd9533bfa3f4ac3bbda3162aecb89e1438b634ea2dc0732111c88bc55dca": {
+    "name": "RAZ",
+    "symbol": "RAZ",
+    "decimals": 18
+  },
+  "0:8f1f17c9e6788ae6e1c9038ce6eebfb126cd6024dec0db86381976da8a3636e8": {
+    "name": "SpartaCats Epic Box",
+    "symbol": "PURRBOX",
+    "decimals": 0
+  },
+  "0:12236d614efee71e1cee6f478157fbc5ab643dd1ed2f7df829b949d78e5eedf5": {
+    "name": "Revoland Normal Mystery Box",
+    "symbol": "NRBOX",
+    "decimals": 0
+  },
+  "0:e63dee06852c710c938677f43076fe47717a49dd122f9f21b2cf58c018f651cc": {
+    "name": "Revoland Rare Mystery Box",
+    "symbol": "RRBOX",
+    "decimals": 0
+  },
+  "0:46b4cc33119012f415f8e3999c20738075a660c7d2c261357bbb46824f6dbf4d": {
+    "name": "Revoland Treasure Mystery Box",
+    "symbol": "TRBOX",
+    "decimals": 0
+  },
+  "0:fd1c5e3427b47ba0a7499eabbb492ea8e521f020666b2c6e19915cb6449c3f0c": {
+    "name": "TESTBOX-1",
+    "symbol": "TESTBOX-1",
+    "decimals": 0
+  },
+  "0:e7368d8896228465fb9d8cc0681c398213b6cdaf7589e529519121b97559b6d6": {
+    "name": "Revoland Governance Token",
+    "symbol": "REVO",
+    "decimals": 18
+  },
+  "0:59b6b64ac6798aacf385ae9910008a525a84fc6dcf9f942ae81f8e8485fe160d": {
+    "name": "Wrapped Ether",
+    "symbol": "WETH",
+    "decimals": 18
+  },
+  "0:e5d964bf76b90a29ca11ff03a0402eeca6a1c79a0fb4d8a2f06a67be0537a6bf": {
+    "name": "Everspace Wallet",
+    "symbol": "EVS",
+    "decimals": 9
+  },
+  "0:2f84387836c950ce35ecacac5b86040961571aaf4630ecb68ccc85ff218213c1": {
+    "name": "Infam",
+    "symbol": "INF",
+    "decimals": 18
+  },
+  "0:b4de6956e0a5691e24321b3205d68dfcf27d566dc1153399c09b0b7789b37361": {
+    "name": "Ideal Money",
+    "symbol": "AIM",
+    "decimals": 10
+  },
+  "0:0cfa60f9454b1b619938c4da6a138b1cc62da937b3f6c0506405daf2a88e0115": {
+    "name": "EUR-Fiat-Based",
+    "symbol": "EUPi",
+    "decimals": 8
+  },
+  "0:c37b3fafca5bf7d3704b081fde7df54f298736ee059bf6d32fac25f5e6085bf6": {
+    "name": "USD Coin",
+    "symbol": "USDC",
+    "decimals": 6
+  },
+  "0:1ddd1a0a7d6ee3cef8ccb9e6aa02f5c142658522ddd40f21ae7160177ced0e12": {
+    "name": "FlatQube-LP-USDT-USDC",
+    "symbol": "FlatQube-LP-USDT-USDC",
+    "decimals": 9
+  },
+  "0:b5ff077d8ac0160559bd3c945a2a824cda12ba93ae90c2697c890656d52fc7d0": {
+    "name": "MOON Token",
+    "symbol": "MOON",
+    "decimals": 6
+  },
+  "0:4d88c2b434d2b55ba4225de069dd13db4128786b07e2cec877ad1b53491a3f3a": {
+    "name": "KGM2",
+    "symbol": "KGM2",
+    "decimals": 9
+  },
+  "0:d3bd7e235c74cea907aa65cc7a3f0f533334a65f61bc9b85bda50300bec6ce77": {
+    "name": "DeCO",
+    "symbol": "DECO",
+    "decimals": 9
+  },
+  "0:731aa62cbf158750b22b1fef18a3ea6992056d23cb50ebdb2fc3a03220e0dbde": {
+    "name": "Project One",
+    "symbol": "RJO",
+    "decimals": 18
+  },
+  "0:7a6ae25c3dfe2990e3a8990f127782437bc29a3502033344902cf3e1ac5c7d6c": {
+    "name": "Pangolin",
+    "symbol": "PNG",
+    "decimals": 18
+  },
+  "0:fadb946f08922ef75153d972f299a30691dca9bd72985ffbd6be477a638b4103": {
+    "name": "Research token",
+    "symbol": "RT",
+    "decimals": 9
+  },
+  "0:8d5f3d076efebbc082706eb6009c39db1c31e373cfb0f2b400e2e099b09d480f": {
+    "name": "Green Metaverse Token",
+    "symbol": "GMT",
+    "decimals": 8
+  },
+  "0:e970d65989a152a9242d449d0d12c0cebc28e9d49fab396dac9ce2a4f2c93ae6": {
+    "name": "1INCH Token",
+    "symbol": "1INCH",
+    "decimals": 18
+  },
+  "0:9f20666ce123602fd7a995508aeaa0ece4f92133503c0dfbd609b3239f3901e2": {
+    "name": "Qube",
+    "symbol": "QUBE",
+    "decimals": 9
+  },
+  "0:4d3c263dcbaccd98de5c014b3f7827b8a1fd7887cf9b9cf441fb144163fe1778": {
+    "name": "test2",
+    "symbol": "tst2",
+    "decimals": 9
+  },
+  "0:efed9f9a7e6c455ee60829fd003b2f42edda513c6f19a484f916b055e9aa58d2": {
+    "name": "Frax",
+    "symbol": "FRAX",
+    "decimals": 18
+  },
+  "0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d": {
+    "name": "Wrapped EVER",
+    "symbol": "WEVER",
+    "decimals": 9
+  },
+  "0:a519f99bb5d6d51ef958ed24d337ad75a1c770885dcd42d51d6663f9fcdacfb2": {
+    "name": "Tether",
+    "symbol": "USDT",
+    "decimals": 6
+  },
+  "0:ba5fc2965543f5b216df866a62332077ff19a59ab482bcd73d6b5b3a95117f86": {
+    "name": "MarsDAO",
+    "symbol": "MDAO",
+    "decimals": 18
+  },
+  "0:9e0350c13cafe2bb55d906553fde5f357612e6dcb46c0c3440c7bfdda273ffdd": {
+    "name": "BAPBAPA",
+    "symbol": "BAPBAPA",
+    "decimals": 9
+  },
+  "0:5f01eb5e58105cf3d237d57ef9f61e3bd92eb726997eefd962256774bdcc0834": {
+    "name": "ProjectMars Token",
+    "symbol": "MARS",
+    "decimals": 9
+  },
+  "0:c14e2f026feaae0f99b92c04ee421051a782fff60156ac8a586a12f63d7facef": {
+    "name": "Frax Share",
+    "symbol": "FXS",
+    "decimals": 18
+  },
+  "0:6b5b5d357eae15284c6b434b89b9ed226000d72cd446662879d4562554756e10": {
+    "name": "Binamon",
+    "symbol": "BMON",
+    "decimals": 18
+  },
+  "0:31cecfafb350fc4b8f74c6fa5c581d78a5e6ab71538c9e140356738736788d32": {
+    "name": "Metahero",
+    "symbol": "HERO",
+    "decimals": 18
+  },
+  "0:4edbbeea7edae19059a1a1ef92491dbf0533e25f90c68825f3563530e932b1f5": {
+    "name": "FlatQube-LP-WETH-WEVER",
+    "symbol": "FlatQube-LP-WETH-WEVER",
+    "decimals": 9
+  },
+  "0:c0241eb21f0bee4ef92f547bc0b88bc1c4f47ee1a4b7269c036abd682f88b1ec": {
+    "name": "SwinCoin",
+    "symbol": "SWIN",
+    "decimals": 0
+  },
+  "0:a15e6a7a91c331ddcd85675ca64d5a7db8c7e94b35806b2e05bf4bce29d21023": {
+    "name": "SOON Token",
+    "symbol": "SOON",
+    "decimals": 18
+  },
+  "0:38a4c196c7fe22cbf0cda034ddda284aa208e2dba7707b96f65914420ba3f580": {
+    "name": "RUM",
+    "symbol": "RUM",
+    "decimals": 9
+  },
+  "0:9bbce313f4ec613e70c42667308f951f3ddb0d13485d73df450468ff1c591e9c": {
+    "name": "Cosmos Token",
+    "symbol": "ATOM",
+    "decimals": 18
+  },
+  "0:9dd2cd82cbfd74a963be1ef1fd1a1f3e25f60e0b8c742f8b862df378b9a5e265": {
+    "name": "COLA COIN",
+    "symbol": "COLA",
+    "decimals": 9
+  },
+  "0:dfc7308cce17dcc6d53031acb0d52badadbcb667e36d6715441603aabfb111c9": {
+    "name": "Cardano Token",
+    "symbol": "ADA",
+    "decimals": 18
+  },
+  "0:b3ed4b9402881c7638566b410dda055344679b065dce19807497c62202ba9ce3": {
+    "name": "Tokenized US National Debt",
+    "symbol": "DUSA",
+    "decimals": 2
+  },
+  "0:7cc6ea7c9563ed1c8583a2cf9d3fbc06c51b7a8b31c00cc1a3fe675c00a3e84e": {
+    "name": "Wrapped BNB",
+    "symbol": "WBNB",
+    "decimals": 18
+  },
+  "0:f2679d80b682974e065e03bf42bbee285ce7c587eb153b41d761ebfd954c45e1": {
+    "name": "Bridge",
+    "symbol": "BRIDGE",
+    "decimals": 9
+  },
+  "0:152a7c50f7df2f305b56a1dd7e254d84a5aed018ba44b920f28def735215baa1": {
+    "name": "Cardano",
+    "symbol": "ADA",
+    "decimals": 6
+  },
+  "0:438c4cd4a63ffd9922af8aa084bd9fe7a8cd26739c6013fbcee47ff394d4de75": {
+    "name": "Exeedme",
+    "symbol": "XED",
+    "decimals": 18
+  },
+  "0:c1ee7349762c3875b72f1aa7da0850634f32f8c06bfd52c3e082e78559a05160": {
+    "name": "token airdrops test",
+    "symbol": "TAT",
+    "decimals": 18
+  },
+  "0:620c03a71d9029ef6376455d4a9feafa317135e50c74bc126ca5ac7368cb43d8": {
+    "name": "Project Galaxy",
+    "symbol": "GAL",
+    "decimals": 18
+  },
+  "0:dbba0028173f5b8d09eb597e0cca88cb41a4875efdf8a1815bb31292f150f800": {
+    "name": "PileBlocks.com GameFi Play-to-Earn",
+    "symbol": "PILE",
+    "decimals": 9
+  },
+  "0:7dffbc560e4a2a696e8e2aa4ff7030cf500151c83d2762152d22bdfbe9a4f8fc": {
+    "name": "CHEEMSINU",
+    "symbol": "$CINU",
+    "decimals": 9
+  },
+  "0:ba3df9da063c400bc934e35dc16c0ef13b4ca0bf44fa49501f0b5d628aa82fb2": {
+    "name": "Black Ink",
+    "symbol": "INK",
+    "decimals": 9
+  },
+  "0:b0936fa007b0d5bc6c0ff30222d6ced9b4d976f689674fd75f305eb7d4af5b6f": {
+    "name": "GAG coin",
+    "symbol": "GAG",
+    "decimals": 10
+  },
+  "0:eb2ccad2020d9af9cec137d3146dde067039965c13a27d97293c931dae22b2b9": {
+    "name": "Dai Stablecoin",
+    "symbol": "DAI",
+    "decimals": 18
+  },
+  "0:b257ccdf3d13f586003d639b8dd7739e2e093985ac056346e1e72478984d7368": {
+    "name": "Amazy Token",
+    "symbol": "AZY",
+    "decimals": 18
+  },
+  "0:146016df968b2cc7f7543d24089d8612b59ba58631654226b69740fe990d0b3c": {
+    "name": "FlatQube-LP-RAZ-DVA",
+    "symbol": "FlatQube-LP-RAZ-DVA",
+    "decimals": 9
+  },
+  "0:58380dfe134d9db619d10de677ee13055a99b308ed68941f071b6627a7e7768a": {
+    "name": "Tegro",
+    "symbol": "TGR",
+    "decimals": 18
+  },
+  "0:2440717a9a8e0228cb016ccbc0d59fa72ce1b493fd91f4d4482bea264db1eaa6": {
+    "name": "test coin",
+    "symbol": "TQTQ",
+    "decimals": 18
+  },
+  "0:d74c4ac5fc5fffd8e702157f8f02bc82e600d9b6e8c1096204aeb74ac5ea7a30": {
+    "name": "ttt ttt",
+    "symbol": "TCJT",
+    "decimals": 18
+  },
+  "0:60d707f82b484b63c481790735f1f6eecf620ad578eb44739a4e285eff6116ef": {
+    "name": "test",
+    "symbol": "QECV",
+    "decimals": 18
+  },
+  "0:f6df05defe81b7db27b694faf1c185e52ab3a1f338d7168a1ec7392bbbe7d799": {
+    "name": "Zmeymc token",
+    "symbol": "ZMC",
+    "decimals": 18
+  },
+  "0:7e5339f1c6b15b5f4bb083324d1347648710028c08b972df8bad2cc224980811": {
+    "name": "TIGER",
+    "symbol": "TIGER",
+    "decimals": 18
+  },
+  "0:ab273677e738511b716900a4154251434640cb640cebdfa5cefa00039dd4897c": {
+    "name": "Social Media Marketing",
+    "symbol": "SMM",
+    "decimals": 18
+  },
+  "0:614635ac5119df69bb3c4e671d8bd0130bad76d1ca7f117218951522fccea207": {
+    "name": "ZMEIGHT",
+    "symbol": "ZMT",
+    "decimals": 8
+  },
+  "0:9d49206b0eaadc5125c6b5e30410505db7740f827857915922cdb7efe199b622": {
+    "name": "Sparta Cats",
+    "symbol": "PURR",
+    "decimals": 18
+  },
+  "0:e4f91a3795a1dd8ffab96cf8b0eb5052f9e15edef7e2f8b0cc6a55605ba0c52f": {
+    "name": "SSS",
+    "symbol": "SSS",
+    "decimals": 6
+  },
+  "0:ad6582056feb1368a01ae490bb0345433273516e33209fb08f247447e84a911a": {
+    "name": "QUBE_test",
+    "symbol": "QUBE_test",
+    "decimals": 9
+  },
+  "0:f43f6188a8d786f7e2b1ea6eac176ae76faf6ccf1202a682292461a3020de1d3": {
+    "name": "0 dec",
+    "symbol": "0DEL",
+    "decimals": 0
+  },
+  "0:7c44eab5ec52c1d8eff1f4003c58a250d6ca27c3427d8d00558b7b67d44b484e": {
+    "name": "PING",
+    "symbol": "PONG",
+    "decimals": 18
+  },
+  "0:a2926808c5f7e811c69e4064bfda1d68ebbc8cf080c97d906d926822935dab0c": {
+    "name": "VAI Stablecoin",
+    "symbol": "VAI",
+    "decimals": 18
+  },
+  "0:a704421b2e484c8f3c98e9eda42683592e40491c431fb0dab4a898e022913b3b": {
+    "name": "Nerve",
+    "symbol": "NRV",
+    "decimals": 18
+  },
+  "0:9641d09e0baab7db3df08c5c96d3b1f3c860c46eb33bae09cb7832551e34b830": {
+    "name": "QUBE_1",
+    "symbol": "QUBE_1",
+    "decimals": 9
+  },
+  "0:269e93ca4b8248e81314d412049f62cb0d84af29aca3a99f28792cee2da2561d": {
+    "name": "Tokenized US Quantitative Easing",
+    "symbol": "QUSA",
+    "decimals": 7
+  },
+  "0:8f7e930ce95442c3a2a2e3d7a9c7e24dc52dfdaf2ca17e851c49c5bf809bb40e": {
+    "name": "ChainWars Essence",
+    "symbol": "CWE",
+    "decimals": 18
+  },
+  "0:c6738a1786fbf9d75d0d2f5d3548c97bdff2027dd0165f6c7c84de8c4ad4575b": {
+    "name": "MeeetSocialGameToken",
+    "symbol": "MST",
+    "decimals": 9
+  },
+  "0:eed32ea065033f5a0f4f0e9abe8332fa3935f8b6bbf95d9bdcadf54813237553": {
+    "name": "pTokens GALA",
+    "symbol": "GALA",
+    "decimals": 18
+  },
+  "0:28cb6f2d835d0d8aff9fa98c8d2bc34ed291abfe4f69ce92374a3f6cabe79af1": {
+    "name": "FlatQube-LP-OKO-KGM2",
+    "symbol": "FlatQube-LP-OKO-KGM2",
+    "decimals": 9
+  },
+  "0:7745a8649a3d063ed21d1c34e27a2ca638b9464826d74a3cdf3e1b663a070fb3": {
+    "name": "Diversification",
+    "symbol": "DIVER",
+    "decimals": 9
+  }
+}

@@ -24,13 +24,26 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.7.3",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/microservices": "^9.2.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@taquito/taquito": "^14.1.0",
+    "bignumber.js": "^9.1.0",
+    "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
+    "fs-extra": "^10.1.0",
+    "graphql-request": "^5.0.0",
+    "log4js": "^6.7.1",
+    "near-api-js": "^1.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "ts-proto": "^1.131.0",
+    "ts-protoc-gen": "^0.15.0",
+    "underscore": "^1.13.6",
+    "web3": "^1.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

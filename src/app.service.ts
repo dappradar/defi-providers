@@ -1,8 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import {
+  GetTvlRequest,
+  GetTvlReply,
+} from './generated/dappradar-proto/defi-providers';
+import { FactoryService } from './factory/factory.service';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(private readonly factoryService: FactoryService) {}
+
+  async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
+    return await this.factoryService.getTvl(req);
   }
 }

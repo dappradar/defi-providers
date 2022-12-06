@@ -1,0 +1,10 @@
+{
+    "ETHEREUM": {
+        "defisaver": {
+            "excludeFromTotalTVL": true
+        },
+        "instadapp": {
+            "excludeFromTotalTVL": true
+        }
+    }
+}
