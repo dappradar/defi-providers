@@ -37,24 +37,28 @@ async function tvl(params) {
   return { balances, poolBalances };
 }
 
-async function getPoolVolumes(pools, priorBlockNumber) {
+async function getPoolVolumes(params) {
+  const { pools, block } = params;
+
   const poolVolumes = await uniswapV2.getPoolVolumes(
     GRAPHQL_API,
     QUERY_SIZE,
     pools,
-    priorBlockNumber,
+    block,
     null,
   );
 
   return poolVolumes;
 }
 
-async function getTokenVolumes(tokens, priorBlockNumber) {
+async function getTokenVolumes(params) {
+  const { tokens, block } = params;
+
   const tokenVolumes = await uniswapV2.getTokenVolumes(
     GRAPHQL_API,
     QUERY_SIZE,
     tokens,
-    priorBlockNumber,
+    block,
     {
       volume: 'tradeVolume',
       volumeUsd: 'tradeVolumeUSD',

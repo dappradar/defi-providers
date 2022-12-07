@@ -249,9 +249,9 @@ async function getPoolVolumes(
   priorBlockNumber,
   volumeNames,
 ) {
-  const volumeNameToken0 = volumeNames.volumeToken0 || 'volumeToken0';
-  const volumeNameToken1 = volumeNames.volumeToken1 || 'volumeToken1';
-  const volumeNameVolumeUsd = volumeNames.volumeUsd || 'volumeUSD';
+  const volumeNameToken0 = volumeNames?.volumeToken0 || 'volumeToken0';
+  const volumeNameToken1 = volumeNames?.volumeToken1 || 'volumeToken1';
+  const volumeNameVolumeUsd = volumeNames?.volumeUsd || 'volumeUSD';
 
   const POOL_VOLUMES_QUERY = (block = null) => gql`
     query getPoolVolumes($pairs: [ID!]) {
@@ -276,7 +276,7 @@ async function getPoolVolumes(
 
   const poolVolumes = {};
 
-  for (let i = 0; i < pools.length; i += querySize) {
+  for (let i = 0; i < pools?.length || 0; i += querySize) {
     try {
       const pairData = await request(queryApi, POOL_VOLUMES_QUERY(), {
         pairs: pools.slice(i, i + querySize),
@@ -326,8 +326,8 @@ async function getTokenVolumes(
   priorBlockNumber,
   volumeNames,
 ) {
-  const volumeNameVolume = volumeNames.volume || 'volume';
-  const volumeNameVolumeUsd = volumeNames.volumeUsd || 'volumeUSD';
+  const volumeNameVolume = volumeNames?.volume || 'volume';
+  const volumeNameVolumeUsd = volumeNames?.volumeUsd || 'volumeUSD';
 
   const TOKEN_VOLUMES_QUERY = (block = null) => gql`
     query getTokenVolumes($tokens: [ID!]) {
@@ -346,7 +346,7 @@ async function getTokenVolumes(
 
   const tokenVolumes = {};
 
-  for (let i = 0; i < tokens.length; i += querySize) {
+  for (let i = 0; i < tokens?.length || 0; i += querySize) {
     try {
       const tokenData = await request(queryApi, TOKEN_VOLUMES_QUERY(), {
         tokens: tokens.slice(i, i + querySize),
