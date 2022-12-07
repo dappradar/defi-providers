@@ -32,7 +32,7 @@ import {
   MULTICALL_ADDRESSES,
   MULTICALL_DEPOLYED,
 } from './constants/contracts.json';
-import logger from '../../logger';
+import * as logger from '../../logger';
 
 let underlyingData = {};
 
