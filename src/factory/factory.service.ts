@@ -10,6 +10,8 @@ import {
   GetTokenDetailsRequest,
   GetTokenDetailsReply,
 } from '../generated/dappradar-proto/defi-providers';
+import { RpcException } from '@nestjs/microservices';
+
 interface IProvider {
   tvl: ({ block, chain, provider, date }) => GetTvlReply;
   getPoolVolumes: ({ block, chain, provider, pools }) => {
@@ -23,10 +25,9 @@ interface IProvider {
 @Injectable()
 export class FactoryService {
   async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
-    console.log('provider', req.provider);
-    console.log('chain', req.chain);
-    console.log('block', req.query.block);
-    console.log('date', req.query.date);
+    if (req.query.block === undefined) {
+      throw new RpcException('Block is undefined');
+    }
 
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider)
@@ -38,16 +39,16 @@ export class FactoryService {
       block: parseInt(req.query?.block),
       date: req.query?.date,
     });
-    console.log(tvlData);
+
     return { balances: tvlData.balances, poolBalances: tvlData.poolBalances };
   }
 
   async getPoolAndTokenVolumes(
     req: GetPoolAndTokenVolumesRequest,
   ): Promise<GetPoolAndTokenVolumesReply> {
-    console.log('provider', req.provider);
-    console.log('chain', req.chain);
-    console.log('block', req.query.block);
+    if (req.query.block === undefined) {
+      throw new RpcException('Block is undefined');
+    }
 
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider)
@@ -80,21 +81,16 @@ export class FactoryService {
     return { poolVolumes, tokenVolumes };
   }
 
-  getProviderServicePath(chain: string, provider: string): string {
-    // TO DO: check if chain exists
-    //const chain = 'optimism' && data.CHAINS['optimism'] ? 'optimism' : 'ethereum';
-
-    return chain === 'ethereum'
-      ? `./providers/${provider}`
-      : `./providers/${chain}_${provider}/index`;
-  }
-
   async getTokenDetails(
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
     const { address, name, symbol, decimals, logo } = await import(
-      `./providers/${req.chain}/${req.provider}/data.json`
+      this.getProviderServicePath(req.chain, req.provider)
     );
     return { address, name, symbol, decimals, logo };
+  }
+
+  getProviderServicePath(chain: string, provider: string): string {
+    return `./providers/${chain}/${provider}/index`;
   }
 }

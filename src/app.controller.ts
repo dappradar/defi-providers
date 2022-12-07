@@ -44,9 +44,6 @@ export class AppController {
 
   @GrpcMethod('DefiProviders', 'GetTvl')
   async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
-    if (req.query.block === undefined) {
-      throw new RpcException('Block is undefined');
-    }
     return await this.appService.getTvl(req);
   }
 
@@ -54,9 +51,6 @@ export class AppController {
   async getPoolAndTokenVolumes(
     req: GetPoolAndTokenVolumesRequest,
   ): Promise<GetPoolAndTokenVolumesReply> {
-    if (req.query.block === undefined) {
-      throw new RpcException('Block is undefined');
-    }
     return await this.appService.getPoolAndTokenVolumes(req);
   }
 

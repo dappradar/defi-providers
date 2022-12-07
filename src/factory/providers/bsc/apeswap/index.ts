@@ -7,10 +7,10 @@ import BigNumber from 'bignumber.js';
 import PAIR_ABI from './abis/abi.json';
 import UNITROLLER_ABI from './abis/unitroller.json';
 import OLA_TOKEN_ABI from './abis/ola_token.json';
-import { WMAIN_ADDRESS } from '../../sdk/constants/contracts.json';
-import chainWeb3 from '../../sdk/web3SDK/chainWeb3';
-import util from '../../sdk/util';
-import uniswapV2 from '../../sdk/helpers/uniswapV2';
+import { WMAIN_ADDRESS } from '../../../sdk/constants/contracts.json';
+import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
+import util from '../../../sdk/util';
+import uniswapV2 from '../../../sdk/helpers/uniswapV2';
 
 /*==================================================
   Settings
