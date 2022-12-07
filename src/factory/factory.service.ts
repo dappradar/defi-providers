@@ -7,6 +7,8 @@ import {
   GetPoolAndTokenVolumesReply,
   PoolVolume,
   TokenVolume,
+  GetTokenDetailsRequest,
+  GetTokenDetailsReply,
 } from '../generated/dappradar-proto/defi-providers';
 interface IProvider {
   tvl: ({ block, chain, provider, date }) => GetTvlReply;
@@ -31,10 +33,10 @@ export class FactoryService {
     );
 
     const tvlData = await providerService.tvl({
-      chain: req.chain,
-      provider: req.provider,
-      block: parseInt(req.query.block),
-      date: req.query.date,
+      chain: req?.chain,
+      provider: req?.provider,
+      block: parseInt(req.query?.block),
+      date: req.query?.date,
     });
     console.log(tvlData);
     return { balances: tvlData.balances, poolBalances: tvlData.poolBalances };
@@ -85,5 +87,14 @@ export class FactoryService {
     return chain === 'ethereum'
       ? `./providers/${provider}`
       : `./providers/${chain}_${provider}/index`;
+  }
+
+  async getTokenDetails(
+    req: GetTokenDetailsRequest,
+  ): Promise<GetTokenDetailsReply> {
+    const { address, name, symbol, decimals, logo } = await import(
+      `./providers/${req.chain}/${req.provider}/data.json`
+    );
+    return { address, name, symbol, decimals, logo };
   }
 }

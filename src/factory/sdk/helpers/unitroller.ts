@@ -51,7 +51,12 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
       ).toLowerCase();
     });
 
-    basicUtil.writeDataToFile(qiTokens, 'cache/pools.json', chain, provider);
+    await basicUtil.writeDataToFile(
+      qiTokens,
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   }
 
   const results = await util.executeCallOfMultiTargets(

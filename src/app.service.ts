@@ -4,6 +4,8 @@ import {
   GetTvlReply,
   GetPoolAndTokenVolumesRequest,
   GetPoolAndTokenVolumesReply,
+  GetTokenDetailsRequest,
+  GetTokenDetailsReply,
 } from './generated/dappradar-proto/defi-providers';
 import { FactoryService } from './factory/factory.service';
 
@@ -19,5 +21,11 @@ export class AppService {
     req: GetPoolAndTokenVolumesRequest,
   ): Promise<GetPoolAndTokenVolumesReply> {
     return await this.factoryService.getPoolAndTokenVolumes(req);
+  }
+
+  async getTokenDetails(
+    req: GetTokenDetailsRequest,
+  ): Promise<GetTokenDetailsReply> {
+    return await this.factoryService.getTokenDetails(req);
   }
 }

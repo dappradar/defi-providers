@@ -13,6 +13,8 @@ import {
   GetTvlReply,
   GetPoolAndTokenVolumesRequest,
   GetPoolAndTokenVolumesReply,
+  GetTokenDetailsReply,
+  GetTokenDetailsRequest,
 } from './generated/dappradar-proto/defi-providers';
 import * as logger from './logger';
 import { Observable, throwError } from 'rxjs';
@@ -56,5 +58,12 @@ export class AppController {
       throw new RpcException('Block is undefined');
     }
     return await this.appService.getPoolAndTokenVolumes(req);
+  }
+
+  @GrpcMethod('DefiProviders', 'GetTokenDetails')
+  async getTokenDetails(
+    req: GetTokenDetailsRequest,
+  ): Promise<GetTokenDetailsReply> {
+    return await this.appService.getTokenDetails(req);
   }
 }
