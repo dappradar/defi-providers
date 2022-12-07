@@ -1,19 +1,50 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  ArgumentsHost,
+  Catch,
+  RpcExceptionFilter,
+  HttpStatus,
+  UseFilters,
+} from '@nestjs/common';
 import { AppService } from './app.service';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import {
   GetTvlRequest,
   GetTvlReply,
   GetPoolAndTokenVolumesRequest,
   GetPoolAndTokenVolumesReply,
 } from './generated/dappradar-proto/defi-providers';
+import * as logger from './logger';
+import { Observable, throwError } from 'rxjs';
+
+@Catch()
+export class GenericRpcErrorFilter implements RpcExceptionFilter<RpcException> {
+  catch(exception: any, host: ArgumentsHost): Observable<any> {
+    const ctx = host.switchToRpc();
+
+    const errorResponse: any = {
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      timestamp: new Date().toISOString(),
+      errorName: exception?.name,
+      message: exception?.message,
+      requestData: JSON.stringify(ctx.getData(), null, 4),
+    };
+
+    logger.error(errorResponse);
+    return throwError(() => errorResponse);
+  }
+}
 
 @Controller()
+@UseFilters(new GenericRpcErrorFilter())
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @GrpcMethod('DefiProviders', 'GetTvl')
   async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
+    if (req.query.block === undefined) {
+      throw new RpcException('Block is undefined');
+    }
     return await this.appService.getTvl(req);
   }
 
@@ -21,6 +52,9 @@ export class AppController {
   async getPoolAndTokenVolumes(
     req: GetPoolAndTokenVolumesRequest,
   ): Promise<GetPoolAndTokenVolumesReply> {
+    if (req.query.block === undefined) {
+      throw new RpcException('Block is undefined');
+    }
     return await this.appService.getPoolAndTokenVolumes(req);
   }
 }
