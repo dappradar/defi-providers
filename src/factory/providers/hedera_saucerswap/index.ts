@@ -91,8 +91,6 @@ async function tvl(params) {
 
   util.convertBalancesToFixed(balances);
 
-  console.log(balances);
-
   return { balances };
 }
 
