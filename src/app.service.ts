@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import {
   GetTvlRequest,
   GetTvlReply,
+  GetPoolAndTokenVolumesRequest,
+  GetPoolAndTokenVolumesReply,
   GetTokenDetailsRequest,
   GetTokenDetailsReply,
 } from './generated/dappradar-proto/defi-providers';
@@ -13,6 +15,12 @@ export class AppService {
 
   async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
     return await this.factoryService.getTvl(req);
+  }
+
+  async getPoolAndTokenVolumes(
+    req: GetPoolAndTokenVolumesRequest,
+  ): Promise<GetPoolAndTokenVolumesReply> {
+    return await this.factoryService.getPoolAndTokenVolumes(req);
   }
 
   async getTokenDetails(

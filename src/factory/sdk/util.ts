@@ -32,7 +32,7 @@ import {
   MULTICALL_ADDRESSES,
   MULTICALL_DEPOLYED,
 } from './constants/contracts.json';
-//import logger from './helpers/logger';
+import * as logger from '../../logger';
 
 let underlyingData = {};
 
@@ -109,12 +109,12 @@ async function ExecuteCall(target, ABI, method, params, block, chain) {
       return decodeResult(method_abi, result);
     }
   } catch (e) {
-    /*/*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: ExecuteCall`,
       Endpoint: 'ExecuteCall',
-    });*/
+    });
     return null;
   }
 }
@@ -136,12 +136,12 @@ async function tryExecuteMultiCallsOfTarget(
       )
       .call(null, block);
   } catch (e) {
-    /*/*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: tryExecuteMultiCallsOfTarget`,
       Endpoint: 'tryExecuteMultiCallsOfTarget',
-    });*/
+    });
     return Array.from({ length: params.length }, () => null);
   }
 }
@@ -211,12 +211,12 @@ async function ExecuteMultiCallsOfTarget(
       return executeResults;
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: ExecuteMultiCallsOfTarget`,
       Endpoint: 'ExecuteMultiCallsOfTarget',
-    });*/
+    });
     return null;
   }
 }
@@ -239,12 +239,12 @@ async function tryExecuteDifferentCallsOfTarget(
       )
       .call(null, block);
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: tryExecuteDifferentCallsOfTarget`,
       Endpoint: 'tryExecuteDifferentCallsOfTarget',
-    });*/
+    });
     return Array.from({ length: params.length }, () => null);
   }
 }
@@ -327,12 +327,12 @@ async function ExecuteDifferentCallsOfTarget(
       return executeResults;
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: ExecuteDifferentCallsOfTarget`,
       Endpoint: 'ExecuteDifferentCallsOfTarget',
-    });*/
+    });
     return null;
   }
 }
@@ -354,12 +354,12 @@ async function tryExecuteMultiCallsOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: tryExecuteMultiCallsOfMultiTargets`,
       Endpoint: 'tryExecuteMultiCallsOfMultiTargets',
-    });*/
+    });
     return Array.from({ length: targets.length }, () => null);
   }
 }
@@ -433,12 +433,12 @@ async function ExecuteMultiCallsOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: ExecuteMultiCallsOfMultiTargets`,
       Endpoint: 'ExecuteMultiCallsOfMultiTargets',
-    });*/
+    });
     return null;
   }
 }
@@ -462,12 +462,12 @@ async function tryExecuteDifferentCallsOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: tryExecuteDifferentCallsOfMultiTargets`,
       Endpoint: 'tryExecuteDifferentCallsOfMultiTargets',
-    });*/
+    });
     return Array.from({ length: targets.length }, () => null);
   }
 }
@@ -550,12 +550,12 @@ async function ExecuteDifferentCallsOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: ExecuteDifferentCallsOfMultiTargets`,
       Endpoint: 'ExecuteDifferentCallsOfMultiTargets',
-    });*/
+    });
     return null;
   }
 }
@@ -578,12 +578,12 @@ async function tryExecuteCallOfMultiTargets(
       .call(null, block);
   } catch (e) {
     console.log(e);
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: tryExecuteCallOfMultiTargets`,
       Endpoint: 'tryExecuteCallOfMultiTargets',
-    });*/
+    });
     return Array.from({ length: targets.length }, () => null);
   }
 }
@@ -653,12 +653,12 @@ async function ExecuteCallOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: ExecuteCallOfMultiTargets`,
       Endpoint: 'ExecuteCallOfMultiTargets',
-    });*/
+    });
     return null;
   }
 }
@@ -711,12 +711,12 @@ function SumMultiBalanceOf(balances, results) {
       });
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: SumMultiBalanceOf`,
       Endpoint: 'SumMultiBalanceOf',
-    });*/
+    });
     return balances;
   }
 }
@@ -815,12 +815,12 @@ async function GetTokenBalancesOfHolders(holders, tokens, block, chain) {
       }
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: GetTokenBalancesOfHolders`,
       Endpoint: 'GetTokenBalancesOfHolders',
-    });*/
+    });
   }
 
   return balanceResults;
@@ -875,12 +875,12 @@ async function GetTokenBalances(holder, tokens, block, chain) {
     }
   } catch (e) {
     console.log(e);
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: GetTokenBalances`,
       Endpoint: 'GetTokenBalances',
-    });*/
+    });
   }
 
   return balanceResults;
@@ -940,12 +940,12 @@ async function GetBalancesOfHolders(holders, block, chain) {
       }
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: GetBalancesOfHolders`,
       Endpoint: 'GetBalancesOfHolders',
-    });*/
+    });
   }
 
   return balanceResults;
@@ -1408,12 +1408,12 @@ async function GetTokenTotalSupplies(tokens, block, chain) {
       }
     }
   } catch (e) {
-    /*logger.error({
+    logger.error({
       Message: e?.message || '',
       Stack: e?.stack || '',
       Detail: `Error: GetTokenTotalSupplies`,
       Endpoint: 'GetTokenTotalSupplies',
-    });*/
+    });
   }
 
   return totalSupplyResults;
