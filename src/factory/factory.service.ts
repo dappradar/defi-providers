@@ -26,11 +26,7 @@ interface IProvider {
 @Injectable()
 export class FactoryService implements OnModuleInit {
   async onModuleInit() {
-    await this.getTvl({
-      chain: 'bsc',
-      provider: 'apeswap',
-      query: { block: '4855901', date: '' },
-    });
+    console.log('we can use this method if it needed');
   }
   constructor(private readonly web3ProviderService: Web3ProviderService) {}
 
