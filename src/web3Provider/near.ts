@@ -35,7 +35,7 @@ export class Near implements OnModuleInit {
     };
   }
 
-  static async callContractFunction(contract, functionName, args, blockNumber) {
+  async callContractFunction(contract, functionName, args, blockNumber) {
     const response = await near.connection.provider.query({
       request_type: 'call_function',
       block_id: blockNumber,
@@ -65,12 +65,14 @@ class Contract {
             const blockNumber = await near.connection.provider.block({
               finality: 'final',
             });
-            return await Near.callContractFunction(
-              this.address,
-              'ft_total_supply',
-              {},
-              await blockNumber.header.height(),
-            );
+            const response = await near.connection.provider.query({
+              request_type: 'call_function',
+              block_id: await blockNumber.header.height(),
+              account_id: this.address,
+              method_name: 'ft_total_supply',
+              args_base64: Buffer.from(JSON.stringify({})).toString('base64'),
+            });
+            return JSON.parse(Buffer.from(response.result).toString());
           },
         };
       },
