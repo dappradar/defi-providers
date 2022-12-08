@@ -10,12 +10,12 @@ export class Tezos implements OnModuleInit {
   async onModuleInit() {
     tezosRPC = new TezosToolkit(nodeUrls.TEZOS_NODE_URL);
   }
-  async getBlockNumber() {
+  public async getBlockNumber() {
     const res = (await tezosRPC.rpc.getBlockHeader()).level;
     return res;
   }
 
-  async getBlock(levelNumber) {
+  public async getBlock(levelNumber) {
     let level = Math.max(2, levelNumber || 0);
     if (levelNumber == 'latest') {
       level = (await tezosRPC.rpc.getBlockHeader()).level;
@@ -35,7 +35,7 @@ export class Tezos implements OnModuleInit {
     };
   }
 
-  async getBalance(account, levelNumber) {
+  public async getBalance(account, levelNumber) {
     if (levelNumber == 'latest') {
       return await fetch(`${TZKT_API}/accounts/${account}/balance`)
         .then((res) => res.json())
@@ -48,7 +48,7 @@ export class Tezos implements OnModuleInit {
       .then((res) => BigNumber(res));
   }
 
-  async getTokenBalance(token, account, levelNumber) {
+  public async getTokenBalance(token, account, levelNumber) {
     const params =
       '&token.tokenId=0&balance.ne=0&sort.desc=balance&select=account.address as address,balance';
     if (levelNumber == 'latest') {
@@ -61,7 +61,7 @@ export class Tezos implements OnModuleInit {
     ).then((res) => res.json());
   }
 
-  async getHolders(token, levelNumber) {
+  public async getHolders(token, levelNumber) {
     const params =
       '&token.tokenId=0&balance.ne=0&sort.desc=balance&limit=10000&select=account.address as address,balance';
     if (levelNumber == 'latest') {
@@ -78,16 +78,16 @@ export class Tezos implements OnModuleInit {
 }
 
 class Contract {
-  abi: string;
-  address: string;
-  contract: any;
-  methods: Record<string, unknown>;
+  abi;
+  address;
+  contract;
+  methods;
   constructor(abi, address) {
     this.abi = abi;
     this.address = address;
   }
 
-  async init() {
+  public async init() {
     this.contract = await tezosRPC.wallet.at(this.address);
     const storage = await this.contract.storage();
     const address = this.address;
