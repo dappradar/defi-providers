@@ -1,10 +1,6 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
 import ORCA_POOLS from './poolInfos.json';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
 
 /*==================================================
   Helpers
@@ -20,10 +16,6 @@ async function getTokenAccountBalance(account, chain) {
     return 0;
   }
 }
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { chain } = params;
@@ -65,7 +57,4 @@ async function tvl(params) {
   return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
 export { tvl };

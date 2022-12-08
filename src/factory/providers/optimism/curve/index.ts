@@ -1,23 +1,11 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
-import util from '../../../sdk/util';
-import curve from '../../../sdk/helpers/curve';
-import { WMAIN_ADDRESS } from '../../../sdk/constants/contracts.json';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import formatter from '../../../../util/formatter';
+import curve from '../../../../util/calculators/curve';
+import { WMAIN_ADDRESS } from '../../../../constants/contracts.json';
 
 const START_BLOCK = 3465832;
 const FACTORY = '0x2db0e83599a91b508ac268a6197b8b14f5e72840';
 const E_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -37,12 +25,8 @@ async function tvl(params) {
     delete balances[E_ADDRESS];
   }
 
-  util.convertBalancesToFixed(balances);
+  formatter.convertBalancesToFixed(balances);
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

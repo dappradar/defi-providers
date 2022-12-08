@@ -1,14 +1,7 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import util from '../../../sdk/util';
-import basicUtil from '../../../sdk/helpers/basicUtil';
-
-/*=================================================
-  Settings
-  ==================================================*/
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import util from '../../../../util/blockchainUtil';
+import basicUtil from '../../../../util/basicUtil';
+import formatter from '../../../../util/formatter';
 
 const FACTORY_ADDRESS = '0.0.1062784';
 const WRAPPED_TOKENS = {
@@ -37,10 +30,6 @@ const WRAPPED_TOKENS = {
     decimalOffset: 6,
   },
 };
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -86,16 +75,12 @@ async function tvl(params) {
       }
       return data;
     });
-    util.sumMultiBalanceOf(balances, wrappedBalances);
+    formatter.sumMultiBalanceOf(balances, wrappedBalances);
   });
 
-  util.convertBalancesToFixed(balances);
+  formatter.convertBalancesToFixed(balances);
 
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

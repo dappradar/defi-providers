@@ -1,18 +1,6 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-import beefyfinance from '../../../sdk/helpers/beefyfinance';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import beefyfinance from '../../../../util/calculators/beefyfinance';
 
 const START_BLOCK = 380863;
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -25,10 +13,6 @@ async function tvl(params) {
 
   return { balances };
 }
-
-/*==================================================
-    Exports
-    ==================================================*/
 
 module.exports = {
   tvl,

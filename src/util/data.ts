@@ -1,5 +1,5 @@
 //import fs from 'fs';
-import { nodeUrls } from '../../app.config';
+import { nodeUrls } from '../app.config';
 
 const data = {
   CHAINS: {

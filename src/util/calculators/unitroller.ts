@@ -1,15 +1,8 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
-import basicUtil from '../../sdk/helpers/basicUtil';
-import util from '../../sdk/util';
-import UNITROLLER_ABI from './abi/unitroller.json';
-
-/*==================================================
-  Helper Methods
-  ==================================================*/
+import basicUtil from '../basicUtil';
+import util from '../blockchainUtil';
+import formatter from '../formatter';
+import UNITROLLER_ABI from '../../constants/abi/unitroller.json';
 
 async function getTvl(unitrollerAddresses, block, chain, provider) {
   let qiTokens = {};
@@ -79,13 +72,9 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
   });
 
   const balances = {};
-  util.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
   return balances;
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export default {
   getTvl,

@@ -58,6 +58,6 @@ export class AppController {
   async getTokenDetails(
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
-    return await this.appService.getTokenDetails(req);
+    return this.appService.getTokenDetails(req);
   }
 }

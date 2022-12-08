@@ -1,19 +1,11 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
 import ABI from './abis/abi.json';
 import WSOHM_ABI from './abis/wsOHM.json';
 import MINTER256_ABI from './abis/minter256.json';
 import MINTER128_ABI from './abis/minter128.json';
-import ERC20_ABI from '../../../sdk/helpers/abi/erc20.json';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import util from '../../../sdk/util';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import ERC20_ABI from '../../../../constants/abi/erc20.json';
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import util from '../../../../util/blockchainUtil';
 
 const CAULDRON_CONTRACTS = [
   '0x7b7473a76d6ae86ce19f7352a1e89f6c9dc39020',
@@ -220,9 +212,5 @@ async function tvl(params) {
 
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

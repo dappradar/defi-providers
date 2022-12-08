@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
 import {
   GetTvlRequest,
@@ -11,9 +11,10 @@ import {
   GetTokenDetailsReply,
 } from '../generated/dappradar-proto/defi-providers';
 import { RpcException } from '@nestjs/microservices';
+import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 
 interface IProvider {
-  tvl: ({ block, chain, provider, date }) => GetTvlReply;
+  tvl: ({ web3, block, chain, provider, date }) => GetTvlReply;
   getPoolVolumes: ({ block, chain, provider, pools }) => {
     [key: string]: PoolVolume;
   };
@@ -23,7 +24,12 @@ interface IProvider {
 }
 
 @Injectable()
-export class FactoryService {
+export class FactoryService implements OnModuleInit {
+  async onModuleInit() {
+    console.log('we can use this method if it needed');
+  }
+  constructor(private readonly web3ProviderService: Web3ProviderService) {}
+
   async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
     if (req.query.block === undefined) {
       throw new RpcException('Block is undefined');
@@ -32,8 +38,8 @@ export class FactoryService {
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider)
     );
-
     const tvlData = await providerService.tvl({
+      web3: await this.web3ProviderService.getWeb3(req?.chain),
       chain: req?.chain,
       provider: req?.provider,
       block: parseInt(req.query?.block),

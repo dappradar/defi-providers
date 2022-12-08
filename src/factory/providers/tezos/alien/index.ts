@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import util from '../../../sdk/util';
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import formatter from '../../../../util/formatter';
 
 const FARMS = [
   'KT1WfbRVLuJUEizo6FSTFq5tsi3rsUHLY7vg',
@@ -126,9 +126,9 @@ async function tvl(params) {
     AMM_FARMS.map((farm) => ammFarmBalance(farm, block, chain)),
   );
 
-  util.sumMultiBalanceOf(balances, farmBalances);
-  util.sumMultiBalanceOf(balances, ammFarmBalances);
-  util.convertBalancesToFixed(balances);
+  formatter.sumMultiBalanceOf(balances, farmBalances);
+  formatter.sumMultiBalanceOf(balances, ammFarmBalances);
+  formatter.convertBalancesToFixed(balances);
 
   return { balances };
 }

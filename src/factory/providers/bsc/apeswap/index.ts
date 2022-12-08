@@ -1,20 +1,12 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
 import PAIR_ABI from './abis/abi.json';
 import UNITROLLER_ABI from './abis/unitroller.json';
 import OLA_TOKEN_ABI from './abis/ola_token.json';
-import { WMAIN_ADDRESS } from '../../../sdk/constants/contracts.json';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import util from '../../../sdk/util';
-import uniswapV2 from '../../../sdk/helpers/uniswapV2';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import { WMAIN_ADDRESS } from '../../../../constants/contracts.json';
+import util from '../../../../util/blockchainUtil';
+import uniswapV2 from '../../../../util/calculators/uniswapV2';
+import formatter from '../../../../util/formatter';
 
 const TOKEN_ADDRESS = '0x603c7f932ed1fc6575303d8fb018fdcbb0f39a95';
 const MASTER_ADDRESS = '0x5c8D727b265DBAfaba67E050f2f739cAeEB4A6F9';
@@ -123,12 +115,8 @@ async function unitroller(block, chain) {
   return tokenBalances;
 }
 
-/*==================================================
-  TVL
-  ==================================================*/
-
 async function tvl(params) {
-  const { block, chain, provider } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < 4855901) {
     return {};
@@ -142,7 +130,6 @@ async function tvl(params) {
   );
 
   // Staking
-  const web3 = chainWeb3.getWeb3(chain);
   const tokenContract = new web3.eth.Contract(PAIR_ABI, TOKEN_ADDRESS);
   const tokenBalance = await tokenContract.methods
     .balanceOf(MASTER_ADDRESS)
@@ -153,7 +140,7 @@ async function tvl(params) {
 
   // Lending
   const unitrollerBalances = await unitroller(block, chain);
-  util.sumMultiBalanceOf(balances, unitrollerBalances);
+  formatter.sumMultiBalanceOf(balances, unitrollerBalances);
 
   for (const token in balances) {
     if (balances[token].isLessThan(100000)) {
@@ -196,10 +183,6 @@ async function getTokenVolumes(params) {
 
   return tokenVolumes;
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 module.exports = {
   tvl,

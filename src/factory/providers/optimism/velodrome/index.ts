@@ -1,22 +1,11 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-import util from '../../../sdk/util';
-import uniswapV2 from '../../../sdk/helpers/uniswapV2';
-
-/*==================================================
-    Settings
-    ==================================================*/
+import util from '../../../../util/blockchainUtil';
+import uniswapV2 from '../../../../util/calculators/uniswapV2';
+import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 10078686;
 const FACTORY_ADDRESS = '0x25CbdDb98b35ab1FF77413456B31EC81A6B6B746';
 const GRAPHQL_API = 'https://api.thegraph.com/subgraphs/name/dmihal/velodrome';
 const QUERY_SIZE = 400;
-
-/*==================================================
-    TVL
-    ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -32,7 +21,7 @@ async function tvl(params) {
     provider,
   );
 
-  util.convertBalancesToFixed(balances);
+  formatter.convertBalancesToFixed(balances);
 
   return { balances, poolBalances };
 }
@@ -67,9 +56,5 @@ async function getTokenVolumes(params) {
 
   return tokenVolumes;
 }
-
-/*==================================================
-    Exports
-    ==================================================*/
 
 export { tvl, getPoolVolumes, getTokenVolumes };
