@@ -20,7 +20,7 @@ const QUERY_SIZE = 400;
   Helpers
   ==================================================*/
 
-async function unitroller(block, chain) {
+async function unitroller(block, chain, web3) {
   if (block < 12871489) {
     return [];
   }
@@ -39,6 +39,7 @@ async function unitroller(block, chain) {
     [],
     block,
     chain,
+    web3,
   );
 
   const newMarkets = allMarkets.filter((market) => !olaTokens[market]);
@@ -51,6 +52,7 @@ async function unitroller(block, chain) {
       [],
       block,
       chain,
+      web3,
     );
 
     underlyings.forEach((underlying, index) => {
@@ -81,6 +83,7 @@ async function unitroller(block, chain) {
     [...allMarkets.map((_) => []), ...allMarkets.map((_) => [])],
     block,
     chain,
+    web3,
   );
 
   const tokenBalances = [];
@@ -140,7 +143,7 @@ async function tvl(params) {
   );
 
   // Lending
-  const unitrollerBalances = await unitroller(block, chain);
+  const unitrollerBalances = await unitroller(block, chain, web3);
   formatter.sumMultiBalanceOf(balances, unitrollerBalances);
 
   for (const token in balances) {

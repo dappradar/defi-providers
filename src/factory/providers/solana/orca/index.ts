@@ -1,13 +1,11 @@
 import BigNumber from 'bignumber.js';
 import ORCA_POOLS from './poolInfos.json';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
 
 /*==================================================
   Helpers
   ==================================================*/
 
-async function getTokenAccountBalance(account, chain) {
-  const web3 = chainWeb3.getWeb3(chain);
+async function getTokenAccountBalance(account, web3) {
   const tokenBalance = await web3.call('getTokenAccountBalance', [account]);
 
   try {
@@ -18,7 +16,7 @@ async function getTokenAccountBalance(account, chain) {
 }
 
 async function tvl(params) {
-  const { chain } = params;
+  const { web3 } = params;
 
   const balances = {};
   const length = ORCA_POOLS.length;
@@ -26,10 +24,10 @@ async function tvl(params) {
   for (let i = 0; i < length; i += 30) {
     const subPools = ORCA_POOLS.slice(i, i + 30);
     const reserveAResults = await Promise.all(
-      subPools.map((pool) => getTokenAccountBalance(pool.reserveA, chain)),
+      subPools.map((pool) => getTokenAccountBalance(pool.reserveA, web3)),
     );
     const reserveBResults = await Promise.all(
-      subPools.map((pool) => getTokenAccountBalance(pool.reserveB, chain)),
+      subPools.map((pool) => getTokenAccountBalance(pool.reserveB, web3)),
     );
 
     subPools.forEach((pool, index) => {

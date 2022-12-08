@@ -1,5 +1,3 @@
-import util from '../../../../util/blockchainUtil';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
 import formatter from '../../../../util/formatter';
 
 const walletAddresses = [
@@ -19,9 +17,7 @@ const tokenAddresses = [
   Helper Functions
   ==================================================*/
 
-async function calculate(walletAddress, block, balances, chain) {
-  const web3 = chainWeb3.getWeb3(chain);
-
+async function calculate(walletAddress, block, balances, web3) {
   const accountBalances = await web3.eth.getAccountBalances(
     walletAddress,
     block,
@@ -31,7 +27,7 @@ async function calculate(walletAddress, block, balances, chain) {
 }
 
 async function tvl(params) {
-  const { block, chain } = params;
+  const { block, web3 } = params;
 
   if (block < 24341) {
     return {};
@@ -40,7 +36,7 @@ async function tvl(params) {
   const balances = {};
 
   for (const walletAddress of walletAddresses) {
-    await calculate(walletAddress, block, balances, chain);
+    await calculate(walletAddress, block, balances, web3);
   }
 
   formatter.convertBalancesToFixed(balances);

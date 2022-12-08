@@ -6,7 +6,7 @@ const VAULT = '0xd5a8f233cbddb40368d55c3320644fb36e597002';
 const TOKENS = ['0x7f5c764cbc14f9669b88837ca1490cca17c31607'];
 
 async function tvl(params) {
-  const { block, chain } = params;
+  const { block, chain, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -17,6 +17,7 @@ async function tvl(params) {
     TOKENS,
     block,
     chain,
+    web3,
   );
 
   formatter.sumMultiBalanceOf(balances, balanceResults);

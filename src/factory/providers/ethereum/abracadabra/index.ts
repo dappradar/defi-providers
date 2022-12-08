@@ -4,7 +4,6 @@ import WSOHM_ABI from './abis/wsOHM.json';
 import MINTER256_ABI from './abis/minter256.json';
 import MINTER128_ABI from './abis/minter128.json';
 import ERC20_ABI from '../../../../constants/abi/erc20.json';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
 import util from '../../../../util/blockchainUtil';
 
 const CAULDRON_CONTRACTS = [
@@ -106,13 +105,11 @@ TVL
 ==================================================*/
 
 async function tvl(params) {
-  const { block, chain } = params;
+  const { block, chain, web3 } = params;
 
   if (block < 12454535) {
     return {};
   }
-
-  const web3 = chainWeb3.getWeb3(chain);
 
   const tokenBalances = {};
   const results = await util.executeCallOfMultiTargets(
@@ -122,6 +119,7 @@ async function tvl(params) {
     [],
     block,
     chain,
+    web3,
   );
   const tokenAddresses = await util.executeCallOfMultiTargets(
     CAULDRON_CONTRACTS,
@@ -130,6 +128,7 @@ async function tvl(params) {
     [],
     block,
     chain,
+    web3,
   );
 
   results.forEach((result, index) => {
@@ -144,7 +143,12 @@ async function tvl(params) {
     }
   });
 
-  const balances = await util.convertToUnderlyings(tokenBalances, block, chain);
+  const balances = await util.convertToUnderlyings(
+    tokenBalances,
+    block,
+    chain,
+    web3,
+  );
 
   if (balances[WSOHM_ADDRESS]) {
     try {

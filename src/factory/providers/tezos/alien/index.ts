@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
 import formatter from '../../../../util/formatter';
 
 const FARMS = [
@@ -19,9 +18,7 @@ const AMM_FARMS = [
   'KT1D5VoidRrC4G2HDXpSUfAVaccGpzWJsE3r',
 ];
 
-async function farmBalance(address, block, chain) {
-  const web3 = chainWeb3.getWeb3(chain);
-
+async function farmBalance(address, block, web3) {
   const contract = new web3.eth.Contract(null, address);
   await contract.init();
 
@@ -55,9 +52,7 @@ async function farmBalance(address, block, chain) {
   };
 }
 
-async function ammFarmBalance(address, block, chain) {
-  const web3 = chainWeb3.getWeb3(chain);
-
+async function ammFarmBalance(address, block, web3) {
   const contract = new web3.eth.Contract(null, address);
   await contract.init();
 
@@ -97,7 +92,7 @@ async function ammFarmBalance(address, block, chain) {
 }
 
 async function tvl(params) {
-  const { block, chain } = params;
+  const { block, web3 } = params;
 
   if (block < 1565538) {
     return {};
@@ -105,7 +100,6 @@ async function tvl(params) {
 
   console.log('Calculation Started');
   const balances = {};
-  const web3 = chainWeb3.getWeb3(chain);
 
   const c = new web3.eth.Contract(null, 'KT1DMCGGiHT2dgjjXHG7qh1C1maFchrLNphx');
   await c.init();
@@ -118,12 +112,12 @@ async function tvl(params) {
 
   console.log('Calculating for farms');
   const farmBalances = await Promise.all(
-    FARMS.map((farm) => farmBalance(farm, block, chain)),
+    FARMS.map((farm) => farmBalance(farm, block, web3)),
   );
 
   console.log('Calculating for amms');
   const ammFarmBalances = await Promise.all(
-    AMM_FARMS.map((farm) => ammFarmBalance(farm, block, chain)),
+    AMM_FARMS.map((farm) => ammFarmBalance(farm, block, web3)),
   );
 
   formatter.sumMultiBalanceOf(balances, farmBalances);

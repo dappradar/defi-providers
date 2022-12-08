@@ -8,13 +8,19 @@ const TOKENS = [
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain } = params;
+  const { block, chain, web3 } = params;
 
   if (block < 58731719) {
     return {};
   }
 
-  const tokenBalances = await util.getTokenBalances(POOL, TOKENS, block, chain);
+  const tokenBalances = await util.getTokenBalances(
+    POOL,
+    TOKENS,
+    block,
+    chain,
+    web3,
+  );
 
   const balances = {};
   formatter.sumMultiBalanceOf(balances, tokenBalances);

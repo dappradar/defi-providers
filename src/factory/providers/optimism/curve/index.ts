@@ -8,13 +8,13 @@ const FACTORY = '0x2db0e83599a91b508ac268a6197b8b14f5e72840';
 const E_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
 async function tvl(params) {
-  const { block, chain, provider } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
   }
 
-  const balances = await curve.getTvl(FACTORY, block, chain, provider);
+  const balances = await curve.getTvl(FACTORY, block, chain, provider, web3);
 
   if (balances[E_ADDRESS]) {
     balances[WMAIN_ADDRESS.optimism] = BigNumber(
