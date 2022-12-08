@@ -7,7 +7,7 @@ const nodeUrl = serviceData[`HEDERA_NODE_URL`];
 
 @Injectable()
 export class Hedera {
-  static async call(method, params) {
+  async call(method, params) {
     try {
       const queries = params
         ? `?${Object.entries(params)
@@ -40,7 +40,7 @@ export class Hedera {
   }
 
   async getBalance(account, timestamp) {
-    const res = await Hedera.call('balances', {
+    const res = await this.call('balances', {
       'account.id': account,
       timestamp: timestamp == 'latest' ? null : timestamp,
     });
@@ -56,7 +56,7 @@ export class Hedera {
   }
 
   async getBalances(account, timestamp) {
-    const res = await Hedera.call('balances', {
+    const res = await this.call('balances', {
       'account.id': account,
       timestamp: timestamp == 'latest' ? null : timestamp,
     });
@@ -91,7 +91,7 @@ export class Hedera {
       return await this.getBalance(account, timestamp);
     }
 
-    const res = await Hedera.call('balances', {
+    const res = await this.call('balances', {
       'account.id': account,
       timestamp: timestamp == 'latest' ? null : timestamp,
     });
@@ -119,13 +119,29 @@ class Contract {
     this.abi = abi;
     this.address = address;
   }
+  async call(method, params) {
+    try {
+      const queries = params
+        ? `?${Object.entries(params)
+            .filter(([value]) => value)
+            .map(([key, value]) => `${key}=${value}`)
+            .join('&')}`
+        : '';
+      const res = await fetch(`${nodeUrl}/api/v1/${method}${queries}`).then(
+        (res) => res.json(),
+      );
 
+      return res;
+    } catch {
+      return null;
+    }
+  }
   get methods() {
     return {
       totalSupply: () => {
         return {
           call: async (timestamp = null) => {
-            const res = await Hedera.call(`tokens/${this.address}`, {
+            const res = await this.call(`tokens/${this.address}`, {
               timestamp,
             });
             return res.total_supply;
@@ -135,7 +151,7 @@ class Contract {
       balanceOf: (account) => {
         return {
           call: async (timestamp = null) => {
-            const res = await Hedera.call(`tokens/${this.address}/balances`, {
+            const res = await this.call(`tokens/${this.address}/balances`, {
               'account.id': account,
               timestamp,
             });

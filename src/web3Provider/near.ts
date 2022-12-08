@@ -7,7 +7,6 @@ let near;
 @Injectable()
 export class Near implements OnModuleInit {
   async onModuleInit() {
-    console.log('Near');
     const { connect } = nearAPI;
     const nodeUrl = serviceData[`NEAR_NODE_URL`];
     const connectionConfig = {
