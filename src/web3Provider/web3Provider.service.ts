@@ -14,10 +14,6 @@ const config = {
     maxReceivedMessageSize: 1000000000,
   },
 };
-//
-// interface web3 {
-//   getBlockNumber: () => string;
-// }
 
 @Injectable()
 export class Web3ProviderService {

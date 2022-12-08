@@ -4,25 +4,25 @@ import BigNumber from 'bignumber.js';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { nodeUrls } from '../app.config';
 const TZKT_API = 'https://api.tzkt.io/v1';
-
+let tezosRPC: TezosToolkit;
 @Injectable()
 export class Tezos implements OnModuleInit {
-  tezosRPC;
   async onModuleInit() {
-    this.tezosRPC = new TezosToolkit(nodeUrls.TEZOS_NODE_URL);
+    tezosRPC = new TezosToolkit(nodeUrls.TEZOS_NODE_URL);
   }
   async getBlockNumber() {
-    const res = (await this.tezosRPC.getBlockHeader()).level;
+    const res = (await tezosRPC.rpc.getBlockHeader()).level;
     return res;
   }
+
   async getBlock(levelNumber) {
     let level = Math.max(2, levelNumber || 0);
     if (levelNumber == 'latest') {
-      level = (await this.tezosRPC.getBlockHeader()).level;
+      level = (await tezosRPC.rpc.getBlockHeader()).level;
     }
     let res;
     while (true) {
-      res = await this.tezosRPC.getBlockHeader({ block: level });
+      res = await tezosRPC.rpc.getBlockHeader({ block: level.toString() });
 
       if (res) {
         break;
@@ -34,6 +34,7 @@ export class Tezos implements OnModuleInit {
       timestamp: Math.round(new Date(res.timestamp).getTime() / 1000),
     };
   }
+
   async getBalance(account, levelNumber) {
     if (levelNumber == 'latest') {
       return await fetch(`${TZKT_API}/accounts/${account}/balance`)
@@ -46,6 +47,7 @@ export class Tezos implements OnModuleInit {
       .then((res) => res.json())
       .then((res) => BigNumber(res));
   }
+
   async getTokenBalance(token, account, levelNumber) {
     const params =
       '&token.tokenId=0&balance.ne=0&sort.desc=balance&select=account.address as address,balance';
@@ -58,6 +60,7 @@ export class Tezos implements OnModuleInit {
       `${TZKT_API}/tokens/historical_balances/${levelNumber}?token.contract=${token}&account=${account}${params}`,
     ).then((res) => res.json());
   }
+
   async getHolders(token, levelNumber) {
     const params =
       '&token.tokenId=0&balance.ne=0&sort.desc=balance&limit=10000&select=account.address as address,balance';
@@ -70,6 +73,7 @@ export class Tezos implements OnModuleInit {
       `${TZKT_API}/tokens/historical_balances/${levelNumber}?token.contract=${token}${params}`,
     ).then((res) => res.json());
   }
+
   Contract = Contract;
 }
 
@@ -84,7 +88,7 @@ class Contract {
   }
 
   async init() {
-    this.contract = await module.exports.Tezos.wallet.at(this.address);
+    this.contract = await tezosRPC.wallet.at(this.address);
     const storage = await this.contract.storage();
     const address = this.address;
     const storageAtLevel = {};
