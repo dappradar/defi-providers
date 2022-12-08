@@ -39,4 +39,6 @@ lerna-debug.log*
 
 # Cache
 token01.json
+pairs.json
 cache
+
