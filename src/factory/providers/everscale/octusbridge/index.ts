@@ -1,4 +1,3 @@
-import fs from 'fs';
 import formatter from '../../../../util/formatter';
 import chainWeb3 from '../../../../web3Provider/chainWeb3';
 import basicUtil from '../../../../util/basicUtil';

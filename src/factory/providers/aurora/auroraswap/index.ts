@@ -1,13 +1,13 @@
-import unitroller from '../../../../util/calculators/unitroller';
 import formatter from '../../../../util/formatter';
+import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import {
   ITvlParams,
   ITvlBalancesReturn,
   ITvlBalancesPoolBalancesReturn,
 } from '../../../../interfaces/ITvl';
 
-const START_BLOCK = 60501454;
-const UNITROLLER_ADDRESSES = ['0x817af6cfaf35bdc1a634d6cc94ee9e4c68369aeb'];
+const START_BLOCK = 55447057;
+const FACTORY_ADDRESS = '0xC5E1DaeC2ad401eBEBdd3E32516d90Ab251A3aA3';
 
 async function tvl(
   params: ITvlParams,
@@ -20,14 +20,16 @@ async function tvl(
     return {};
   }
 
-  const balances = await unitroller.getTvl(
-    UNITROLLER_ADDRESSES,
+  const { balances, poolBalances } = await uniswapV2.getTvl(
+    FACTORY_ADDRESS,
     block,
     chain,
     provider,
   );
 
   formatter.convertBalancesToFixed(balances);
-  return { balances };
+
+  return { balances, poolBalances };
 }
+
 export { tvl };

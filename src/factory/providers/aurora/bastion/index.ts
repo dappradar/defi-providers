@@ -6,8 +6,13 @@ import {
   ITvlBalancesPoolBalancesReturn,
 } from '../../../../interfaces/ITvl';
 
-const START_BLOCK = 60501454;
-const UNITROLLER_ADDRESSES = ['0x817af6cfaf35bdc1a634d6cc94ee9e4c68369aeb'];
+const START_BLOCK = 60837829;
+const UNITROLLER_ADDRESSES = [
+  '0x6De54724e128274520606f038591A00C5E94a1F6',
+  '0xA195b3d7AA34E47Fb2D2e5A682DF2d9EFA2daF06',
+  '0xe1cf09BDa2e089c63330F0Ffe3F6D6b790835973',
+  '0xE550A886716241AFB7ee276e647207D7667e1E79',
+];
 
 async function tvl(
   params: ITvlParams,
@@ -30,4 +35,5 @@ async function tvl(
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }
+
 export { tvl };

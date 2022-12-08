@@ -1,4 +1,4 @@
-import unitroller from '../../../../util/calculators/unitroller';
+import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import {
   ITvlParams,
@@ -6,28 +6,29 @@ import {
   ITvlBalancesPoolBalancesReturn,
 } from '../../../../interfaces/ITvl';
 
-const START_BLOCK = 60501454;
-const UNITROLLER_ADDRESSES = ['0x817af6cfaf35bdc1a634d6cc94ee9e4c68369aeb'];
+const POOL = '0x55Be05ecC1c417B16163b000CB71DcE8526a5D06';
+const TOKENS = [
+  '0xB12BFcA5A55806AaF64E99521918A4bf0fC40802', // USDC
+];
 
 async function tvl(
   params: ITvlParams,
 ): Promise<
   ITvlBalancesReturn | ITvlBalancesPoolBalancesReturn | Record<string, never>
 > {
-  const { block, chain, provider } = params;
+  const { block, chain } = params;
 
-  if (block < START_BLOCK) {
+  if (block < 58731719) {
     return {};
   }
 
-  const balances = await unitroller.getTvl(
-    UNITROLLER_ADDRESSES,
-    block,
-    chain,
-    provider,
-  );
+  const tokenBalances = await util.getTokenBalances(POOL, TOKENS, block, chain);
 
+  const balances = {};
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
   formatter.convertBalancesToFixed(balances);
+
   return { balances };
 }
+
 export { tvl };

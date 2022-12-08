@@ -14,6 +14,4 @@ async function tvl(params) {
   return { balances };
 }
 
-module.exports = {
-  tvl,
-};
+export { tvl };
