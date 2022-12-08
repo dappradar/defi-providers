@@ -7,7 +7,7 @@ const AURORA = '0x8bec47865ade3b172a928df8f990bc7f2a3b9f79';
 const STAKING_CONTRACT = '0xf075c896cbbb625e7911e284cd23ee19bdccf299';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain } = params;
+  const { block, chain, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -19,6 +19,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     [AURORA],
     block,
     chain,
+    web3,
   );
   formatter.sumMultiBalanceOf(balances, balanceResults);
   formatter.convertBalancesToFixed(balances);

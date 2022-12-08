@@ -4,7 +4,7 @@ import util from '../blockchainUtil';
 import formatter from '../formatter';
 import UNITROLLER_ABI from '../../constants/abi/unitroller.json';
 
-async function getTvl(unitrollerAddresses, block, chain, provider) {
+async function getTvl(unitrollerAddresses, block, chain, provider, web3) {
   let qiTokens = {};
   try {
     qiTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
@@ -17,6 +17,7 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
     [],
     block,
     chain,
+    web3,
   );
 
   const allMarkets = [];
@@ -36,6 +37,7 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
       [],
       block,
       chain,
+      web3,
     );
 
     underlyings.forEach((underlying, index) => {
@@ -59,6 +61,7 @@ async function getTvl(unitrollerAddresses, block, chain, provider) {
     [],
     block,
     chain,
+    web3,
   );
 
   const tokenBalances = [];

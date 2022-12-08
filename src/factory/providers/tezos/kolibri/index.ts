@@ -2,10 +2,6 @@
 Modules
 ==================================================*/
 
-import fs from 'fs';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
-import util from '../../../../util/blockchainUtil';
-import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 
 const OVEN_REGISTRY = 'KT1Ldn1XWQmk7J4pYgGFjjwV57Ew8NYvcNtJ';
@@ -16,9 +12,8 @@ const KUSD = 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV';
   Helpers
   ==================================================*/
 
-async function getTezosBalance(address, block, chain) {
+async function getTezosBalance(address, block, web3) {
   try {
-    const web3 = chainWeb3.getWeb3(chain);
     const tezosBalance = await web3.eth.getBalance(address, block);
 
     return {
@@ -30,13 +25,11 @@ async function getTezosBalance(address, block, chain) {
 }
 
 async function tvl(params) {
-  const { block, chain } = params;
+  const { block, web3 } = params;
 
   if (block < 1330057) {
     return {};
   }
-
-  const web3 = chainWeb3.getWeb3(chain);
 
   const balances = {};
   try {
@@ -57,7 +50,7 @@ async function tvl(params) {
     const last = Math.min(poolLength, first + 50);
     const balanceCalls = [];
     for (let start = first; start < last; start++) {
-      balanceCalls.push(getTezosBalance(pools[start], block, chain));
+      balanceCalls.push(getTezosBalance(pools[start], block, web3));
     }
 
     console.log(`Getting tezos balance from ${first} to ${last}`);

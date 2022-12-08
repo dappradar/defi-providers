@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
 import util from '../../../../util/blockchainUtil';
 import VAULT_ABI from './abi.json';
 import basicUtil from '../../../../util/basicUtil';
@@ -38,9 +37,8 @@ async function getVaults() {
   }
 }
 
-async function getWants(address, chain) {
+async function getWants(address, web3) {
   try {
-    const web3 = chainWeb3.getWeb3(chain);
     const contract = new web3.eth.Contract(VAULT_ABI, address);
     const want = await contract.methods.want().call();
     wants[address] = want.toLowerCase();
@@ -48,7 +46,7 @@ async function getWants(address, chain) {
 }
 
 async function tvl(params) {
-  const { block, chain, provider } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -62,7 +60,7 @@ async function tvl(params) {
   await Promise.all(
     vaults
       .filter((vault) => !wants[vault])
-      .map((vault) => getWants(vault, chain)),
+      .map((vault) => getWants(vault, web3)),
   );
 
   basicUtil.writeDataToFile(wants, 'cache/wants.json', chain, provider);
@@ -75,8 +73,15 @@ async function tvl(params) {
       [],
       block,
       chain,
+      web3,
     ),
-    util.getTokenBalances(BIFI_STAKING_CONTRACT, [BIFI_TOKEN], block, chain), // BIFI Maxi vault + BIFI Earnings Pool
+    util.getTokenBalances(
+      BIFI_STAKING_CONTRACT,
+      [BIFI_TOKEN],
+      block,
+      chain,
+      web3,
+    ), // BIFI Maxi vault + BIFI Earnings Pool
   ]);
 
   // EURt/DAI/USDC/USDT vault consists of EURt and DAI/USDC/USDT vault so it has to be added manually to get underlyings
@@ -104,7 +109,12 @@ async function tvl(params) {
   formatter.sumMultiBalanceOf(tokenBalances, wantBalances);
   formatter.sumMultiBalanceOf(tokenBalances, stakingContractBalances);
 
-  const balances = await util.convertToUnderlyings(tokenBalances, block, chain);
+  const balances = await util.convertToUnderlyings(
+    tokenBalances,
+    block,
+    chain,
+    web3,
+  );
 
   return { balances };
 }

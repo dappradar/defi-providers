@@ -1,5 +1,4 @@
 import formatter from '../../../../util/formatter';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
 import basicUtil from '../../../../util/basicUtil';
 
 const BRIDGE_ADDRESS =
@@ -8,9 +7,7 @@ const STAKING_ADDRESS =
   '0:ec6a2fd6c3732e494684d016f1addec1a1828b6b7ecfcd30b34e8e5ad2d421d0';
 
 async function tvl(params) {
-  const { block, chain, provider } = params;
-
-  const web3 = chainWeb3.getWeb3(chain);
+  const { block, chain, provider, web3 } = params;
 
   let tokens = {};
   try {

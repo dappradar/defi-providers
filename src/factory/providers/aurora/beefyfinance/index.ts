@@ -73,6 +73,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     [],
     block,
     chain,
+    web3,
   );
 
   const wantBalances = [];
@@ -89,7 +90,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const tokenBalances = {};
   formatter.sumMultiBalanceOf(tokenBalances, wantBalances);
 
-  const balances = await util.convertToUnderlyings(tokenBalances, block, chain);
+  const balances = await util.convertToUnderlyings(
+    tokenBalances,
+    block,
+    chain,
+    web3,
+  );
 
   return { balances };
 }

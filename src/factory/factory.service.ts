@@ -14,13 +14,13 @@ import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 
 interface IProvider {
-  tvl: ({ web3, block, chain, provider, date }) => GetTvlReply;
-  getPoolVolumes: ({ block, chain, provider, pools }) => {
+  tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
+  getPoolVolumes: ({ block, chain, provider, pools }) => Promise<{
     [key: string]: PoolVolume;
-  };
-  getTokenVolumes: ({ block, chain, provider, tokens }) => {
+  }>;
+  getTokenVolumes: ({ block, chain, provider, tokens }) => Promise<{
     [key: string]: TokenVolume;
-  };
+  }>;
 }
 
 @Injectable()

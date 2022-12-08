@@ -8,7 +8,7 @@ import POOL_ABI from '../../constants/abi/curvePoolAbi.json';
   Helper Methods
   ==================================================*/
 
-async function getTokens(pools, block, chain) {
+async function getTokens(pools, block, chain, web3) {
   let poolsTokens = [];
 
   pools.forEach((pool) => {
@@ -22,6 +22,7 @@ async function getTokens(pools, block, chain) {
           .map((x, i) => i),
         block,
         chain,
+        web3,
       ),
     );
   });
@@ -45,6 +46,7 @@ async function getPoolsWithTokens(
   chainPoolCount,
   block,
   chain,
+  web3,
 ) {
   const pools = await util
     .executeMultiCallsOfTarget(
@@ -56,14 +58,15 @@ async function getPoolsWithTokens(
         .map((x, i) => [filePoolCount + i]),
       block,
       chain,
+      web3,
     )
     .then((pools) => pools.map((pool) => pool.toLowerCase()));
-  const tokens = await getTokens(pools, block, chain);
+  const tokens = await getTokens(pools, block, chain, web3);
 
   return tokens;
 }
 
-async function getPools(curveFactory, block, chain, provider) {
+async function getPools(curveFactory, block, chain, provider, web3) {
   let pools = {};
   let basePools = {};
   try {
@@ -84,6 +87,7 @@ async function getPools(curveFactory, block, chain, provider) {
     [[], []],
     block,
     chain,
+    web3,
   );
 
   if (Object.keys(pools).length < poolCount) {
@@ -97,6 +101,7 @@ async function getPools(curveFactory, block, chain, provider) {
           poolCount,
           block,
           chain,
+          web3,
         ),
       ),
     };
@@ -113,6 +118,7 @@ async function getPools(curveFactory, block, chain, provider) {
           basePoolCount,
           block,
           chain,
+          web3,
         ),
       ),
     };
@@ -130,10 +136,10 @@ async function getPools(curveFactory, block, chain, provider) {
   };
 }
 
-async function getTvl(curveFactory, block, chain, provider) {
+async function getTvl(curveFactory, block, chain, provider, web3) {
   const balances = {};
 
-  const pools = await getPools(curveFactory, block, chain, provider);
+  const pools = await getPools(curveFactory, block, chain, provider, web3);
   for (const pool in pools) {
     const poolBalances = await util.executeMultiCallsOfTarget(
       pool,
@@ -144,6 +150,7 @@ async function getTvl(curveFactory, block, chain, provider) {
         .map((x, i) => i.toString()),
       block,
       chain,
+      web3,
     );
 
     pools[pool].forEach((token, i) => {

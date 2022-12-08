@@ -1,8 +1,6 @@
-import fs from 'fs';
 import BigNumber from 'bignumber.js';
 import PAIR_ABI from '../../../../constants/abi/uni.json';
 import BULK_RESERVES_ABI from '../../../../constants/abi/bulkReserves.json';
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
 import basicUtil from '../../../../util/basicUtil';
 
 const BULK_RESERVES_ADDRESS = '0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a';
@@ -11,9 +9,8 @@ const BULK_RESERVES_ADDRESS = '0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a';
   Helpers
   ==================================================*/
 
-async function getReserves(address, block, chain) {
+async function getReserves(address, block, web3) {
   try {
-    const web3 = chainWeb3.getWeb3(chain);
     const contract = new web3.eth.Contract(PAIR_ABI, address);
     const reserves = await contract.methods.getReserves().call(null, block);
     return {
@@ -25,12 +22,12 @@ async function getReserves(address, block, chain) {
   return {};
 }
 
-async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
+async function getPoolsReserves(bulk_reserves_contract, pInfos, block, web3) {
   let poolReserves = [];
   try {
     if (block < 78609070) {
       poolReserves = await Promise.all(
-        pInfos.map((pool) => getReserves(pool, block, chain)),
+        pInfos.map((pool) => getReserves(pool, block, web3)),
       );
     } else {
       try {
@@ -40,7 +37,7 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
       } catch (e) {
         console.log(e.message);
         poolReserves = await Promise.all(
-          pInfos.map((pool) => getReserves(pool, block, chain)),
+          pInfos.map((pool) => getReserves(pool, block, web3)),
         );
       }
     }
@@ -52,14 +49,12 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
 }
 
 async function tvl(params) {
-  const { block, chain, provider } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < 7860907) {
     return {};
   }
 
   console.log('Calculation Started');
-
-  const web3 = chainWeb3.getWeb3(chain);
 
   const balances = {};
   const poolBalances = {};
@@ -126,7 +121,7 @@ async function tvl(params) {
           bulk_reserves_contract,
           poolInfos.slice(start, end),
           block,
-          chain,
+          web3,
         ),
       );
     }

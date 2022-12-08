@@ -6,7 +6,7 @@ const START_BLOCK = 60501454;
 const UNITROLLER_ADDRESSES = ['0x817af6cfaf35bdc1a634d6cc94ee9e4c68369aeb'];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -17,6 +17,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     block,
     chain,
     provider,
+    web3,
   );
 
   formatter.convertBalancesToFixed(balances);

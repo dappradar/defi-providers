@@ -1,5 +1,3 @@
-import chainWeb3 from '../../../../web3Provider/chainWeb3';
-import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 
@@ -32,12 +30,10 @@ const WRAPPED_TOKENS = {
 };
 
 async function tvl(params) {
-  const { block, chain, provider } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < 1658191103) {
     return {};
   }
-
-  const web3 = chainWeb3.getWeb3(chain);
 
   let pools = {};
   try {
