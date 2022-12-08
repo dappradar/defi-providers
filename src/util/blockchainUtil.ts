@@ -1,26 +1,20 @@
-/*==================================================
-Modules
-==================================================*/
-
 import fs from 'fs';
-import _ from 'underscore';
 import BigNumber from 'bignumber.js';
-import { ethers } from 'ethers';
-import ERC20_ABI from './helpers/abi/erc20.json';
-import UNI_ABI from './helpers/abi/uni.json';
-import CURVE128_ABI from './helpers/abi/curve128.json';
-import CURVE256_ABI from './helpers/abi/curve.json';
-import ONEINCH_ABI from './helpers/abi/1inch.json';
-import CTOKEN_ABI from './helpers/abi/cToken.json';
-import ATOKEN_ABI from './helpers/abi/aToken.json';
-import BULK_BALANCE_ABI from './helpers/abi/bulkBalance.json';
-import MULTIBALANCES_ABI from './helpers/abi/multiBalances.json';
-import BULK_METADATA_ABI from './helpers/abi/bulkMetaData.json';
-import MULTICALL_ABI from './helpers/abi/multiCall.json';
-import BEEFY_VAULT_ABI from './helpers/abi/beefyVault.json';
-import SOLARBEAM_STABLE_SWAP_POOL_ABI from './helpers/abi/solarbeamStableSwapPool.json';
+import ERC20_ABI from '../constants/abi/erc20.json';
+import UNI_ABI from '../constants/abi/uni.json';
+import CURVE128_ABI from '../constants/abi/curve128.json';
+import CURVE256_ABI from '../constants/abi/curve.json';
+import ONEINCH_ABI from '../constants/abi/1inch.json';
+import CTOKEN_ABI from '../constants/abi/cToken.json';
+import ATOKEN_ABI from '../constants/abi/aToken.json';
+import BULK_BALANCE_ABI from '../constants/abi/bulkBalance.json';
+import MULTIBALANCES_ABI from '../constants/abi/multiBalances.json';
+import BULK_METADATA_ABI from '../constants/abi/bulkMetaData.json';
+import MULTICALL_ABI from '../constants/abi/multiCall.json';
+import BEEFY_VAULT_ABI from '../constants/abi/beefyVault.json';
+import SOLARBEAM_STABLE_SWAP_POOL_ABI from '../constants/abi/solarbeamStableSwapPool.json';
 import data from './data';
-import chainWeb3 from './web3SDK/chainWeb3';
+import chainWeb3 from '../web3Provider/chainWeb3';
 import {
   WMAIN_ADDRESS,
   BULK_BALANCE_ADDRESSES,
@@ -31,56 +25,12 @@ import {
   BULK_METADATA_DEPOLYED,
   MULTICALL_ADDRESSES,
   MULTICALL_DEPOLYED,
-} from './constants/contracts.json';
-import * as logger from '../../logger';
+} from '../constants/contracts.json';
+import * as logger from '../logger';
+import formatter from './formatter';
 
 let underlyingData = {};
-
-/*==================================================
-  Settings
-  ==================================================*/
-
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-
-/*==================================================
-  Helper Methods
-  ==================================================*/
-
-function encodeParameters(types, values) {
-  const abi = new ethers.utils.AbiCoder();
-  return abi.encode(types, Array.isArray(values) ? values : [values]);
-}
-
-function decodeParameters(types, data) {
-  if (!data || data == '0x') {
-    return null;
-  }
-  const abi = new ethers.utils.AbiCoder();
-  return abi.decode(types, data);
-}
-
-function decodeResult(method_abi, result) {
-  const method_output_params = method_abi.outputs;
-  const decoded_result = decodeParameters(method_output_params, result);
-  if (decoded_result && decoded_result.length == 1) {
-    if (Array.isArray(decoded_result[0])) {
-      return decoded_result[0].map((result) => result.toString());
-    }
-    return decoded_result[0].toString();
-  } else {
-    if (!decoded_result && method_output_params.length == 1) {
-      return null;
-    }
-    const tuple = {};
-    method_output_params.forEach((output, index) => {
-      tuple[index] = decoded_result ? decoded_result[index].toString() : null;
-      tuple[output.name] = decoded_result
-        ? decoded_result[index].toString()
-        : null;
-    });
-    return tuple;
-  }
-}
 
 async function ExecuteCall(target, ABI, method, params, block, chain) {
   const web3 = chainWeb3.getWeb3(chain);
@@ -103,10 +53,10 @@ async function ExecuteCall(target, ABI, method, params, block, chain) {
         .executeCall(
           target,
           `${method}(${method_input_params.join(',')})`,
-          encodeParameters(method_input_params, params),
+          formatter.encodeParameters(method_input_params, params),
         )
         .call(null, block);
-      return decodeResult(method_abi, result);
+      return formatter.decodeResult(method_abi, result);
     }
   } catch (e) {
     logger.error({
@@ -132,7 +82,9 @@ async function tryExecuteMultiCallsOfTarget(
       .executeMultiCallsOfTarget(
         target,
         Array.from({ length: params.length }, () => signature),
-        params.map((param) => encodeParameters(method_input_params, param)),
+        params.map((param) =>
+          formatter.encodeParameters(method_input_params, param),
+        ),
       )
       .call(null, block);
   } catch (e) {
@@ -204,7 +156,7 @@ async function ExecuteMultiCallsOfTarget(
         const results = await Promise.all(calls);
         results.forEach((result) => {
           result.forEach((res) => {
-            executeResults.push(decodeResult(method_abi, res));
+            executeResults.push(formatter.decodeResult(method_abi, res));
           });
         });
       }
@@ -234,7 +186,7 @@ async function tryExecuteDifferentCallsOfTarget(
         target,
         signatures,
         params.map((param, index) =>
-          encodeParameters(method_input_params[index], param),
+          formatter.encodeParameters(method_input_params[index], param),
         ),
       )
       .call(null, block);
@@ -318,7 +270,7 @@ async function ExecuteDifferentCallsOfTarget(
         results.forEach((result) => {
           result.forEach((res) => {
             executeResults.push(
-              decodeResult(method_abis[first + resIndex], res),
+              formatter.decodeResult(method_abis[first + resIndex], res),
             );
             resIndex += 1;
           });
@@ -350,7 +302,9 @@ async function tryExecuteMultiCallsOfMultiTargets(
       .executeMultiCallsOfMultiTarget(
         targets,
         Array.from({ length: targets.length }, () => signature),
-        params.map((param) => encodeParameters(method_input_params, param)),
+        params.map((param) =>
+          formatter.encodeParameters(method_input_params, param),
+        ),
       )
       .call(null, block);
   } catch (e) {
@@ -426,7 +380,7 @@ async function ExecuteMultiCallsOfMultiTargets(
         const results = await Promise.all(calls);
         results.forEach((result) => {
           result.forEach((res) => {
-            executeResults.push(decodeResult(method_abi, res));
+            executeResults.push(formatter.encodeParameters(method_abi, res));
           });
         });
       }
@@ -457,7 +411,7 @@ async function tryExecuteDifferentCallsOfMultiTargets(
         targets,
         signatures,
         params.map((param, index) =>
-          encodeParameters(method_input_params[index], param),
+          formatter.encodeParameters(method_input_params[index], param),
         ),
       )
       .call(null, block);
@@ -541,7 +495,7 @@ async function ExecuteDifferentCallsOfMultiTargets(
         results.forEach((result) => {
           result.forEach((res) => {
             executeResults.push(
-              decodeResult(method_abis[first + resIndex], res),
+              formatter.encodeParameters(method_abis[first + resIndex], res),
             );
             resIndex += 1;
           });
@@ -573,7 +527,7 @@ async function tryExecuteCallOfMultiTargets(
       .executeCallsOfMultiTargets(
         targets,
         signature,
-        encodeParameters(method_input_params, param),
+        formatter.encodeParameters(method_input_params, param),
       )
       .call(null, block);
   } catch (e) {
@@ -646,7 +600,7 @@ async function ExecuteCallOfMultiTargets(
         const results = await Promise.all(calls);
         results.forEach((result) => {
           result.forEach((res) => {
-            executeResults.push(decodeResult(method_abi, res));
+            executeResults.push(formatter.encodeParameters(method_abi, res));
           });
         });
       }
@@ -660,78 +614,6 @@ async function ExecuteCallOfMultiTargets(
       Endpoint: 'ExecuteCallOfMultiTargets',
     });
     return null;
-  }
-}
-
-function Sum(balanceArray) {
-  const balances = {};
-
-  _.each(balanceArray, (balanceEntries) => {
-    _.each(balanceEntries, (balance, address) => {
-      balances[address] = BigNumber(balances[address] || 0)
-        .plus(balance)
-        .toFixed();
-    });
-  });
-
-  return balances;
-}
-
-function SumMultiBalanceOf(balances, results) {
-  try {
-    if (results.output) {
-      _.each(results.output, (result) => {
-        if (result.success) {
-          const address = result.input.target;
-          const balance = result.output;
-
-          if (BigNumber(balance).toNumber() <= 0) {
-            return;
-          }
-
-          balances[address] = BigNumber(balances[address] || 0)
-            .plus(balance)
-            .toFixed();
-        }
-      });
-      ConvertBalancesToFixed(balances);
-    } else {
-      ConvertBalancesToBigNumber(balances);
-      results.forEach((result) => {
-        if (result && result.balance.isGreaterThan(0)) {
-          const address = result.token.startsWith('0x')
-            ? result.token.toLowerCase()
-            : result.token;
-
-          if (!balances[address]) {
-            balances[address] = new BigNumber(0);
-          }
-          balances[address] = balances[address].plus(result.balance);
-        }
-      });
-    }
-  } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: SumMultiBalanceOf`,
-      Endpoint: 'SumMultiBalanceOf',
-    });
-    return balances;
-  }
-}
-
-function ConvertBalancesToFixed(balances) {
-  for (const token in balances) {
-    try {
-      balances[token] = balances[token].toFixed();
-    } catch {}
-  }
-}
-
-function ConvertBalancesToBigNumber(balances) {
-  for (const token in balances) {
-    balances[token] = new BigNumber(balances[token]);
   }
 }
 
@@ -1419,13 +1301,7 @@ async function GetTokenTotalSupplies(tokens, block, chain) {
   return totalSupplyResults;
 }
 
-/*==================================================
-  Exportsd
-  ==================================================*/
-
 export default {
-  sum: Sum,
-  sumMultiBalanceOf: SumMultiBalanceOf,
   getUnderlyingBalance: GetUnderlyingBalance,
   convertToUnderlyings: ConvertToUnderlyings,
   getBalancesOfHolders: GetBalancesOfHolders,
@@ -1433,8 +1309,6 @@ export default {
   getTokenBalancesOfHolders: GetTokenBalancesOfHolders,
   getTokenBalances: GetTokenBalances,
   getTokenTotalSupplies: GetTokenTotalSupplies,
-  convertBalancesToFixed: ConvertBalancesToFixed,
-  convertBalancesToBigNumber: ConvertBalancesToBigNumber,
   executeCall: ExecuteCall,
   executeMultiCallsOfTarget: ExecuteMultiCallsOfTarget,
   executeDifferentCallsOfTarget: ExecuteDifferentCallsOfTarget,

@@ -1,17 +1,11 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
-import chainWeb3 from '../web3SDK/chainWeb3';
-import util from '../../sdk/util';
-import basicUtil from '../../sdk/helpers/basicUtil';
-import VAULT_ABI from './abi/beefyVault.json';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import chainWeb3 from '../web3Provider/chainWeb3';
+import util from './blockchainUtil';
+import basicUtil from './basicUtil';
+import VAULT_ABI from '../constants/abi/beefyVault.json';
+import formatter from './formatter';
+import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
 let wants = {};
@@ -41,10 +35,6 @@ async function getWants(address, chain) {
     wants[address] = want.toLowerCase();
   } catch {}
 }
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function getTvl(block, chain, provider) {
   try {
@@ -81,14 +71,10 @@ async function getTvl(block, chain, provider) {
   });
 
   const tokenBalances = {};
-  util.sumMultiBalanceOf(tokenBalances, wantBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, wantBalances);
 
   return await util.convertToUnderlyings(tokenBalances, block, chain);
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export default {
   getTvl,

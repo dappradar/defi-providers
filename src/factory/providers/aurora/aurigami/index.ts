@@ -1,20 +1,8 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-import unitroller from '../../../sdk/helpers/unitroller';
-import util from '../../../sdk/util';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import unitroller from '../../../../util/unitroller';
+import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 60501454;
 const UNITROLLER_ADDRESSES = ['0x817af6cfaf35bdc1a634d6cc94ee9e4c68369aeb'];
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -30,12 +18,7 @@ async function tvl(params) {
     provider,
   );
 
-  util.convertBalancesToFixed(balances);
+  formatter.convertBalancesToFixed(balances);
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
-
 export { tvl };

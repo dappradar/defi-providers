@@ -1,17 +1,10 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import util from '../../../sdk/util';
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import util from '../../../../util/blockchainUtil';
 import VAULT_ABI from './abi.json';
-import basicUtil from '../../../sdk/helpers/basicUtil';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import basicUtil from '../../../../util/basicUtil';
+import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 13908161;
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
@@ -53,10 +46,6 @@ async function getWants(address, chain) {
     wants[address] = want.toLowerCase();
   } catch {}
 }
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -112,16 +101,12 @@ async function tvl(params) {
   });
 
   const tokenBalances = {};
-  util.sumMultiBalanceOf(tokenBalances, wantBalances);
-  util.sumMultiBalanceOf(tokenBalances, stakingContractBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, wantBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, stakingContractBalances);
 
   const balances = await util.convertToUnderlyings(tokenBalances, block, chain);
 
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

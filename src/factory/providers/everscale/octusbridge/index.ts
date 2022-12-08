@@ -1,24 +1,12 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import fs from 'fs';
-import util from '../../../sdk/util';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import basicUtil from '../../../sdk/helpers/basicUtil';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import formatter from '../../../../util/formatter';
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import basicUtil from '../../../../util/basicUtil';
 
 const BRIDGE_ADDRESS =
   '0:36122a25a11e8772dc5d94f5f6a653d4661f6e474bc85cb275aece185acd62a4';
 const STAKING_ADDRESS =
   '0:ec6a2fd6c3732e494684d016f1addec1a1828b6b7ecfcd30b34e8e5ad2d421d0';
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -64,8 +52,8 @@ async function tvl(params) {
 
   const balances = {};
 
-  util.sumMultiBalanceOf(balances, tokenBalances);
-  util.convertBalancesToFixed(balances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.convertBalancesToFixed(balances);
 
   return { balances };
 }

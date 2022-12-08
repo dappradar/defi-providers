@@ -1,23 +1,15 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
-import FACTORY_ABI from './abi/factory.json';
-import PAIR_ABI from './abi/uni.json';
-import RESERVES_ABI from './abi/uniReserves.json';
-import BULK_RESERVES_ABI from './abi/bulkReserves.json';
+import FACTORY_ABI from '../constants/abi/factory.json';
+import PAIR_ABI from '../constants/abi/uni.json';
+import RESERVES_ABI from '../constants/abi/uniReserves.json';
+import BULK_RESERVES_ABI from '../constants/abi/bulkReserves.json';
 import {
   BULK_RESERVES_ADDRESSES,
   BULK_RESERVES_DEPOLYED,
 } from '../constants/contracts.json';
-import chainWeb3 from '../web3SDK/chainWeb3';
+import chainWeb3 from '../web3Provider/chainWeb3';
 import basicUtil from './basicUtil';
-
-/*==================================================
-  Settings
-  ==================================================*/
 
 /*==================================================
   Helper Methods
@@ -380,10 +372,6 @@ async function getTokenVolumes(
 
   return tokenVolumes;
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export default {
   getTvl,

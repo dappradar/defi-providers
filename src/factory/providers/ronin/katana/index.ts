@@ -1,17 +1,9 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
-import PAIR_ABI from '../../../sdk/helpers/abi/uni.json';
-import BULK_RESERVES_ABI from '../../../sdk/helpers/abi/bulkReserves.json';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import basicUtil from '../../../sdk/helpers/basicUtil';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import PAIR_ABI from '../../../../constants/abi/uni.json';
+import BULK_RESERVES_ABI from '../../../../constants/abi/bulkReserves.json';
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import basicUtil from '../../../../util/basicUtil';
 
 const BULK_RESERVES_ADDRESS = '0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a';
 
@@ -58,9 +50,6 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
   }
   return poolReserves;
 }
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain, provider } = params;
@@ -198,9 +187,5 @@ async function tvl(params) {
 
   return { balances, poolBalances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

@@ -1,14 +1,6 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
-import basicUtil from '../../sdk/helpers/basicUtil';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import basicUtil from './basicUtil';
 
 const QUERY_SIZE = 400;
 const POOLS_QUERY = gql`
@@ -80,10 +72,6 @@ async function getTvlFromSubgraph(endpoint, block, chain) {
 
   return balances;
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export default {
   getTvlFromSubgraph,

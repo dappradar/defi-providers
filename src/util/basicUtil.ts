@@ -1,20 +1,8 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import fse from 'fs-extra';
 import { WMAIN_ADDRESS } from '../constants/contracts.json';
-import CHAINS from '../data';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import CHAINS from './data';
 
 const DEFAULT_DELAY = 5;
-
-/*==================================================
-  Helper Methods
-  ==================================================*/
 
 function getPath(chain, provider) {
   return `./src/factory/providers/${chain}/${provider}`;
@@ -49,10 +37,6 @@ function readDataFromFile(fileName, chain, provider) {
     fse.readFileSync(`${getPath(chain, provider)}/${fileName}`, 'utf8'),
   );
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export default {
   getPath,

@@ -3,13 +3,10 @@ Modules
 ==================================================*/
 
 import fs from 'fs';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-import util from '../../../sdk/util';
-import basicUtil from '../../../sdk/helpers/basicUtil';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import util from '../../../../util/blockchainUtil';
+import basicUtil from '../../../../util/basicUtil';
+import formatter from '../../../../util/formatter';
 
 const OVEN_REGISTRY = 'KT1Ldn1XWQmk7J4pYgGFjjwV57Ew8NYvcNtJ';
 const QLKUSD = 'KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA';
@@ -31,10 +28,6 @@ async function getTezosBalance(address, block, chain) {
   } catch {}
   return null;
 }
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain } = params;
@@ -70,20 +63,16 @@ async function tvl(params) {
     console.log(`Getting tezos balance from ${first} to ${last}`);
 
     const results = await Promise.all(balanceCalls);
-    util.sumMultiBalanceOf(balances, results);
+    formatter.sumMultiBalanceOf(balances, results);
 
     console.log(`Got tezos balance from ${first} to ${last}`);
   }
 
-  util.convertBalancesToFixed(balances);
+  formatter.convertBalancesToFixed(balances);
 
   console.log(balances);
 
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

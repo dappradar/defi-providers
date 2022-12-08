@@ -1,19 +1,7 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
 
 const START_BLOCK = 61147683;
 const LINEAR_CONTRACT = 'linear-protocol.near';
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain } = params;
@@ -35,9 +23,5 @@ async function tvl(params) {
 
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

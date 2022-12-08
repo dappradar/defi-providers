@@ -1,12 +1,8 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
 import BigNumber from 'bignumber.js';
-import util from '../../sdk/util';
-import basicUtil from '../../sdk/helpers/basicUtil';
-import FACTORY_ABI from './abi/curveFactoryAbi.json';
-import POOL_ABI from './abi/curvePoolAbi.json';
+import util from './blockchainUtil';
+import basicUtil from './basicUtil';
+import FACTORY_ABI from '../constants/abi/curveFactoryAbi.json';
+import POOL_ABI from '../constants/abi/curvePoolAbi.json';
 
 /*==================================================
   Helper Methods
@@ -134,10 +130,6 @@ async function getPools(curveFactory, block, chain, provider) {
   };
 }
 
-/*==================================================
-  TVL
-  ==================================================*/
-
 async function getTvl(curveFactory, block, chain, provider) {
   const balances = {};
 
@@ -163,9 +155,5 @@ async function getTvl(curveFactory, block, chain, provider) {
 
   return balances;
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export default { getTvl };

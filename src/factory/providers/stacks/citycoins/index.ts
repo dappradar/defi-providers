@@ -1,13 +1,6 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-import util from '../../../sdk/util';
-import chainWeb3 from '../../../sdk/web3SDK/chainWeb3';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import util from '../../../../util/blockchainUtil';
+import chainWeb3 from '../../../../web3Provider/chainWeb3';
+import formatter from '../../../../util/formatter';
 
 const walletAddresses = [
   'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-core-v1',
@@ -37,10 +30,6 @@ async function calculate(walletAddress, block, balances, chain) {
   web3.eth.extractBalances(accountBalances, balances, tokenAddresses);
 }
 
-/*==================================================
-  TVL
-  ==================================================*/
-
 async function tvl(params) {
   const { block, chain } = params;
 
@@ -54,13 +43,9 @@ async function tvl(params) {
     await calculate(walletAddress, block, balances, chain);
   }
 
-  util.convertBalancesToFixed(balances);
+  formatter.convertBalancesToFixed(balances);
 
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };

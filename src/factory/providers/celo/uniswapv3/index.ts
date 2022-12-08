@@ -1,21 +1,10 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-import util from '../../../sdk/util';
-import uniswapV3 from '../../../sdk/helpers/uniswapV3';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import util from '../../../../util/blockchainUtil';
+import uniswapV3 from '../../../../util/uniswapV3';
+import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 13916355;
 const THEGRAPTH_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/jesse-sawa/uniswap-celo';
-
-/*==================================================
-  TVL
-  ==================================================*/
 
 async function tvl(params) {
   const { block, chain } = params;
@@ -29,13 +18,9 @@ async function tvl(params) {
     block,
     chain,
   );
-  util.convertBalancesToFixed(balances);
+  formatter.convertBalancesToFixed(balances);
 
   return { balances };
 }
-
-/*==================================================
-  Exports
-  ==================================================*/
 
 export { tvl };
