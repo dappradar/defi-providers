@@ -8,16 +8,14 @@ import {
   BULK_RESERVES_ADDRESSES,
   BULK_RESERVES_DEPOLYED,
 } from '../../constants/contracts.json';
-import chainWeb3 from '../../web3Provider/chainWeb3';
 import basicUtil from '../basicUtil';
 
 /*==================================================
   Helper Methods
   ==================================================*/
 
-async function getReserves(address, block, chain) {
+async function getReserves(address, block, web3) {
   try {
-    const web3 = chainWeb3.getWeb3(chain);
     const contract = new web3.eth.Contract(PAIR_ABI, address);
     const reserves = await contract.methods.getReserves().call(null, block);
     return {
@@ -27,7 +25,6 @@ async function getReserves(address, block, chain) {
     };
   } catch {
     try {
-      const web3 = chainWeb3.getWeb3(chain);
       const contract = new web3.eth.Contract(RESERVES_ABI, address);
       const reserves = await contract.methods.getReserves().call(null, block);
       return {
@@ -40,12 +37,18 @@ async function getReserves(address, block, chain) {
   return {};
 }
 
-async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
+async function getPoolsReserves(
+  bulk_reserves_contract,
+  pInfos,
+  block,
+  chain,
+  web3,
+) {
   let poolReserves = [];
   try {
     if (block < BULK_RESERVES_DEPOLYED[chain]) {
       poolReserves = await Promise.all(
-        pInfos.map((pool) => getReserves(pool, block, chain)),
+        pInfos.map((pool) => getReserves(pool, block, web3)),
       );
     } else {
       try {
@@ -55,7 +58,7 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, chain) {
       } catch (e) {
         console.log(e.message);
         poolReserves = await Promise.all(
-          pInfos.map((pool) => getReserves(pool, block, chain)),
+          pInfos.map((pool) => getReserves(pool, block, web3)),
         );
       }
     }
@@ -71,6 +74,7 @@ async function getTvl(
   block,
   chain,
   provider,
+  web3,
   usePoolMethods = false,
 ) {
   const balances = {};
@@ -89,7 +93,6 @@ async function getTvl(
     );
   } catch {}
 
-  const web3 = chainWeb3.getWeb3(chain);
   const contract = new web3.eth.Contract(FACTORY_ABI, factoryAddress);
 
   const bulk_reserves_contract = new web3.eth.Contract(
@@ -183,6 +186,7 @@ async function getTvl(
           poolInfos.slice(start, end),
           block,
           chain,
+          web3,
         ),
       );
     }

@@ -1,10 +1,6 @@
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
-import {
-  ITvlParams,
-  ITvlBalancesReturn,
-  ITvlBalancesPoolBalancesReturn,
-} from '../../../../interfaces/ITvl';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const POOL = '0xcEf6C2e20898C2604886b888552CA6CcF66933B0';
 const TOKENS = [
@@ -12,11 +8,7 @@ const TOKENS = [
   '0xB12BFcA5A55806AaF64E99521918A4bf0fC40802',
 ];
 
-async function tvl(
-  params: ITvlParams,
-): Promise<
-  ITvlBalancesReturn | ITvlBalancesPoolBalancesReturn | Record<string, never>
-> {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain } = params;
 
   if (block < 56525135) {

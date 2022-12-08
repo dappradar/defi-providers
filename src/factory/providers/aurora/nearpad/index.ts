@@ -1,20 +1,12 @@
 import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import formatter from '../../../../util/formatter';
-import {
-  ITvlParams,
-  ITvlBalancesReturn,
-  ITvlBalancesPoolBalancesReturn,
-} from '../../../../interfaces/ITvl';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 51858422;
 const FACTORY_ADDRESS = '0x34484b4e416f5d4b45d4add0b6ef6ca08fced8f1';
 
-async function tvl(
-  params: ITvlParams,
-): Promise<
-  ITvlBalancesReturn | ITvlBalancesPoolBalancesReturn | Record<string, never>
-> {
-  const { block, chain, provider } = params;
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -25,6 +17,7 @@ async function tvl(
     block,
     chain,
     provider,
+    web3,
   );
 
   formatter.convertBalancesToFixed(balances);

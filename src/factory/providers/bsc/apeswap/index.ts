@@ -127,6 +127,7 @@ async function tvl(params) {
     block,
     chain,
     provider,
+    web3,
   );
 
   // Staking
