@@ -6,11 +6,7 @@ export interface ITvlParams {
   web3: any;
 }
 
-export interface ITvlBalancesReturn {
-  balances: { [key: string]: string };
-}
-
-export interface ITvlBalancesPoolBalancesReturn {
+export interface ITvlReturn {
   balances: { [key: string]: string };
   poolBalances: { [key: string]: PoolBalance };
 }

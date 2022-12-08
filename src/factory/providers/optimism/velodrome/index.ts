@@ -1,4 +1,3 @@
-import util from '../../../../util/blockchainUtil';
 import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import formatter from '../../../../util/formatter';
 
@@ -8,7 +7,7 @@ const GRAPHQL_API = 'https://api.thegraph.com/subgraphs/name/dmihal/velodrome';
 const QUERY_SIZE = 400;
 
 async function tvl(params) {
-  const { block, chain, provider } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -19,6 +18,7 @@ async function tvl(params) {
     block,
     chain,
     provider,
+    web3,
   );
 
   formatter.convertBalancesToFixed(balances);

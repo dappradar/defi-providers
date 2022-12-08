@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
-import chainWeb3 from '../../web3Provider/chainWeb3';
 import util from '../blockchainUtil';
 import basicUtil from '../basicUtil';
 import VAULT_ABI from '../../constants/abi/beefyVault.json';
 import formatter from '../formatter';
-import { Web3ProviderService } from '../../web3Provider/web3Provider.service';
 
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
 let wants = {};
@@ -27,16 +25,15 @@ async function getVaults(chain) {
   }
 }
 
-async function getWants(address, chain) {
+async function getWants(address, web3) {
   try {
-    const web3 = chainWeb3.getWeb3(chain);
     const contract = new web3.eth.Contract(VAULT_ABI, address);
     const want = await contract.methods.want().call();
     wants[address] = want.toLowerCase();
   } catch {}
 }
 
-async function getTvl(block, chain, provider) {
+async function getTvl(block, chain, provider, web3) {
   try {
     wants = basicUtil.readDataFromFile('cache/wants.json', chain, provider);
   } catch {}
@@ -45,7 +42,7 @@ async function getTvl(block, chain, provider) {
   await Promise.all(
     vaults
       .filter((vault) => !wants[vault])
-      .map((vault) => getWants(vault, chain)),
+      .map((vault) => getWants(vault, web3)),
   );
 
   basicUtil.writeDataToFile(wants, 'cache/wants.json', chain, provider);

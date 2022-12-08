@@ -1,10 +1,6 @@
 import unitroller from '../../../../util/calculators/unitroller';
 import formatter from '../../../../util/formatter';
-import {
-  ITvlParams,
-  ITvlBalancesReturn,
-  ITvlBalancesPoolBalancesReturn,
-} from '../../../../interfaces/ITvl';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 60837829;
 const UNITROLLER_ADDRESSES = [
@@ -14,11 +10,7 @@ const UNITROLLER_ADDRESSES = [
   '0xE550A886716241AFB7ee276e647207D7667e1E79',
 ];
 
-async function tvl(
-  params: ITvlParams,
-): Promise<
-  ITvlBalancesReturn | ITvlBalancesPoolBalancesReturn | Record<string, never>
-> {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider } = params;
 
   if (block < START_BLOCK) {

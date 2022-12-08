@@ -1,20 +1,12 @@
 import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
 import formatter from '../../../../util/formatter';
-import {
-  ITvlParams,
-  ITvlBalancesReturn,
-  ITvlBalancesPoolBalancesReturn,
-} from '../../../../interfaces/ITvl';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const API = 'https://api.vaporwave.farm/tvl';
 const HISTORICAL_API = 'https://api.llama.fi/updatedProtocol/vaporwave';
 
-async function tvl(
-  params: ITvlParams,
-): Promise<
-  ITvlBalancesReturn | ITvlBalancesPoolBalancesReturn | Record<string, never>
-> {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, date } = params;
 
   if (block < 54501517) {

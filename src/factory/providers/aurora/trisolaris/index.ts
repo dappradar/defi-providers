@@ -1,11 +1,7 @@
 import util from '../../../../util/blockchainUtil';
 import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import formatter from '../../../../util/formatter';
-import {
-  ITvlParams,
-  ITvlBalancesReturn,
-  ITvlBalancesPoolBalancesReturn,
-} from '../../../../interfaces/ITvl';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 56428000;
 const FACTORY_ADDRESS = '0xc66f594268041db60507f00703b152492fb176e7';
@@ -19,12 +15,8 @@ const TOKENS = [
   '0xb12bfca5a55806aaf64e99521918a4bf0fc40802',
 ];
 
-async function tvl(
-  params: ITvlParams,
-): Promise<
-  ITvlBalancesReturn | ITvlBalancesPoolBalancesReturn | Record<string, never>
-> {
-  const { block, chain, provider } = params;
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -35,6 +27,7 @@ async function tvl(
     block,
     chain,
     provider,
+    web3,
   );
 
   const stablePoolsBalances = await util.getTokenBalancesOfEachHolder(
