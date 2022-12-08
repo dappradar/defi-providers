@@ -380,7 +380,7 @@ async function ExecuteMultiCallsOfMultiTargets(
         const results = await Promise.all(calls);
         results.forEach((result) => {
           result.forEach((res) => {
-            executeResults.push(formatter.encodeParameters(method_abi, res));
+            executeResults.push(formatter.decodeResult(method_abi, res));
           });
         });
       }
@@ -495,7 +495,7 @@ async function ExecuteDifferentCallsOfMultiTargets(
         results.forEach((result) => {
           result.forEach((res) => {
             executeResults.push(
-              formatter.encodeParameters(method_abis[first + resIndex], res),
+              formatter.decodeResult(method_abis[first + resIndex], res),
             );
             resIndex += 1;
           });
@@ -600,7 +600,7 @@ async function ExecuteCallOfMultiTargets(
         const results = await Promise.all(calls);
         results.forEach((result) => {
           result.forEach((res) => {
-            executeResults.push(formatter.encodeParameters(method_abi, res));
+            executeResults.push(formatter.decodeResult(method_abi, res));
           });
         });
       }
