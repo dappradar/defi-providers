@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
-import chainWeb3 from '../web3Provider/chainWeb3';
-import util from './blockchainUtil';
-import basicUtil from './basicUtil';
-import VAULT_ABI from '../constants/abi/beefyVault.json';
-import formatter from './formatter';
-import { Web3ProviderService } from '../web3Provider/web3Provider.service';
+import chainWeb3 from '../../web3Provider/chainWeb3';
+import util from '../blockchainUtil';
+import basicUtil from '../basicUtil';
+import VAULT_ABI from '../../constants/abi/beefyVault.json';
+import formatter from '../formatter';
+import { Web3ProviderService } from '../../web3Provider/web3Provider.service';
 
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
 let wants = {};

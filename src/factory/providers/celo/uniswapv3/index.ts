@@ -1,5 +1,5 @@
 import util from '../../../../util/blockchainUtil';
-import uniswapV3 from '../../../../util/uniswapV3';
+import uniswapV3 from '../../../../util/calculators/uniswapV3';
 import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 13916355;

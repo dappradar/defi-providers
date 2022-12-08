@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import formatter from '../../../../util/formatter';
-import curve from '../../../../util/curve';
+import curve from '../../../../util/calculators/curve';
 import { WMAIN_ADDRESS } from '../../../../constants/contracts.json';
 
 const START_BLOCK = 3465832;

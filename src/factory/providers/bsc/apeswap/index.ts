@@ -5,7 +5,7 @@ import UNITROLLER_ABI from './abis/unitroller.json';
 import OLA_TOKEN_ABI from './abis/ola_token.json';
 import { WMAIN_ADDRESS } from '../../../../constants/contracts.json';
 import util from '../../../../util/blockchainUtil';
-import uniswapV2 from '../../../../util/uniswapV2';
+import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import formatter from '../../../../util/formatter';
 
 const TOKEN_ADDRESS = '0x603c7f932ed1fc6575303d8fb018fdcbb0f39a95';

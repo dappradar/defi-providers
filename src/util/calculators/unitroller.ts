@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import basicUtil from './basicUtil';
-import util from './blockchainUtil';
-import formatter from './formatter';
-import UNITROLLER_ABI from '../constants/abi/unitroller.json';
+import basicUtil from '../basicUtil';
+import util from '../blockchainUtil';
+import formatter from '../formatter';
+import UNITROLLER_ABI from '../../constants/abi/unitroller.json';
 
 async function getTvl(unitrollerAddresses, block, chain, provider) {
   let qiTokens = {};

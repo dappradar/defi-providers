@@ -1,4 +1,4 @@
-import beefyfinance from '../../../../util/beefyfinance';
+import beefyfinance from '../../../../util/calculators/beefyfinance';
 
 const START_BLOCK = 380863;
 

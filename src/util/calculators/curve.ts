@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import util from './blockchainUtil';
-import basicUtil from './basicUtil';
-import FACTORY_ABI from '../constants/abi/curveFactoryAbi.json';
-import POOL_ABI from '../constants/abi/curvePoolAbi.json';
+import util from '../blockchainUtil';
+import basicUtil from '../basicUtil';
+import FACTORY_ABI from '../../constants/abi/curveFactoryAbi.json';
+import POOL_ABI from '../../constants/abi/curvePoolAbi.json';
 
 /*==================================================
   Helper Methods

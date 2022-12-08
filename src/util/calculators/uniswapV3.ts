@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
-import basicUtil from './basicUtil';
+import basicUtil from '../basicUtil';
 
 const QUERY_SIZE = 400;
 const POOLS_QUERY = gql`
