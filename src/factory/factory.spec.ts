@@ -15,7 +15,7 @@ describe('providers', () => {
     tezos = module.get(Tezos);
   });
 
-  /*  describe('aurora', () => {
+  describe('aurora', () => {
     it('aurigami block: 80260740', async () => {
       const { balances } = await factoryService.getTvl({
         provider: 'aurigami',
@@ -195,7 +195,7 @@ describe('providers', () => {
           '2000000000000000000000000000',
       });
     });
-  });*/
+  });
 
   describe('tezos', () => {
     it('alien block: 2955365', async () => {
