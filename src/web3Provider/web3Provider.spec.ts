@@ -11,17 +11,6 @@ describe('web3', () => {
       imports: [Web3ProviderModule],
     }).compile();
     web3ProviderService = module.get<Web3ProviderService>(Web3ProviderService);
-    // module.web3ProviderService = new Web3ProviderService(
-    //   everscale,
-    //   hedera,
-    //   near,
-    //   solana,
-    //   stacks,
-    //   tezos,
-    // );
-
-    // tezos = module.get<Tezos>(Tezos);
-    // near = module.get<Near>(Near);
   });
 
   describe('everscale providers', () => {
@@ -35,6 +24,7 @@ describe('web3', () => {
     it('web3', async () => {
       const near = new Near();
       await near.onModuleInit();
+      // const near: { eth: Near } = await web3ProviderService.getWeb3('near');
       expect(typeof (await near.getBlockNumber())).toBe(typeof 123);
     });
   });

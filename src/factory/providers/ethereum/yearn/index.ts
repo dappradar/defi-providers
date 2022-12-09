@@ -1,8 +1,9 @@
 import abi from './abi.json';
 import BigNumber from 'bignumber.js';
-import util from '../../../../../../dappradar-defi-tracker/sdk/util.js';
+import util from '../../../../util/blockchainUtil';
 import { ITvlParams } from '../../../../interfaces/ITvl';
 import { ITvlReturn } from '../../../../interfaces/ITvl';
+import formatter from '../../../../util/formatter';
 
 const registryAdapterAddresses = [
   '0xF4fB8903A41fC78686b26DE55502cdE42a4c6c78', // V1 Vaults
@@ -13,13 +14,15 @@ const registryAdapterAddresses = [
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block } = params;
+  const { block, chain, web3 } = params;
   const adapterAssetAddresses = await util.executeCallOfMultiTargets(
     registryAdapterAddresses,
     abi,
     'assetsAddresses',
     [],
     block,
+    chain,
+    web3,
   );
 
   const tvlBreakdowns = await Promise.all(
@@ -30,6 +33,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         'assetTvlBreakdown',
         adapterAssetAddresses[index],
         block,
+        chain,
+        web3,
       ),
     ),
   );
@@ -49,10 +54,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   });
 
   const balances = {};
-  util.sumMultiBalanceOf(balances, tokenBalances);
-  util.convertBalancesToFixed(balances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.convertBalancesToFixed(balances);
 
-  return balances;
+  return { balances };
 }
 
 export { tvl };
