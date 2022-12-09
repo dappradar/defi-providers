@@ -1,9 +1,9 @@
-import fs from 'fs';
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
 import VAULT_ABI from './abi.json';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
+import basicUtil from '../../../../util/basicUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 58633327;
@@ -36,16 +36,14 @@ async function getWants(address, web3) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
   }
 
   try {
-    wants = JSON.parse(
-      fs.readFileSync('./providers/aurora_beefyfinance/wants.json', 'utf8'),
-    );
+    wants = basicUtil.readDataFromFile('cache/wants.json', chain, provider);
   } catch {}
 
   const vaults = await getVaults();
@@ -55,16 +53,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       .map((vault) => getWants(vault, web3)),
   );
 
-  fs.writeFile(
-    './providers/aurora_beefyfinance/wants.json',
-    JSON.stringify(wants, null, 2),
-    'utf8',
-    function (err) {
-      if (err) {
-        console.error(err);
-      }
-    },
-  );
+  basicUtil.writeDataToFile(wants, 'cache/wants.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     vaults,

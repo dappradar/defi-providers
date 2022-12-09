@@ -28,7 +28,7 @@ async function unitroller(block, chain, web3) {
   let olaTokens = {};
   try {
     olaTokens = JSON.parse(
-      fs.readFileSync('./providers/bsc_apeswap/pools.json', 'utf8'),
+      fs.readFileSync('./providers/bsc/apeswap/pools.json', 'utf8'),
     );
   } catch {}
 
@@ -62,7 +62,7 @@ async function unitroller(block, chain, web3) {
     });
 
     fs.writeFile(
-      './providers/bsc_apeswap/pools.json',
+      './providers/bsc/apeswap/pools.json',
       JSON.stringify(olaTokens, null, 2),
       'utf8',
       function (err) {
