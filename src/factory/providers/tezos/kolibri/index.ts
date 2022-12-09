@@ -1,16 +1,8 @@
-/*==================================================
-Modules
-==================================================*/
-
 import formatter from '../../../../util/formatter';
 
 const OVEN_REGISTRY = 'KT1Ldn1XWQmk7J4pYgGFjjwV57Ew8NYvcNtJ';
 const QLKUSD = 'KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA';
 const KUSD = 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV';
-
-/*==================================================
-  Helpers
-  ==================================================*/
 
 async function getTezosBalance(address, block, web3) {
   try {
@@ -62,9 +54,7 @@ async function tvl(params) {
   }
 
   formatter.convertBalancesToFixed(balances);
-
   console.log(balances);
-
   return { balances };
 }
 

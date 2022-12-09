@@ -1295,6 +1295,19 @@ async function GetTokenTotalSupplies(tokens, block, chain, web3) {
   return totalSupplyResults;
 }
 
+async function getLogs(fromBlock, toBlock, topic, target, web3) {
+  const logs = await web3.eth.getPastLogs({
+    fromBlock: fromBlock,
+    toBlock: toBlock,
+    topics: [topic],
+    address: target,
+  });
+
+  return {
+    ethCallCount: null,
+    output: logs,
+  };
+}
 export default {
   getUnderlyingBalance: GetUnderlyingBalance,
   convertToUnderlyings: ConvertToUnderlyings,
@@ -1310,4 +1323,5 @@ export default {
   executeDifferentCallsOfMultiTargets: ExecuteDifferentCallsOfMultiTargets,
   executeCallOfMultiTargets: ExecuteCallOfMultiTargets,
   ZERO_ADDRESS: ZERO_ADDRESS,
+  getLogs,
 };
