@@ -1,18 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FactoryService } from './factory.service';
-import { FactoryModule } from './factory.module';
+import { AppModule } from '../app.module';
 
 describe('providers', () => {
   let factoryService: FactoryService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [FactoryModule],
+      imports: [AppModule],
     }).compile();
-    factoryService = module.get<FactoryService>(FactoryService);
+    factoryService = module.get(FactoryService);
+    await factoryService.onModuleInit();
   });
 
-  describe('ethereum yearn', () => {
-    it('block: 16145650', async () => {
+  describe('ethereum', () => {
+    it('yearn block: 16145650', async () => {
       const { balances } = await factoryService.getTvl({
         provider: 'yearn',
         chain: 'ethereum',
@@ -24,8 +25,6 @@ describe('providers', () => {
       );
       expect(responseKeys.length).toBeGreaterThan(0);
     });
-  });
-  describe('ethereum wing', () => {
     it('block: 16145650', async () => {
       const { balances } = await factoryService.getTvl({
         provider: 'wing',

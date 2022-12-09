@@ -2,15 +2,21 @@ import { Web3ProviderService } from './web3Provider.service';
 import { Near } from './near';
 import { Tezos } from './tezos';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Web3ProviderModule } from './web3Provider.module';
+import { AppModule } from '../app.module';
 
 describe('web3', () => {
   let web3ProviderService: Web3ProviderService;
+  let near: Near;
+  let tezos: Tezos;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [Web3ProviderModule],
+      imports: [AppModule],
     }).compile();
-    web3ProviderService = module.get<Web3ProviderService>(Web3ProviderService);
+    web3ProviderService = module.get(Web3ProviderService);
+    near = module.get(Near);
+    tezos = module.get(Tezos);
+    await tezos.onModuleInit();
+    await near.onModuleInit();
   });
 
   describe('everscale providers', () => {
@@ -22,10 +28,10 @@ describe('web3', () => {
 
   describe('near providers', () => {
     it('web3', async () => {
-      const near = new Near();
-      await near.onModuleInit();
-      // const near: { eth: Near } = await web3ProviderService.getWeb3('near');
-      expect(typeof (await near.getBlockNumber())).toBe(typeof 123);
+      // const near = new Near();
+      // await near.onModuleInit();
+      const near = await web3ProviderService.getWeb3('near');
+      expect(typeof (await near.eth.getBlockNumber())).toBe(typeof 123);
     });
   });
 
@@ -46,15 +52,13 @@ describe('web3', () => {
   describe('stacks providers', () => {
     it('web3', async () => {
       const stacks = await web3ProviderService.getWeb3('stacks');
-      await web3ProviderService.getWeb3('stacks');
       expect(typeof (await stacks.eth.getBlockNumber())).toBe(typeof 123);
     });
   });
   describe('tezos providers', () => {
     it('web3', async () => {
-      const tezos = new Tezos();
-      await tezos.onModuleInit();
-      expect(typeof (await tezos.getBlockNumber())).toBe(typeof 123);
+      const tezos = await web3ProviderService.getWeb3('tezos');
+      expect(typeof (await tezos.eth.getBlockNumber())).toBe(typeof 123);
     });
   });
 });
