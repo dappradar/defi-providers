@@ -5,6 +5,7 @@ import PTOKEN_ABI from './abi/ptoken.json';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
+import basicUtil from '../../../../util/basicUtil';
 
 const FACTORY_ADDRESS = '0x0C8c1ab017c3C0c8A48dD9F1DB2F59022D190f0b';
 const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
@@ -25,13 +26,13 @@ async function getUnderlyings(address, block, web3) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < 11645185) {
     return {};
   }
 
   try {
-    ptokens = JSON.parse(fs.readFileSync('./pools.json', 'utf8'));
+    ptokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
   } catch {}
 
   const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
@@ -39,17 +40,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   await Promise.all(
     markets.map((market) => getUnderlyings(market, block, web3)),
   );
-
-  fs.writeFile(
-    './pools.json',
-    JSON.stringify(ptokens, null, 2),
-    'utf8',
-    function (err) {
-      if (err) {
-        console.error(err);
-      }
-    },
-  );
+  await basicUtil.writeDataToFile(ptokens, 'cache/pools.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     markets,

@@ -1,18 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FactoryService } from './factory.service';
 import { AppModule } from '../app.module';
+import { Tezos } from '../web3Provider/tezos';
 
 describe('providers', () => {
   let factoryService: FactoryService;
+  let tezos: Tezos;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
     factoryService = module.get(FactoryService);
     await factoryService.onModuleInit();
+    tezos = module.get(Tezos);
   });
 
-  describe('aurora', () => {
+  /*  describe('aurora', () => {
     it('aurigami block: 80260740', async () => {
       const { balances } = await factoryService.getTvl({
         provider: 'aurigami',
@@ -192,5 +195,57 @@ describe('providers', () => {
           '2000000000000000000000000000',
       });
     });
+  });*/
+
+  describe('tezos', () => {
+    it('alien block: 2955365', async () => {
+      await tezos.onModuleInit();
+      const { balances } = await factoryService.getTvl({
+        provider: 'alien',
+        chain: 'tezos',
+        query: { block: '2955365', date: '0' },
+      });
+      expect(balances).toEqual({
+        KT19DUSZw7mfeEATrbWVPHRrWNVbNnmfFAE6:
+          '249715664088144.12718220767259870011',
+        KT1H5KJDxuM9DURSfttepebb6Cn7GbvAAT45:
+          '165878849369.74953586084234066502',
+        KT1XPFjZqCULSnqfKaaYy8hJjeY63UNSGwXg_0: '497068053.1162191356759715904',
+        KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb_0:
+          '241078174.13193946425867717656',
+      });
+    }, 1000000);
+    it('plenty block: 2955365', async () => {
+      await tezos.onModuleInit();
+      const { balances } = await factoryService.getTvl({
+        provider: 'wrapprotocol',
+        chain: 'tezos',
+        query: { block: '2955365', date: '0' },
+      });
+      expect(balances).toEqual({
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_0: '36043709917618147490',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_1: '289868031771383495604700',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_2: '4020041',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_3: '7798299202315263415',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_4: '11089733753413',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_5: '104173410141251221065552',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_6: '30009667729248861709',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_7: '59699467914408847249',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_8: '248321066328',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_9: '228191800012206869815',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_10: '14203355884512846375162',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_11: '101859295633637265101693',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_12: '855327737194690250',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_13: '42615976704141157740',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_14: '2866084783658307381347',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_15: '396484842089866656148',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_16: '1003579566448386701175',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_17: '967101803925',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_18: '120852313751',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_19: '5979654498',
+        KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ_20: '258851288718572944362',
+        KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd: '201825249886635',
+      });
+    }, 1000000);
   });
 });
