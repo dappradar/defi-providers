@@ -153,7 +153,7 @@ describe('providers', () => {
       );
       expect(responseKeys.length).toBeGreaterThan(0);
     });
-    it('block: 16145650', async () => {
+    it('wing block: 16145650', async () => {
       const { balances } = await factoryService.getTvl({
         provider: 'wing',
         chain: 'ethereum',
