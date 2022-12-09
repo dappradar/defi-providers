@@ -1,31 +1,22 @@
-/*==================================================
-  Modules
-  ==================================================*/
-
-const BigNumber = require("bignumber.js");
-const calculate = require("../octusbridge/calculate");
-
-/*==================================================
-  Settings
-  ==================================================*/
+import BigNumber from 'bignumber.js';
+import * as calculate from '../../ethereum/octusbridge/calculate';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const CONVERT = {
-  "0x1ffefd8036409cb6d652bd610de465933b226917": {
-    coingecko: "coingecko_everscale",
+  '0x1ffefd8036409cb6d652bd610de465933b226917': {
+    coingecko: 'coingecko_everscale',
     decimals: 9,
   },
 };
 
-/*==================================================
-  TVL
-  ==================================================*/
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block } = params;
+  let balances = {};
 
-async function tvl(block) {
   if (block < 13851414) {
     return {};
   }
-
-  const balances = await calculate.tvl(block, "AVALANCHE");
+  balances = await calculate.tvl(params);
 
   for (const token in balances) {
     if (CONVERT[token]) {
@@ -36,13 +27,7 @@ async function tvl(block) {
     }
   }
 
-  return balances;
+  return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
-
-module.exports = {
-  tvl,
-};
+export { tvl };

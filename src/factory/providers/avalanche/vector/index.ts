@@ -1,56 +1,50 @@
-/*==================================================
-  Modules
-  ==================================================*/
+import BigNumber from 'bignumber.js';
+import MASTERCHEF_ABI from './abis/masterchef.json';
+import MAINSTAKING_ABI from './abis/mainstaking.json';
+import UNDERLYINGS from './underlyings.json';
+import basicUtil from '../../../../util/basicUtil';
+import util from '../../../../util/blockchainUtil';
+import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const fs = require("fs");
-const BigNumber = require("bignumber.js");
-const MASTERCHEF_ABI = require("./abis/masterchef.json");
-const MAINSTAKING_ABI = require("./abis/mainstaking.json");
-const UNDERLYINGS = require("./underlyings.json");
-const util = require("../../sdk/util");
+const MASTERCHEF = '0x423D0FE33031aA4456a17b150804aA57fc157d97';
+const MAINSTAKING = '0x8B3d9F0017FA369cD8C164D0Cc078bf4cA588aE5';
 
-/*==================================================
-  Settings
-  ==================================================*/
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
 
-const MASTERCHEF = "0x423D0FE33031aA4456a17b150804aA57fc157d97";
-const MAINSTAKING = "0x8B3d9F0017FA369cD8C164D0Cc078bf4cA588aE5";
-
-/*==================================================
-  TVL
-  ==================================================*/
-
-async function tvl(block) {
   if (block < 11608913) {
     return {};
   }
 
   let pools = {};
   try {
-    pools = JSON.parse(
-      fs.readFileSync("./providers/avalanche_vector/pools.json", "utf8")
-    );
+    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
   } catch {}
 
   const poolLength = await util.executeCall(
     MASTERCHEF,
     MASTERCHEF_ABI,
-    "poolLength",
+    'poolLength',
     [],
-    block
+    block,
+    chain,
+    web3,
   );
 
   const newPools = Array.from({ length: poolLength }, (_, i) => i).filter(
-    (poolId) => !pools[poolId]
+    (poolId) => !pools[poolId],
   );
 
   if (newPools.length > 0) {
     const poolTokens = await util.executeMultiCallsOfTarget(
       MASTERCHEF,
       MASTERCHEF_ABI,
-      "registeredToken",
+      'registeredToken',
       newPools,
-      block
+      block,
+      chain,
+      web3,
     );
     console.log(poolTokens);
 
@@ -60,22 +54,15 @@ async function tvl(block) {
       }
     });
 
-    fs.writeFile(
-      "./providers/avalanche_vector/pools.json",
-      JSON.stringify(pools, null, 2),
-      "utf8",
-      function (err) {
-        if (err) {
-          console.error(err);
-        }
-      }
-    );
+    basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
   }
 
   const results = await util.getTokenBalances(
     MASTERCHEF,
     Object.values(pools),
-    block
+    block,
+    chain,
+    web3,
   );
 
   const depositedTokens = results
@@ -89,13 +76,15 @@ async function tvl(block) {
   const underlyingBalances = await util.executeMultiCallsOfTarget(
     MAINSTAKING,
     MAINSTAKING_ABI,
-    "getDepositTokensForShares",
+    'getDepositTokensForShares',
     depositedTokens,
-    block
+    block,
+    chain,
+    web3,
   );
 
   const tokenBalances = {};
-  util.sumMultiBalanceOf(tokenBalances, [
+  formatter.sumMultiBalanceOf(tokenBalances, [
     ...results
       .filter((result) => result)
       .filter((result) => !UNDERLYINGS.MAINSTAKING[result.token])
@@ -109,17 +98,14 @@ async function tvl(block) {
     })),
   ]);
 
-  const balances = await util.convertToUnderlyings(tokenBalances, block);
+  const balances = await util.convertToUnderlyings(
+    tokenBalances,
+    block,
+    chain,
+    web3,
+  );
 
-  console.log(balances);
-
-  return balances;
+  return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
-
-module.exports = {
-  tvl,
-};
+export { tvl };

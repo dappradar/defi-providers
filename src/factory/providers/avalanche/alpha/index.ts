@@ -1,26 +1,18 @@
-/*==================================================
-  Modules
-  ==================================================*/
+import fetch from 'node-fetch';
+import BigNumber from 'bignumber.js';
+import abi from './abi.json';
+import util from '../../../../util/blockchainUtil';
+import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const fetch = require("node-fetch");
-const BigNumber = require("bignumber.js");
-const abi = require("./abi.json");
-const util = require("../../sdk/util");
+const SAFE_BOX_API = 'https://homora-api.alphafinance.io/v2/43114/safeboxes';
+const POOLS_API = 'https://homora-api.alphafinance.io/v2/43114/pools';
+const AXELAR_WUST = '0x260bbf5698121eb85e7a74f2e45e16ce762ebe11';
+const USDT = '0xc7198437980c041c805a1edcba50c1ce5db95118';
 
-/*==================================================
-  Settings
-  ==================================================*/
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, web3 } = params;
 
-const SAFE_BOX_API = "https://homora-api.alphafinance.io/v2/43114/safeboxes";
-const POOLS_API = "https://homora-api.alphafinance.io/v2/43114/pools";
-const AXELAR_WUST = "0x260bbf5698121eb85e7a74f2e45e16ce762ebe11";
-const USDT = "0xc7198437980c041c805a1edcba50c1ce5db95118";
-
-/*==================================================
-  TVL
-  ==================================================*/
-
-async function tvl(block) {
   if (block < 5658993) {
     return {};
   }
@@ -33,7 +25,9 @@ async function tvl(block) {
   const safeBoxBalances = await util.getTokenBalancesOfHolders(
     safeBoxes.map((box) => box.safeboxAddress),
     safeBoxes.map((box) => box.cyTokenAddress),
-    block
+    block,
+    chain,
+    web3,
   );
 
   const poolsWithPid = pools.filter((pool) => pool.pid != undefined);
@@ -41,12 +35,14 @@ async function tvl(block) {
 
   const lpTokenInfos = await util.executeMultiCallsOfMultiTargets(
     poolsWithPid.map(
-      (pool) => pool.exchange.stakingAddress ?? pool.stakingAddress
+      (pool) => pool.exchange.stakingAddress ?? pool.stakingAddress,
     ),
     abi,
-    "userInfo",
+    'userInfo',
     poolsWithPid.map((pool) => [pool.pid, pool.wTokenAddress]),
-    block
+    block,
+    chain,
+    web3,
   );
 
   const lpPools = [];
@@ -62,7 +58,9 @@ async function tvl(block) {
   const lpTokenStakedBalances = await util.getTokenBalancesOfHolders(
     poolsWithoutPid.map((pool) => pool.wTokenAddress),
     poolsWithoutPid.map((pool) => pool.stakingAddress),
-    block
+    block,
+    chain,
+    web3,
   );
 
   lpTokenStakedBalances.forEach((info, index) => {
@@ -75,10 +73,15 @@ async function tvl(block) {
   });
 
   const tokenBalances = {};
-  util.sumMultiBalanceOf(tokenBalances, safeBoxBalances);
-  util.sumMultiBalanceOf(tokenBalances, lpPools);
+  formatter.sumMultiBalanceOf(tokenBalances, safeBoxBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, lpPools);
 
-  const balances = await util.convertToUnderlyings(tokenBalances, block);
+  const balances = await util.convertToUnderlyings(
+    tokenBalances,
+    block,
+    chain,
+    web3,
+  );
 
   if (balances[AXELAR_WUST]) {
     balances[USDT] = BigNumber(balances[USDT] || 0)
@@ -89,13 +92,7 @@ async function tvl(block) {
 
   console.log(balances);
 
-  return balances;
+  return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
-
-module.exports = {
-  tvl,
-};
+export { tvl };

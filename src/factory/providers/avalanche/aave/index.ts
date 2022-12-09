@@ -1,27 +1,19 @@
-/*==================================================
-  Modules
-  ==================================================*/
+import util from '../../../../util/blockchainUtil';
+import REGISTRY_ABI from './abis/provider_registry.json';
+import PROVIDER_ABI from './abis/provider.json';
+import DATA_PROVIDER_ABI from './abis/data_provider.json';
+import ATOKEN_ABI from './abis/atoken.json';
+import formatter from '../../../../util/formatter';
+import basicUtil from '../../../../util/basicUtil';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const fs = require("fs");
-const util = require("../../sdk/util");
-const REGISTRY_ABI = require("./abis/provider_registry.json");
-const PROVIDER_ABI = require("./abis/provider.json");
-const DATA_PROVIDER_ABI = require("./abis/data_provider.json");
-const ATOKEN_ABI = require("./abis/atoken.json");
+const V2_PROVIDER_REGISTRY = '0x4235E22d9C3f28DCDA82b58276cb6370B01265C2';
+const V3_PROVIDER_REGISTRY = '0x770ef9f4fe897e59daCc474EF11238303F9552b6';
+const DATA_PROVIDER_ADDRESSES = ['0x69fa688f1dc47d4b5d8029d5a35fb7a548310654'];
 
-/*==================================================
-  Settings
-  ==================================================*/
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
 
-const V2_PROVIDER_REGISTRY = "0x4235E22d9C3f28DCDA82b58276cb6370B01265C2";
-const V3_PROVIDER_REGISTRY = "0x770ef9f4fe897e59daCc474EF11238303F9552b6";
-const DATA_PROVIDER_ADDRESSES = ["0x69fa688f1dc47d4b5d8029d5a35fb7a548310654"];
-
-/*==================================================
-  TVL
-  ==================================================*/
-
-async function tvl(block) {
   if (block < 4606878) {
     return {};
   }
@@ -29,9 +21,11 @@ async function tvl(block) {
   const results = await util.executeCallOfMultiTargets(
     [V2_PROVIDER_REGISTRY, V3_PROVIDER_REGISTRY],
     REGISTRY_ABI,
-    "getAddressesProvidersList",
+    'getAddressesProvidersList',
     [],
-    block
+    block,
+    chain,
+    web3,
   );
 
   const addressesProviders = [];
@@ -44,9 +38,11 @@ async function tvl(block) {
   const dataProviders = await util.executeCallOfMultiTargets(
     addressesProviders,
     PROVIDER_ABI,
-    "getAddress",
-    ["0x0100000000000000000000000000000000000000000000000000000000000000"],
-    block
+    'getAddress',
+    ['0x0100000000000000000000000000000000000000000000000000000000000000'],
+    block,
+    chain,
+    web3,
   );
 
   dataProviders.forEach((provider) => {
@@ -62,16 +58,16 @@ async function tvl(block) {
   const aTokenMarkets = await util.executeCallOfMultiTargets(
     DATA_PROVIDER_ADDRESSES,
     DATA_PROVIDER_ABI,
-    "getAllATokens",
+    'getAllATokens',
     [],
-    block
+    block,
+    chain,
+    web3,
   );
 
   let aTokens = {};
   try {
-    aTokens = JSON.parse(
-      fs.readFileSync("./providers/avalanceh_aave/aTokens.json", "utf8")
-    );
+    aTokens = basicUtil.readDataFromFile('cache/aTokens.json', chain, provider);
   } catch {}
 
   const aTokenAddresses = [];
@@ -80,8 +76,8 @@ async function tvl(block) {
       markets.forEach((market) => {
         if (market) {
           const address =
-            typeof market == "string"
-              ? market.split(",")[1].toLowerCase()
+            typeof market == 'string'
+              ? market.split(',')[1].toLowerCase()
               : market[1].toLowerCase();
           if (!aTokenAddresses.includes(address)) {
             aTokenAddresses.push(address);
@@ -97,8 +93,11 @@ async function tvl(block) {
     const underlyings = await util.executeCallOfMultiTargets(
       newATokens,
       ATOKEN_ABI,
-      "UNDERLYING_ASSET_ADDRESS",
-      []
+      'UNDERLYING_ASSET_ADDRESS',
+      [],
+      block,
+      chain,
+      web3,
     );
 
     underlyings.forEach((underlying, index) => {
@@ -107,37 +106,24 @@ async function tvl(block) {
       }
     });
 
-    fs.writeFile(
-      "./providers/avalanche_aave/aTokens.json",
-      JSON.stringify(aTokens, null, 2),
-      "utf8",
-      function (err) {
-        if (err) {
-          console.error(err);
-        }
-      }
-    );
+    basicUtil.writeDataToFile(aTokens, 'cache/aTokens.json', chain, provider);
   }
 
   const tokenBalances = await util.getTokenBalancesOfHolders(
     aTokenAddresses,
     aTokenAddresses.map((address) => aTokens[address]),
-    block
+    block,
+    chain,
+    web3,
   );
 
   const balances = {};
-  util.sumMultiBalanceOf(balances, tokenBalances);
-  util.convertBalancesToFixed(balances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.convertBalancesToFixed(balances);
 
   console.log(balances);
 
-  return balances;
+  return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
-
-module.exports = {
-  tvl,
-};
+export { tvl };

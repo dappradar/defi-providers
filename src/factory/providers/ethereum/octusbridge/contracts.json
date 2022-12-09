@@ -1,0 +1,283 @@
+[
+    {
+        "chain": "ETHEREUM",
+        "vaults": [
+            {
+                "vault": "0x032d06b4cc8a914b85615acd0131c3e0a7330968",
+                "tokens": [
+                    "0x6b175474e89094c44da98b954eedeac495271d0f"
+                ]
+            },
+            {
+                "vault": "0x81598d5362eac63310e5719315497c5b8980c579",
+                "tokens": [
+                    "0xdac17f958d2ee523a2206206994597c13d831ec7"
+                ]
+            },
+            {
+                "vault": "0xf8a0d53ddc6c92c3c59824f380c0f3d2a3cf521c",
+                "tokens": [
+                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                ]
+            },
+            {
+                "vault": "0xf67d8b970a0a955b5ff2a80b8dfd6aff21567633",
+                "tokens": [
+                    "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
+                ]
+            },
+            {
+                "vault": "0x55046f53eb9fa069286969d73432b769f068e1fc",
+                "tokens": [
+                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                ]
+            },
+            {
+                "vault": "0xf2403a61c7a97a1a1b94a225173f6dd03614b907",
+                "tokens": [
+                    "0x853d955acef822db058eb8505911ed77f175b99e"
+                ]
+            },
+            {
+                "vault": "0x4dee4b939371a9957f5f36a26341f40a88eed0cc",
+                "tokens": [
+                    "0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0"
+                ]
+            },
+            {
+                "vault": "0x9c217efa90a6a2bb5f0543a0be7d682ce6cf5275",
+                "tokens": [
+                    "0x255d578049b0cc729dcec2f12fa59867eb0ececb"
+                ]
+            },
+            {
+                "vault": "0x54c55369a6900731d22eacb0df7c0253cf19dfff",
+                "tokens": [
+                    "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+                    "0xff20817765cb7f73d4bde2e66e067e58d11095c2",
+                    "0x4d224452801aced8b2f0aebe155379bb5d594381",
+                    "0xba100000625a3754423978a60c9317c58a424e3D",
+                    "0xba11d00c5f74255f56a5e366f4f77f5a186d7f55",
+                    "0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c",
+                    "0xc00e94cb662c3520282e6f5717214004a7f26888",
+                    "0xD533a949740bb3306d119CC777fa900bA034cd52",
+                    "0x6810e776880c02933d47db1b9fc05908e5386b96",
+                    "0x85eee30c52b0b379b046fb0f85f4f3dc3009afec",
+                    "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202",
+                    "0x514910771af9ca656af840dff83e8264ecf986ca",
+                    "0x42476F744292107e34519F9c357927074Ea3F75D",
+                    "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+                    "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+                    "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+                    "0xec67005c4e498ec7f55e092bd1d35cbc47c91892",
+                    "0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671",
+                    "0x4fe83213d56308330ec302a8bd641f1d0113a4cc",
+                    "0x4575f41308EC1483f3d399aa9a2826d74Da13Deb",
+                    "0x408e41876cccdc0f92210600ef50372656052a38",
+                    "0x1985365e9f78359a9B6AD760e32412f4a445E862",
+                    "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f",
+                    "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac",
+                    "0x8daebade922df735c38c80c7ebd708af50815faa",
+                    "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
+                    "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828",
+                    "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+                    "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+                    "0xe41d2489571d322189246dafa5ebde1f4699f498"
+                ]
+            }
+        ],
+        "issuedTokens": [
+            "0x29d578cec46b50fa5c88a99c6a4b70184c062953",
+            "0x4476e91e76d4c978439Adb01BA45c46F7e0231f9",
+            "0x80ad9E0d62B21eE092C00849695eAB43E967b06f",
+            "0x56C0cFDEA3f8659863a231c7F298C0A48038F6d2",
+            "0x59caEAc900c11E48dFe1dd449De4947dEa2F9d28",
+            "0x2912decD771097CE272E05de3fA0f48944C4A0E2",
+            "0xD9731d4b545C2c215eE1B009C30464F85479862a",
+            "0x8040D82A76D177Df27b022F2A46b567531CB1F5D",
+            "0x332220469C8210D934E0611489B0549e5C5dC9B7",
+            "0x2E0f605F569b50e9393ad364222ec05E7a0ad119",
+            "0xFCeD7c78DF0C4a7f19699f8a49E8a5e15403670F",
+            "0xa79a7D2Ee38AD013203490985cC50ac8dc90EeE6",
+            "0xA8e72EA582D93a42fECB705a8a931A59d8fec063",
+            "0x692a8C3f9af161F6b35F69AB228bEe0cba985386",
+            "0x493A222037AF70E5cfbcf1c391a44dB3c8C5624E"
+        ]
+    },
+    {
+        "chain": "POLYGON",
+        "vaults": [
+            {
+                "vault": "0xced734f47613e2484fd9ee6f76afcb866bc4d6fa",
+                "tokens": [
+                    "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063"
+                ]
+            },
+            {
+                "vault": "0xd33492080f2d3a89ae500a3b3bc0e076713a3cbb",
+                "tokens": [
+                    "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+                ]
+            },
+            {
+                "vault": "0xf504e9a7511f1af03f8e8c6800a05fb9d43481f2",
+                "tokens": [
+                    "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+                ]
+            },
+            {
+                "vault": "0x1fa28c9cb44d2853afd0d932c3805221fab95a8b",
+                "tokens": [
+                    "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6"
+                ]
+            },
+            {
+                "vault": "0x356b37e007564fd37b957f946a246871bf827ea2",
+                "tokens": [
+                    "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
+                ]
+            },
+            {
+                "vault": "0x54c55369a6900731d22eacb0df7c0253cf19dfff",
+                "tokens": [
+                    "0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+                    "0x1c954e8fe737f99f68fa1ccda3e51ebdb291948c",
+                    "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
+                    "0x0000000000000000000000000000000000001010",
+                    "0x50b728d8d964fd00c2d0aad81718b71311fef68a",
+                    "0xb33eaad8d922b1083446dc23f610c2567fb5180f"
+                ]
+            }
+        ],
+        "issuedTokens": [
+            "0x1ffEFD8036409Cb6d652bd610DE465933b226917",
+            "0xEEE442D5e0293Fd5241C5daD0f9C8019D33b8538",
+            "0xA03Fc1db6eA8F8fB14940a4f478ad10B9caEced5",
+            "0x64Fb3696D9fDB27C9e4B8390e1AeE4Df93f78862",
+            "0x4476e91e76d4c978439Adb01BA45c46F7e0231f9",
+            "0x80ad9E0d62B21eE092C00849695eAB43E967b06f",
+            "0x56C0cFDEA3f8659863a231c7F298C0A48038F6d2",
+            "0x59caEAc900c11E48dFe1dd449De4947dEa2F9d28",
+            "0x2912decD771097CE272E05de3fA0f48944C4A0E2",
+            "0xD9731d4b545C2c215eE1B009C30464F85479862a",
+            "0x8040D82A76D177Df27b022F2A46b567531CB1F5D",
+            "0x332220469C8210D934E0611489B0549e5C5dC9B7",
+            "0x2E0f605F569b50e9393ad364222ec05E7a0ad119",
+            "0xFCeD7c78DF0C4a7f19699f8a49E8a5e15403670F",
+            "0xa79a7D2Ee38AD013203490985cC50ac8dc90EeE6",
+            "0xA8e72EA582D93a42fECB705a8a931A59d8fec063",
+            "0x692a8C3f9af161F6b35F69AB228bEe0cba985386",
+            "0x493A222037AF70E5cfbcf1c391a44dB3c8C5624E"
+        ]
+    },
+    {
+        "chain": "BSC",
+        "vaults": [
+            {
+                "vault": "0x5D767D4e250B5C8640CB2BF7E7CD3acaeb7768e1",
+                "tokens": [
+                    "0x55d398326f99059fF775485246999027B3197955"
+                ]
+            },
+            {
+                "vault": "0x65950dd2A3D8316c197BDA1A353AEd046035B1c9",
+                "tokens": [
+                    "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
+                ]
+            },
+            {
+                "vault": "0xAd4C25634e3818d674DDC07B98135eD6DB7ef307",
+                "tokens": [
+                    "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3"
+                ]
+            },
+            {
+                "vault": "0x5b1e3e9F24455debd6F3a0c4B8Bc6b46ca57f68C",
+                "tokens": [
+                    "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"
+                ]
+            },
+            {
+                "vault": "0x0cC7096480e78409AeC14795a96eFEaF3E0b4B38",
+                "tokens": [
+                    "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c"
+                ]
+            },
+            {
+                "vault": "0x54c55369a6900731d22eacb0df7c0253cf19dfff",
+                "tokens": [
+                    "0xfb6115445bff7b52feb98650c87f44907e58f802",
+                    "0xad6caeb32cd2c308980a548bd0bc5aa4306c6c18",
+                    "0x52ce071bd9b1c4b00a0b92d298c512478cad67e8",
+                    "0xfe56d5892bdffc7bf58f2e84be1b2c32d21c308b",
+                    "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd",
+                    "0xe6ce27025f13f5213bbc560dc275e292965a392f",
+                    "0xcc42724c6683b7e57334c4e856f4c9965ed682bd",
+                    "0x5f0da599bb2cccfcf6fdfd7d81743b6020864350",
+                    "0x9ac983826058b8a9c7aa1c9171441191232e8404",
+                    "0xbf5140a22578168fd562dccf235e5d43a02ce9b1",
+                    "0x88f1a5ae2a3bf98aeaf342d26b30a79438c9142e"
+                ]
+            }
+        ],
+        "issuedTokens": [
+            "0x1ffEFD8036409Cb6d652bd610DE465933b226917",
+            "0xEEE442D5e0293Fd5241C5daD0f9C8019D33b8538",
+            "0xA03Fc1db6eA8F8fB14940a4f478ad10B9caEced5",
+            "0x64Fb3696D9fDB27C9e4B8390e1AeE4Df93f78862",
+            "0x4476e91e76d4c978439Adb01BA45c46F7e0231f9",
+            "0x80ad9E0d62B21eE092C00849695eAB43E967b06f",
+            "0x56C0cFDEA3f8659863a231c7F298C0A48038F6d2",
+            "0x59caEAc900c11E48dFe1dd449De4947dEa2F9d28",
+            "0x2912decD771097CE272E05de3fA0f48944C4A0E2",
+            "0xD9731d4b545C2c215eE1B009C30464F85479862a",
+            "0x8040D82A76D177Df27b022F2A46b567531CB1F5D",
+            "0x332220469C8210D934E0611489B0549e5C5dC9B7",
+            "0x2E0f605F569b50e9393ad364222ec05E7a0ad119",
+            "0xFCeD7c78DF0C4a7f19699f8a49E8a5e15403670F",
+            "0xa79a7D2Ee38AD013203490985cC50ac8dc90EeE6",
+            "0xA8e72EA582D93a42fECB705a8a931A59d8fec063",
+            "0x692a8C3f9af161F6b35F69AB228bEe0cba985386",
+            "0x493A222037AF70E5cfbcf1c391a44dB3c8C5624E"
+        ]
+    },
+    {
+        "chain": "AVALANCHE",
+        "vaults": [
+            {
+                "vault": "0x54c55369a6900731d22eacb0df7c0253cf19dfff",
+                "tokens": [
+                    "0x8ce2dee54bb9921a2ae0a63dbb2df8ed88b91dd9",
+                    "0xc3048E19E76CB9a3Aa9d77D8C03c29Fc906e2437",
+                    "0x5947bb275c521040051d82396192181b413227a3",
+                    "0x88128fd4b259552A9A1D457f435a6527AAb72d42",
+                    "0xBeC243C995409E6520D7C41E404da5dEba4b209B",
+                    "0x3Bd2B1c7ED8D396dbb98DED3aEbb41350a5b2339",
+                    "0x8eBAf22B6F053dFFeaf46f4Dd9eFA95D89ba8580",
+                    "0x9eAaC1B23d935365bD7b542Fe22cEEe2922f52dc",
+                    "0x596fA47043f99A4e0F122243B841E55375cdE0d2"
+                ]
+            }
+        ],
+        "issuedTokens": [
+            "0x1ffEFD8036409Cb6d652bd610DE465933b226917",
+            "0xEEE442D5e0293Fd5241C5daD0f9C8019D33b8538",
+            "0xA03Fc1db6eA8F8fB14940a4f478ad10B9caEced5",
+            "0x64Fb3696D9fDB27C9e4B8390e1AeE4Df93f78862",
+            "0x4476e91e76d4c978439Adb01BA45c46F7e0231f9",
+            "0x80ad9E0d62B21eE092C00849695eAB43E967b06f",
+            "0x56C0cFDEA3f8659863a231c7F298C0A48038F6d2",
+            "0x59caEAc900c11E48dFe1dd449De4947dEa2F9d28",
+            "0x2912decD771097CE272E05de3fA0f48944C4A0E2",
+            "0xD9731d4b545C2c215eE1B009C30464F85479862a",
+            "0x8040D82A76D177Df27b022F2A46b567531CB1F5D",
+            "0x332220469C8210D934E0611489B0549e5C5dC9B7",
+            "0x2E0f605F569b50e9393ad364222ec05E7a0ad119",
+            "0xFCeD7c78DF0C4a7f19699f8a49E8a5e15403670F",
+            "0xa79a7D2Ee38AD013203490985cC50ac8dc90EeE6",
+            "0xA8e72EA582D93a42fECB705a8a931A59d8fec063",
+            "0x692a8C3f9af161F6b35F69AB228bEe0cba985386",
+            "0x493A222037AF70E5cfbcf1c391a44dB3c8C5624E"
+        ]
+    }
+]

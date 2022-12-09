@@ -1,22 +1,14 @@
-/*==================================================
-  Modules
-  ==================================================*/
+import util from '../../../../util/blockchainUtil';
+import formatter from '../../../../util/formatter';
+import basicUtil from '../../../../util/basicUtil';
+import ABI from './abi.json';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const fs = require("fs");
-const util = require("../../sdk/util");
-const ABI = require("./abi.json");
+const ROUTER = '0x45A01E4e04F14f7A4a6702c74187c5F6222033cd';
 
-/*==================================================
-  Settings
-  ==================================================*/
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
 
-const ROUTER = "0x45A01E4e04F14f7A4a6702c74187c5F6222033cd";
-
-/*==================================================
-  TVL
-  ==================================================*/
-
-async function tvl(block) {
   if (block < 12215178) {
     return {};
   }
@@ -26,37 +18,49 @@ async function tvl(block) {
     tokens: {},
   };
   try {
-    store = JSON.parse(
-      fs.readFileSync("./providers/avalanche_stargate/store.json", "utf8")
-    );
+    store = basicUtil.readDataFromFile('cache/store.json', chain, provider);
   } catch {}
 
-  const factory = await util.executeCall(ROUTER, ABI, "factory", [], block);
+  const factory = await util.executeCall(
+    ROUTER,
+    ABI,
+    'factory',
+    [],
+    block,
+    chain,
+    web3,
+  );
   const allPoolsLength = await util.executeCall(
     factory,
     ABI,
-    "allPoolsLength",
+    'allPoolsLength',
     [],
-    block
+    block,
+    chain,
+    web3,
   );
 
   if (store.pools.length < allPoolsLength) {
     const newPools = await util.executeMultiCallsOfTarget(
       factory,
       ABI,
-      "allPools",
+      'allPools',
       Array.from(
         { length: allPoolsLength - store.pools.length },
-        (_, i) => store.pools.length + i
+        (_, i) => store.pools.length + i,
       ),
-      block
+      block,
+      chain,
+      web3,
     );
     const poolTokens = await util.executeCallOfMultiTargets(
       newPools,
       ABI,
-      "token",
+      'token',
       [],
-      block
+      block,
+      chain,
+      web3,
     );
 
     for (const index in newPools) {
@@ -68,38 +72,23 @@ async function tvl(block) {
       }
     }
 
-    fs.writeFile(
-      "./providers/avalanche_stargate/store.json",
-      JSON.stringify(store, null, 2),
-      "utf8",
-      function (err) {
-        if (err) {
-          console.error(err);
-        }
-      }
-    );
+    basicUtil.writeDataToFile(store, 'cache/store.json', chain, provider);
   }
 
   const tokenBalances = await util.getTokenBalancesOfHolders(
     Object.keys(store.tokens),
     Object.values(store.tokens),
-    block
+    block,
+    chain,
+    web3,
   );
 
-  let balances = {};
+  const balances = {};
 
-  util.sumMultiBalanceOf(balances, tokenBalances);
-  util.convertBalancesToFixed(balances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.convertBalancesToFixed(balances);
 
-  console.log(balances);
-
-  return balances;
+  return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
-
-module.exports = {
-  tvl,
-};
+export { tvl };

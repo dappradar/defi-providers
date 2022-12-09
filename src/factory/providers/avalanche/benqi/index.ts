@@ -1,41 +1,33 @@
-/*==================================================
-  Modules
-  ==================================================*/
+import BigNumber from 'bignumber.js';
+import abi from './abi.json';
+import util from '../../../../util/blockchainUtil';
+import formatter from '../../../../util/formatter';
+import basicUtil from '../../../../util/basicUtil';
+import { WMAIN_ADDRESS } from '../../../../constants/contracts.json';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const fs = require("fs");
-const BigNumber = require("bignumber.js");
-const abi = require("./abi.json");
-const util = require("../../sdk/util");
-const { WMAIN_ADDRESS } = require("../../sdk/constants/contracts.json");
+const UNITROLLER_ADDRESS = '0x486af39519b4dc9a7fccd318217352830e8ad9b4';
 
-/*==================================================
-  Settings
-  ==================================================*/
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
 
-const UNITROLLER_ADDRESS = "0x486af39519b4dc9a7fccd318217352830e8ad9b4";
-
-/*==================================================
-  TVL
-  ==================================================*/
-
-async function tvl(block) {
   if (block < 3046286) {
     return {};
   }
 
   let qiTokens = {};
   try {
-    qiTokens = JSON.parse(
-      fs.readFileSync("./providers/avalanche_benqi/pools.json", "utf8")
-    );
+    qiTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
   } catch {}
 
   const allMarkets = await util.executeCall(
     UNITROLLER_ADDRESS,
     abi,
-    "getAllMarkets",
+    'getAllMarkets',
     [],
-    block
+    block,
+    chain,
+    web3,
   );
 
   const newMarkets = allMarkets.filter((market) => !qiTokens[market]);
@@ -44,8 +36,11 @@ async function tvl(block) {
     const underlyings = await util.executeCallOfMultiTargets(
       newMarkets,
       abi,
-      "underlying",
-      []
+      'underlying',
+      [],
+      block,
+      chain,
+      web3,
     );
 
     underlyings.forEach((underlying, index) => {
@@ -54,24 +49,17 @@ async function tvl(block) {
       ).toLowerCase();
     });
 
-    fs.writeFile(
-      "./providers/avalanche_benqi/pools.json",
-      JSON.stringify(qiTokens, null, 2),
-      "utf8",
-      function (err) {
-        if (err) {
-          console.error(err);
-        }
-      }
-    );
+    basicUtil.writeDataToFile(qiTokens, 'cache/pools.json', chain, provider);
   }
 
   const results = await util.executeCallOfMultiTargets(
     allMarkets,
     abi,
-    "getCash",
+    'getCash',
     [],
-    block
+    block,
+    chain,
+    web3,
   );
 
   const tokenBalances = [];
@@ -85,18 +73,12 @@ async function tvl(block) {
   });
 
   const balances = {};
-  util.sumMultiBalanceOf(balances, tokenBalances);
-  util.convertBalancesToFixed(balances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.convertBalancesToFixed(balances);
 
   console.log(balances);
 
-  return balances;
+  return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
-
-module.exports = {
-  tvl,
-};
+export { tvl };
