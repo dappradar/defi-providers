@@ -31,10 +31,4 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   return { balances };
 }
 
-/*==================================================
-  Exports
-  ==================================================*/
-
-module.exports = {
-  tvl,
-};
+export { tvl };
