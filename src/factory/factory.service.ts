@@ -26,7 +26,24 @@ interface IProvider {
 @Injectable()
 export class FactoryService implements OnModuleInit {
   async onModuleInit() {
-    console.log('we can use this method if it needed');
+    // await this.getTvl({
+    //   provider: 'kolibri',
+    //   chain: 'tezos',
+    //   query: { block: '1330100', date: '0' },
+    // });
+    //
+    // await this.getTvl({
+    //   provider: 'linear',
+    //   chain: 'near',
+    //   query: { block: '61157983', date: '0' },
+    // });
+    console.log(
+      await this.getTvl({
+        provider: 'pooltogether',
+        chain: 'ethereum',
+        query: { block: '16168000', date: '0' },
+      }),
+    );
   }
   constructor(private readonly web3ProviderService: Web3ProviderService) {}
 
