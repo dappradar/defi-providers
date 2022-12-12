@@ -100,6 +100,7 @@ function sumMultiBalanceOf(balances, results) {
       });
     }
   } catch (e) {
+    console.log(e);
     return balances;
   }
 }

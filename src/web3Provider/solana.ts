@@ -6,6 +6,9 @@ const nodeUrl = serviceData[`SOLANA_NODE_URL`];
 
 @Injectable()
 export class Solana {
+  getNodeUrl() {
+    return nodeUrl;
+  }
   async call(method, params) {
     try {
       const res = await fetch(nodeUrl, {
