@@ -24,8 +24,7 @@ interface IProvider {
 }
 
 @Injectable()
-export class FactoryService implements OnModuleInit {
-  async onModuleInit() {}
+export class FactoryService {
   constructor(private readonly web3ProviderService: Web3ProviderService) {}
 
   async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
