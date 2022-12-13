@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
 import PAIR_ABI from '../../../../constants/abi/uni.json';
 import BULK_RESERVES_ABI from '../../../../constants/abi/bulkReserves.json';

@@ -137,7 +137,12 @@ async function getTvl(
   }
 
   if (pairLength < len) {
-    basicUtil.writeDataToFile(poolInfos, 'cache/pairs.json', chain, provider);
+    await basicUtil.writeDataToFile(
+      poolInfos,
+      'cache/pairs.json',
+      chain,
+      provider,
+    );
   }
 
   poolInfos = poolInfos.slice(0, len);
@@ -165,7 +170,7 @@ async function getTvl(
     }
   }
 
-  basicUtil.writeDataToFile(
+  await basicUtil.writeDataToFile(
     token01Infos,
     'cache/token01.json',
     chain,
