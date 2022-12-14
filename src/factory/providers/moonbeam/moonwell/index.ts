@@ -90,6 +90,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       web3,
     ),
   );
+  formatter.convertBalancesToFixed(balances);
   return { balances };
 }
 
