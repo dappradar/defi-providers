@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import * as calculate from '../../ethereum/octusbridge/calculate';
+import * as calculate from '../../ethereum/octusbridge/index';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const CONVERT = {
