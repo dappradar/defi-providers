@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
-import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
+import basicUtil from '../../../../util/basicUtil';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const POOL_API = 'https://api.tangent.bar/api/v1/pools?start=0&limit=5000';
 
@@ -34,8 +35,9 @@ async function getPoolBalance(pool, info, block, web3) {
   return balances;
 }
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
+
   if (block < 1657799935) {
     return {};
   }
@@ -56,6 +58,7 @@ async function tvl(params) {
         token1: pool.secondAsset.assetId,
       };
     });
+
     basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
   } catch {}
 
@@ -72,6 +75,7 @@ async function tvl(params) {
   });
 
   formatter.convertBalancesToFixed(balances);
+
   return { balances };
 }
 

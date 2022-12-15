@@ -1,8 +1,11 @@
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+
 const STAKE_ADDRESS_V1 = '0.0.834119';
 const STAKE_ADDRESS_V2 = '0.0.1027588';
 
-async function tvl(params) {
-  const { block, chain, provider, web3 } = params;
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, web3 } = params;
+
   if (block < 1649405800) {
     return {};
   }
@@ -15,6 +18,7 @@ async function tvl(params) {
       )
     ).toFixed(),
   };
+
   return { balances };
 }
 

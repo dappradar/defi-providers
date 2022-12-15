@@ -29,7 +29,7 @@ export class GenericRpcErrorFilter implements RpcExceptionFilter<RpcException> {
       timestamp: new Date().toISOString(),
       errorName: exception?.name,
       message: exception?.message,
-      requestData: JSON.stringify(ctx.getData(), null, 4),
+      requestData: ctx.getData(),
     };
 
     logger.error(errorResponse);
