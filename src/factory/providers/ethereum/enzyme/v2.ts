@@ -85,34 +85,43 @@ async function tvl(params: ITvlParams): Promise<any[]> {
 
   const tempholders = [];
   const temptokens = [];
+  const multiTokenBalances = [];
   let i,
     j,
     // eslint-disable-next-line prefer-const
     chunk = 50;
   for (i = 0, j = proxyInfo.length; i < j; i += chunk) {
     const tempProxyInfo = proxyInfo.slice(i, i + chunk);
-    tempholders.push(tempProxyInfo.map((info) => info.holder));
-    temptokens.push(tempProxyInfo.map((info) => info.token));
+    multiTokenBalances.push(
+      await util.getTokenBalancesOfHolders(
+        tempProxyInfo.map((info) => info.holder),
+        tempProxyInfo.map((info) => info.token),
+        block,
+        chain,
+        web3,
+      ),
+    );
+    // tempholders.push(tempProxyInfo.map((info) => info.holder));
+    // temptokens.push(tempProxyInfo.map((info) => info.token));
 
     // tokenBalanceCalls.push({
     //   target: HELPER_BALANCES,
     //   params: [tempholders, temptokens],
     // });
   }
-  const mergedArrayHolder = tempholders.reduce((a, b) => a.concat(b), []);
-  const mergedArrayTokens = temptokens.reduce((a, b) => a.concat(b), []);
+
   console.log('[v2] getting token balances');
-  const multiTokenBalances = await util.getTokenBalancesOfHolders(
-    mergedArrayHolder,
-    mergedArrayTokens,
-    block,
-    chain,
-    web3,
-  );
+  // const multiTokenBalances = await util.getTokenBalancesOfHolders(
+  //   mergedArrayHolder,
+  //   mergedArrayTokens,
+  //   block,
+  //   chain,
+  //   web3,
+  // );
 
   const balanceOfResult = [];
   multiTokenBalances.forEach(function (tokenBalance) {
-    balanceOfResult.push(...tokenBalance.output);
+    balanceOfResult.push(...tokenBalance);
   });
 
   /* combine token volumes on multiple funds */

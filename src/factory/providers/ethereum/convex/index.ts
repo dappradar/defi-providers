@@ -49,7 +49,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const balances = {};
 
-  const [{ output: poolLength }, cvxCRVSupply, cvxStaked] = await Promise.all([
+  const [poolLength, cvxCRVSupply, cvxStaked] = await Promise.all([
     util.executeCall(
       MANAGER_ADDRESS,
       [abi['poolLength']],
@@ -64,7 +64,15 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       block,
       web3,
     ),
-    util.getTokenBalances(CVX_STAKING_ADDRESS, CVX_ADDRESS, chain, block, web3),
+    util.executeCall(
+      CVX_STAKING_ADDRESS,
+      ERC20_ABI,
+      'balanceOf',
+      [CVX_ADDRESS],
+      block,
+      chain,
+      web3,
+    ),
   ]);
 
   let pools = {};
@@ -127,14 +135,13 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         (crvPool) =>
           crvPool.addresses.lpToken.toLowerCase() === pools[i].lptoken,
       );
-      let swapAddress;
+
       if (poolData === undefined) {
         console.log(pools[i].lptoken);
         return;
       }
 
-      // eslint-disable-next-line prefer-const
-      swapAddress = poolData.addresses.swap;
+      const swapAddress = poolData.addresses.swap;
 
       let coins = await util.executeMultiCallsOfTarget(
         swapAddress,
@@ -207,7 +214,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
           if (coinAddress === E_ADDRESS) {
             coinBalance = await util.getBalancesOfHolders(
-              swapAddress,
+              [swapAddress],
               block,
               chain,
               web3,

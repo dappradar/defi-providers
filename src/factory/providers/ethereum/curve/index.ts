@@ -213,7 +213,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   //Get Factory Balances
   const factoryPoolCount = await util.executeCall(
     FACTORY_ADDRESS,
-    abi['pool_count'],
+    [abi['pool_count']],
     'pool_count',
     [],
     block,

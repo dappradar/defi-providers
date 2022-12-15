@@ -86,10 +86,10 @@ async function getTokenBalance(address, block, chain, web3) {
   }
 }
 
-async function tvl(params: ITvlParams): Promise<{ balances: any[] }> {
+async function tvl(params: ITvlParams): Promise<any[]> {
   const { block, chain, provider, web3 } = params;
   if (block < 7271059) {
-    return { balances: [] };
+    return [];
   }
 
   ACCOUNTING_INFO = {};
@@ -117,7 +117,7 @@ async function tvl(params: ITvlParams): Promise<{ balances: any[] }> {
     balances = balances.concat(result);
   });
 
-  return { balances };
+  return balances;
 }
 
 export { tvl };
