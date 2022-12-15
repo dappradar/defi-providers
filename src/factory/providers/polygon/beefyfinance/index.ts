@@ -4,6 +4,7 @@ import util from '../../../../util/blockchainUtil';
 import VAULT_ABI from './abi.json';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 13908161;
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
@@ -45,7 +46,7 @@ async function getWants(address, web3) {
   } catch {}
 }
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {

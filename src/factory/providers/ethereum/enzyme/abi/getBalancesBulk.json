@@ -1,0 +1,41 @@
+{
+  "inputs": [
+    {
+      "internalType": "address[]",
+      "name": "holders",
+      "type": "address[]"
+    },
+    {
+      "internalType": "address[]",
+      "name": "tokens",
+      "type": "address[]"
+    }
+  ],
+  "name": "tokenBalancesManyTokensManyHolders",
+  "outputs": [
+    {
+      "components": [
+        {
+          "internalType": "address",
+          "name": "token_address",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "holder_address",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        }
+      ],
+      "internalType": "struct BulkBalances.TokenBalance[]",
+      "name": "balances",
+      "type": "tuple[]"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+}

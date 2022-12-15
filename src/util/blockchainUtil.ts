@@ -1316,6 +1316,7 @@ export default {
   getTokenBalancesOfHolders: GetTokenBalancesOfHolders,
   getTokenBalances: GetTokenBalances,
   getTokenTotalSupplies: GetTokenTotalSupplies,
+  getTotalSupply: GetTotalSupply,
   executeCall: ExecuteCall,
   executeMultiCallsOfTarget: ExecuteMultiCallsOfTarget,
   executeDifferentCallsOfTarget: ExecuteDifferentCallsOfTarget,
