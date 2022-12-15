@@ -2,12 +2,9 @@ import BigNumber from 'bignumber.js';
 import PAIR_ABI from '../../../../constants/abi/uni.json';
 import BULK_RESERVES_ABI from '../../../../constants/abi/bulkReserves.json';
 import basicUtil from '../../../../util/basicUtil';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const BULK_RESERVES_ADDRESS = '0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a';
-
-/*==================================================
-  Helpers
-  ==================================================*/
 
 async function getReserves(address, block, web3) {
   try {
@@ -48,7 +45,7 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, web3) {
   return poolReserves;
 }
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < 7860907) {
     return {};

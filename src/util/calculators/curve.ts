@@ -4,10 +4,6 @@ import basicUtil from '../basicUtil';
 import FACTORY_ABI from '../../constants/abi/curveFactoryAbi.json';
 import POOL_ABI from '../../constants/abi/curvePoolAbi.json';
 
-/*==================================================
-  Helper Methods
-  ==================================================*/
-
 async function getTokens(pools, block, chain, web3) {
   let poolsTokens = [];
 

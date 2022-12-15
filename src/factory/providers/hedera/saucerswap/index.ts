@@ -1,5 +1,6 @@
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const FACTORY_ADDRESS = '0.0.1062784';
 const WRAPPED_TOKENS = {
@@ -29,7 +30,7 @@ const WRAPPED_TOKENS = {
   },
 };
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < 1658191103) {
     return {};

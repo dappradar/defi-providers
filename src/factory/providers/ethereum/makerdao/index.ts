@@ -6,6 +6,7 @@ import stored_log from './makerdao_log.json';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 async function getJoins(block, chain, provider, web3) {
   const relyTopic =
@@ -87,7 +88,7 @@ async function getJoins(block, chain, provider, web3) {
   return log_data.data;
 }
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   const balances = {};
 

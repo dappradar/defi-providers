@@ -1,12 +1,13 @@
 import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const BRIDGE_ADDRESS =
   '0:36122a25a11e8772dc5d94f5f6a653d4661f6e474bc85cb275aece185acd62a4';
 const STAKING_ADDRESS =
   '0:ec6a2fd6c3732e494684d016f1addec1a1828b6b7ecfcd30b34e8e5ad2d421d0';
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
 
   let tokens = {};

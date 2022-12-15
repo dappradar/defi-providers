@@ -10,10 +10,6 @@ const START_BLOCK = 58633327;
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
 let wants = {};
 
-/*==================================================
-  Helpers
-  ==================================================*/
-
 async function getVaults() {
   try {
     const vaults = await fetch(VAULTS_URI)

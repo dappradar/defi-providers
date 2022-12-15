@@ -14,10 +14,6 @@ const CHEF_ADDRESS = '0x86f4bC1EBf2C209D12d3587B7085aEA5707d4B56';
 const WBNB_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
 let ftokens = {};
 
-/*==================================================
-  Helper
-  ==================================================*/
-
 async function getTokens(address, block, web3) {
   try {
     if (!ftokens[address]) {

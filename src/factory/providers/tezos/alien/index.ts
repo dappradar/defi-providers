@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const FARMS = [
   'KT1WfbRVLuJUEizo6FSTFq5tsi3rsUHLY7vg',
@@ -91,7 +92,7 @@ async function ammFarmBalance(address, block, web3) {
   };
 }
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, web3 } = params;
 
   if (block < 1565538) {

@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js';
 import ORCA_POOLS from './poolInfos.json';
-
-/*==================================================
-  Helpers
-  ==================================================*/
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 async function getTokenAccountBalance(account, web3) {
   const tokenBalance = await web3.call('getTokenAccountBalance', [account]);
@@ -15,7 +12,7 @@ async function getTokenAccountBalance(account, web3) {
   }
 }
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { web3 } = params;
 
   const balances = {};

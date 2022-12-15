@@ -1,12 +1,13 @@
 import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 10078686;
 const FACTORY_ADDRESS = '0x25CbdDb98b35ab1FF77413456B31EC81A6B6B746';
 const GRAPHQL_API = 'https://api.thegraph.com/subgraphs/name/dmihal/velodrome';
 const QUERY_SIZE = 400;
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {

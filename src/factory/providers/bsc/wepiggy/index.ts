@@ -10,10 +10,6 @@ const FACTORY_ADDRESS = '0x8c925623708A94c7DE98a8e83e8200259fF716E0';
 const WBNB_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
 let ptokens = {};
 
-/*==================================================
-  Helper
-  ==================================================*/
-
 async function getUnderlyings(address, block, web3) {
   try {
     if (!ptokens[address]) {

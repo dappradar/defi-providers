@@ -27,10 +27,6 @@ const POOL_ADDRESSES = [
 ];
 let tokens = {};
 
-/*==================================================
-  Helpers
-  ==================================================*/
-
 async function getTokens(address, block, web3) {
   try {
     const contract = new web3.eth.Contract(abi, address);

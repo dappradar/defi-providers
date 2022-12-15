@@ -8,10 +8,6 @@ import formatter from '../formatter';
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
 let wants = {};
 
-/*==================================================
-  Helper Methods
-  ==================================================*/
-
 async function getVaults(chain) {
   try {
     const vaults = await fetch(VAULTS_URI)
