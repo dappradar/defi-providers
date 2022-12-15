@@ -1,5 +1,4 @@
 import ERC20_ABI from '../../../../constants/abi/erc20.json';
-import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
@@ -10,7 +9,7 @@ const AMP_ADDRESS = '0xff20817765cb7f73d4bde2e66e067e58d11095c2'; // Amp Contrac
 const MANAGER_ADDRESS = '0x706D7F8B3445D8Dfc790C524E3990ef014e7C578'; // Amp Collateral Manager
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  const { block, chain, web3 } = params;
   const balances = {};
 
   const results = await util.executeMultiCallsOfMultiTargets(

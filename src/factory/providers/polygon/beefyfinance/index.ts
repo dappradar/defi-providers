@@ -15,10 +15,6 @@ const EURT_DAI_USDC_USDT_VAULT = '0x108c7a293162adff86da216ab5f91e56723125dc';
 const CURVE_AM3_VAULT = '0xe7a24ef0c5e95ffb0f6684b813a78f2a3ad7d171';
 let wants = {};
 
-/*==================================================
-  Helpers
-  ==================================================*/
-
 async function getVaults() {
   try {
     const vaults = await fetch(VAULTS_URI)

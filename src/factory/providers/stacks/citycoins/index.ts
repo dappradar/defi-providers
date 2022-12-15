@@ -1,4 +1,5 @@
 import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const walletAddresses = [
   'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-core-v1',
@@ -13,10 +14,6 @@ const tokenAddresses = [
   'SPSCWDV3RKV5ZRN1FQD84YE1NQFEDJ9R1F4DYQ11.newyorkcitycoin-token-v2',
 ];
 
-/*==================================================
-  Helper Functions
-  ==================================================*/
-
 async function calculate(walletAddress, block, balances, web3) {
   const accountBalances = await web3.eth.getAccountBalances(
     walletAddress,
@@ -26,7 +23,7 @@ async function calculate(walletAddress, block, balances, web3) {
   web3.eth.extractBalances(accountBalances, balances, tokenAddresses);
 }
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, web3 } = params;
 
   if (block < 24341) {

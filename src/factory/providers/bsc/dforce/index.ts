@@ -29,10 +29,6 @@ const YIELD_MARKETS = [
 ];
 let tokens = { iTokens: {}, dTokens: {} };
 
-/*==================================================
-  Helper
-  ==================================================*/
-
 async function getLendingBalance(address, block, web3) {
   try {
     if (!tokens.iTokens[address]) {

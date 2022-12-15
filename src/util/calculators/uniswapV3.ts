@@ -20,10 +20,6 @@ const POOLS_QUERY = gql`
   }
 `;
 
-/*==================================================
-  Helper Methods
-  ==================================================*/
-
 async function getPools(endpoint, block, skip, chain) {
   let pools;
   try {

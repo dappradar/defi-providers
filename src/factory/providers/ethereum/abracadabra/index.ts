@@ -5,6 +5,7 @@ import MINTER256_ABI from './abis/minter256.json';
 import MINTER128_ABI from './abis/minter128.json';
 import ERC20_ABI from '../../../../constants/abi/erc20.json';
 import util from '../../../../util/blockchainUtil';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const CAULDRON_CONTRACTS = [
   '0x7b7473a76d6ae86ce19f7352a1e89f6c9dc39020',
@@ -100,11 +101,7 @@ const STK_TOKENS = [
   },
 ];
 
-/*==================================================
-TVL
-==================================================*/
-
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, web3 } = params;
 
   if (block < 12454535) {

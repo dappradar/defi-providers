@@ -2,7 +2,6 @@ import basicUtil from '../../../../util/basicUtil';
 import BigNumber from 'bignumber.js';
 import abi from './abi.json';
 import util from '../../../../util/blockchainUtil';
-
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
@@ -26,10 +25,6 @@ const POOL_ADDRESSES = [
   '0x23c95678862a229fac088bd9705622d78130bc3e',
 ];
 let tokens = {};
-
-/*==================================================
-  Helpers
-  ==================================================*/
 
 async function getTokens(address, block, web3) {
   try {

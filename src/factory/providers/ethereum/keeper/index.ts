@@ -2,10 +2,11 @@ import POOL_ABI from './abi.json';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const POOL_ADDRESS = '0x35fFd6E268610E764fF6944d07760D0EFe5E40E5';
 
-async function tvl(params) {
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < 11755954) {
     return {};

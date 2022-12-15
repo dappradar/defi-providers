@@ -9,10 +9,7 @@ import {
   BULK_RESERVES_DEPOLYED,
 } from '../../constants/contracts.json';
 import basicUtil from '../basicUtil';
-
-/*==================================================
-  Helper Methods
-  ==================================================*/
+import * as logger from '../../logger';
 
 async function getReserves(address, block, web3) {
   try {
@@ -23,7 +20,7 @@ async function getReserves(address, block, web3) {
       reserve0: BigNumber(reserves._reserve0.toString()),
       reserve1: BigNumber(reserves._reserve1.toString()),
     };
-  } catch {
+  } catch (e) {
     try {
       const contract = new web3.eth.Contract(RESERVES_ABI, address);
       const reserves = await contract.methods.getReserves().call(null, block);
@@ -32,7 +29,13 @@ async function getReserves(address, block, web3) {
         reserve0: BigNumber(reserves._reserve0.toString()),
         reserve1: BigNumber(reserves._reserve1.toString()),
       };
-    } catch {}
+    } catch (e) {
+      logger.error({
+        Message: e?.message || '',
+        Stack: e?.stack || '',
+        Detail: `Error: uniswapV2.getReserves`,
+      });
+    }
   }
   return {};
 }

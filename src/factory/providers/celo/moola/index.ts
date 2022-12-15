@@ -15,10 +15,6 @@ const holder = '0xAF106F8D4756490E7069027315F4886cc94A8F73';
 const HELPERS = ['0x43d067ed784D9DD2ffEda73775e2CC4c560103A1'];
 let pools = {};
 
-/*==================================================
-  Helper Functions
-  ==================================================*/
-
 async function getUnderlyings(address, web3) {
   try {
     if (!pools[address]) {
