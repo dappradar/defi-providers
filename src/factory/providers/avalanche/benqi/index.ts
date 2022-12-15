@@ -5,6 +5,7 @@ import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
 import { WMAIN_ADDRESS } from '../../../../constants/contracts.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { AbiItem } from 'web3-utils';
 
 const UNITROLLER_ADDRESS = '0x486af39519b4dc9a7fccd318217352830e8ad9b4';
 
@@ -22,7 +23,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const allMarkets = await util.executeCall(
     UNITROLLER_ADDRESS,
-    abi,
+    abi as AbiItem[],
     'getAllMarkets',
     [],
     block,

@@ -1,5 +1,7 @@
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 import ERC20_ABI from '../constants/abi/erc20.json';
 import UNI_ABI from '../constants/abi/uni.json';
 import CURVE128_ABI from '../constants/abi/curve128.json';
@@ -31,7 +33,15 @@ import formatter from './formatter';
 let underlyingData = {};
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-async function ExecuteCall(target, ABI, method, params, block, chain, web3) {
+async function ExecuteCall(
+  target: string,
+  ABI: AbiItem[],
+  method: string,
+  params: string[],
+  block: number,
+  chain: string,
+  web3: Web3,
+) {
   try {
     if (block < MULTICALL_DEPOLYED[chain]) {
       const contract = new web3.eth.Contract(ABI, target);
@@ -42,7 +52,7 @@ async function ExecuteCall(target, ABI, method, params, block, chain, web3) {
       return result;
     } else {
       const contract = new web3.eth.Contract(
-        MULTICALL_ABI,
+        MULTICALL_ABI as AbiItem[],
         MULTICALL_ADDRESSES[chain],
       );
       const method_abi = ABI.find((abi) => abi.name == method);
