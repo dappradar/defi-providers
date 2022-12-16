@@ -632,7 +632,7 @@ async function ExecuteCallOfMultiTargets(
   block: number,
   chain: string,
   web3: Web3,
-) {
+): Promise<any[]> {
   const targetLength = targets.length;
 
   try {
@@ -698,9 +698,27 @@ async function ExecuteCallOfMultiTargets(
   }
 }
 
-async function GetTokenBalance(address, token, block, web3) {
+/**
+ * Calls ERC20 balanceOf method for provided address
+ *
+ * @param address - The address of the wallet
+ * @param token - The address of the token
+ * @param block - The block number for which data is requested
+ * @param web3 - The Web3 object
+ * @returns - The token balance for address
+ *
+ */
+async function GetTokenBalance(
+  address: string,
+  token: string,
+  block: number,
+  web3: Web3,
+): Promise<{
+  token: string;
+  balance: BigNumber;
+}> {
   try {
-    const contract = new web3.eth.Contract(ERC20_ABI, token);
+    const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], token);
     const balance = await contract.methods.balanceOf(address).call(null, block);
     return {
       token: token.toLowerCase(),
