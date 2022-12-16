@@ -33,15 +33,28 @@ import formatter from './formatter';
 let underlyingData = {};
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
+/**
+ * Calls EVM smart contract function and returns its result
+ *
+ * @param target - The address of the smart contract to call
+ * @param ABI - The json interface for the contract to instantiate
+ * @param method - The smart contract method to call
+ * @param params - The array of parameters to use in smart contract method call
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns The return value(s) of the smart contract method.
+ *
+ */
 async function ExecuteCall(
   target: string,
-  ABI: AbiItem[],
+  ABI: any,
   method: string,
-  params: string[],
+  params: any[],
   block: number,
   chain: string,
   web3: Web3,
-) {
+): Promise<any> {
   try {
     if (block < MULTICALL_DEPOLYED[chain]) {
       const contract = new web3.eth.Contract(ABI, target);
@@ -106,15 +119,28 @@ async function tryExecuteMultiCallsOfTarget(
   }
 }
 
+/**
+ * Calls EVM smart contract function [params.length] times and returns its results in array.
+ *
+ * @param target - The address of the smart contract to call
+ * @param ABI - The json interface for the contract to instantiate
+ * @param method - The smart contract method to call
+ * @param params - The array of parameters or the array of parameters arrays to use in smart contract method call
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns The array of return value(s) of the smart contract method.
+ *
+ */
 async function ExecuteMultiCallsOfTarget(
-  target,
-  ABI,
-  method,
-  params,
-  block,
-  chain,
-  web3,
-) {
+  target: string,
+  ABI: any,
+  method: string,
+  params: any[] | any[][],
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<any> {
   const paramLength = params.length;
 
   try {
@@ -137,7 +163,7 @@ async function ExecuteMultiCallsOfTarget(
       return executeResults;
     } else {
       const contract = new web3.eth.Contract(
-        MULTICALL_ABI,
+        MULTICALL_ABI as AbiItem[],
         MULTICALL_ADDRESSES[chain],
       );
       const method_abi = ABI.find((abi) => abi.name == method);

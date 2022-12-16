@@ -12,7 +12,7 @@ async function getTokens(pools, block, chain, web3) {
       util.executeMultiCallsOfTarget(
         pool,
         POOL_ABI,
-        ['coins'],
+        'coins',
         Array(8)
           .fill(0)
           .map((x, i) => i),
@@ -140,7 +140,7 @@ async function getTvl(curveFactory, block, chain, provider, web3) {
     const poolBalances = await util.executeMultiCallsOfTarget(
       pool,
       POOL_ABI,
-      ['balances'],
+      'balances',
       Array(pools[pool].length)
         .fill(0)
         .map((x, i) => i.toString()),
