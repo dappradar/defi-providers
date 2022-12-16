@@ -2,7 +2,6 @@ import basicUtil from '../../../../util/basicUtil';
 import BigNumber from 'bignumber.js';
 import abi from './abi.json';
 import util from '../../../../util/blockchainUtil';
-
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 

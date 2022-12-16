@@ -27,7 +27,7 @@ import {
   MULTICALL_ADDRESSES,
   MULTICALL_DEPOLYED,
 } from '../constants/contracts.json';
-import * as logger from '../logger';
+import { sendLog } from './logger';
 import formatter from './formatter';
 
 let underlyingData = {};
@@ -80,11 +80,11 @@ async function ExecuteCall(
       return formatter.decodeResult(method_abi, result);
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: ExecuteCall`,
-      Endpoint: 'ExecuteCall',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: ExecuteCall`,
+      endpoint: 'ExecuteCall',
     });
     return null;
   }
@@ -109,11 +109,11 @@ async function tryExecuteMultiCallsOfTarget(
       )
       .call(null, block);
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: tryExecuteMultiCallsOfTarget`,
-      Endpoint: 'tryExecuteMultiCallsOfTarget',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tryExecuteMultiCallsOfTarget`,
+      endpoint: 'tryExecuteMultiCallsOfTarget',
     });
     return Array.from({ length: params.length }, () => null);
   }
@@ -196,11 +196,11 @@ async function ExecuteMultiCallsOfTarget(
       return executeResults;
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: ExecuteMultiCallsOfTarget`,
-      Endpoint: 'ExecuteMultiCallsOfTarget',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: ExecuteMultiCallsOfTarget`,
+      endpoint: 'ExecuteMultiCallsOfTarget',
     });
     return null;
   }
@@ -224,11 +224,11 @@ async function tryExecuteDifferentCallsOfTarget(
       )
       .call(null, block);
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: tryExecuteDifferentCallsOfTarget`,
-      Endpoint: 'tryExecuteDifferentCallsOfTarget',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tryExecuteDifferentCallsOfTarget`,
+      endpoint: 'tryExecuteDifferentCallsOfTarget',
     });
     return Array.from({ length: params.length }, () => null);
   }
@@ -311,11 +311,11 @@ async function ExecuteDifferentCallsOfTarget(
       return executeResults;
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: ExecuteDifferentCallsOfTarget`,
-      Endpoint: 'ExecuteDifferentCallsOfTarget',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: ExecuteDifferentCallsOfTarget`,
+      endpoint: 'ExecuteDifferentCallsOfTarget',
     });
     return null;
   }
@@ -340,11 +340,11 @@ async function tryExecuteMultiCallsOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: tryExecuteMultiCallsOfMultiTargets`,
-      Endpoint: 'tryExecuteMultiCallsOfMultiTargets',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tryExecuteMultiCallsOfMultiTargets`,
+      endpoint: 'tryExecuteMultiCallsOfMultiTargets',
     });
     return Array.from({ length: targets.length }, () => null);
   }
@@ -418,11 +418,11 @@ async function ExecuteMultiCallsOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: ExecuteMultiCallsOfMultiTargets`,
-      Endpoint: 'ExecuteMultiCallsOfMultiTargets',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: ExecuteMultiCallsOfMultiTargets`,
+      endpoint: 'ExecuteMultiCallsOfMultiTargets',
     });
     return null;
   }
@@ -447,11 +447,11 @@ async function tryExecuteDifferentCallsOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: tryExecuteDifferentCallsOfMultiTargets`,
-      Endpoint: 'tryExecuteDifferentCallsOfMultiTargets',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tryExecuteDifferentCallsOfMultiTargets`,
+      endpoint: 'tryExecuteDifferentCallsOfMultiTargets',
     });
     return Array.from({ length: targets.length }, () => null);
   }
@@ -534,11 +534,11 @@ async function ExecuteDifferentCallsOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: ExecuteDifferentCallsOfMultiTargets`,
-      Endpoint: 'ExecuteDifferentCallsOfMultiTargets',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: ExecuteDifferentCallsOfMultiTargets`,
+      endpoint: 'ExecuteDifferentCallsOfMultiTargets',
     });
     return null;
   }
@@ -562,11 +562,11 @@ async function tryExecuteCallOfMultiTargets(
       .call(null, block);
   } catch (e) {
     console.log(e);
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: tryExecuteCallOfMultiTargets`,
-      Endpoint: 'tryExecuteCallOfMultiTargets',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tryExecuteCallOfMultiTargets`,
+      endpoint: 'tryExecuteCallOfMultiTargets',
     });
     return Array.from({ length: targets.length }, () => null);
   }
@@ -636,11 +636,11 @@ async function ExecuteCallOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: ExecuteCallOfMultiTargets`,
-      Endpoint: 'ExecuteCallOfMultiTargets',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: ExecuteCallOfMultiTargets`,
+      endpoint: 'ExecuteCallOfMultiTargets',
     });
     return null;
   }
@@ -734,11 +734,11 @@ async function GetTokenBalancesOfHolders(holders, tokens, block, chain, web3) {
       }
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: GetTokenBalancesOfHolders`,
-      Endpoint: 'GetTokenBalancesOfHolders',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: GetTokenBalancesOfHolders`,
+      endpoint: 'GetTokenBalancesOfHolders',
     });
   }
 
@@ -792,11 +792,11 @@ async function GetTokenBalances(holder, tokens, block, chain, web3) {
     }
   } catch (e) {
     console.log(e);
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: GetTokenBalances`,
-      Endpoint: 'GetTokenBalances',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: GetTokenBalances`,
+      endpoint: 'GetTokenBalances',
     });
   }
 
@@ -855,11 +855,11 @@ async function GetBalancesOfHolders(holders, block, chain, web3) {
       }
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: GetBalancesOfHolders`,
-      Endpoint: 'GetBalancesOfHolders',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: GetBalancesOfHolders`,
+      endpoint: 'GetBalancesOfHolders',
     });
   }
 
@@ -1320,11 +1320,11 @@ async function GetTokenTotalSupplies(tokens, block, chain, web3) {
       }
     }
   } catch (e) {
-    logger.error({
-      Message: e?.message || '',
-      Stack: e?.stack || '',
-      Detail: `Error: GetTokenTotalSupplies`,
-      Endpoint: 'GetTokenTotalSupplies',
+    sendLog({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: GetTokenTotalSupplies`,
+      endpoint: 'GetTokenTotalSupplies',
     });
   }
 
@@ -1352,6 +1352,7 @@ export default {
   getTokenBalancesOfHolders: GetTokenBalancesOfHolders,
   getTokenBalances: GetTokenBalances,
   getTokenTotalSupplies: GetTokenTotalSupplies,
+  getTotalSupply: GetTotalSupply,
   executeCall: ExecuteCall,
   executeMultiCallsOfTarget: ExecuteMultiCallsOfTarget,
   executeDifferentCallsOfTarget: ExecuteDifferentCallsOfTarget,

@@ -1,13 +1,6 @@
-import {
-  Controller,
-  ArgumentsHost,
-  Catch,
-  RpcExceptionFilter,
-  HttpStatus,
-  UseFilters,
-} from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
-import { GrpcMethod, RpcException } from '@nestjs/microservices';
+import { GrpcMethod } from '@nestjs/microservices';
 import {
   GetTvlRequest,
   GetTvlReply,
@@ -16,26 +9,7 @@ import {
   GetTokenDetailsReply,
   GetTokenDetailsRequest,
 } from './generated/dappradar-proto/defi-providers';
-import * as logger from './logger';
-import { Observable, throwError } from 'rxjs';
-
-@Catch()
-export class GenericRpcErrorFilter implements RpcExceptionFilter<RpcException> {
-  catch(exception: any, host: ArgumentsHost): Observable<any> {
-    const ctx = host.switchToRpc();
-
-    const errorResponse: any = {
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      timestamp: new Date().toISOString(),
-      errorName: exception?.name,
-      message: exception?.message,
-      requestData: ctx.getData(),
-    };
-
-    logger.error(errorResponse);
-    return throwError(() => errorResponse);
-  }
-}
+import { GenericRpcErrorFilter } from './genericRpcError';
 
 @Controller()
 @UseFilters(new GenericRpcErrorFilter())
@@ -58,6 +32,6 @@ export class AppController {
   async getTokenDetails(
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
-    return this.appService.getTokenDetails(req);
+    return await this.appService.getTokenDetails(req);
   }
 }

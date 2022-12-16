@@ -1,0 +1,67 @@
+[
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "getLastFundId",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "withId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getFundById",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "accounting",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "getFundHoldings",
+        "outputs": [
+            {
+                "name": "balances",
+                "type": "uint256[]"
+            },
+            {
+                "name": "addresses",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

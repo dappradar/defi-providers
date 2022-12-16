@@ -9,7 +9,7 @@ import {
   BULK_RESERVES_DEPOLYED,
 } from '../../constants/contracts.json';
 import basicUtil from '../basicUtil';
-import * as logger from '../../logger';
+import { sendLog } from '../logger';
 
 async function getReserves(address, block, web3) {
   try {
@@ -30,10 +30,11 @@ async function getReserves(address, block, web3) {
         reserve1: BigNumber(reserves._reserve1.toString()),
       };
     } catch (e) {
-      logger.error({
-        Message: e?.message || '',
-        Stack: e?.stack || '',
-        Detail: `Error: uniswapV2.getReserves`,
+      sendLog({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: uniswapV2.getReserves`,
+        endpoint: 'getReserves',
       });
     }
   }
