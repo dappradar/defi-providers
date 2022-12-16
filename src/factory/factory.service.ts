@@ -33,7 +33,7 @@ export class FactoryService {
     }
 
     const providerService: IProvider = await import(
-      this.getProviderServicePath(req.chain, req.provider)
+      this.getProviderServicePath(req.chain, req.provider, 'index')
     );
     const tvlData = await providerService.tvl({
       web3: await this.web3ProviderService.getWeb3(req?.chain),
@@ -54,7 +54,7 @@ export class FactoryService {
     }
 
     const providerService: IProvider = await import(
-      this.getProviderServicePath(req.chain, req.provider)
+      this.getProviderServicePath(req.chain, req.provider, 'index')
     );
 
     const poolVolumes = await providerService.getPoolVolumes({
@@ -88,12 +88,16 @@ export class FactoryService {
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
     const { address, name, symbol, decimals, logo } = await import(
-      this.getProviderServicePath(req.chain, req.provider)
+      this.getProviderServicePath(req.chain, req.provider, 'data.json')
     );
     return { address, name, symbol, decimals, logo };
   }
 
-  getProviderServicePath(chain: string, provider: string): string {
-    return `./providers/${chain}/${provider}/index`;
+  getProviderServicePath(
+    chain: string,
+    provider: string,
+    path: string,
+  ): string {
+    return `./providers/${chain}/${provider}/${path}`;
   }
 }

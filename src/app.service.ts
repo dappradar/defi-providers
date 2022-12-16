@@ -26,7 +26,6 @@ export class AppService {
   async getTokenDetails(
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
-    console.log(req);
-    return this.factoryService.getTokenDetails(req);
+    return await this.factoryService.getTokenDetails(req);
   }
 }
