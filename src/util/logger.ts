@@ -1,26 +1,33 @@
 import * as dgram from 'dgram';
 import { config } from '../app.config';
+import { Logger } from '@nestjs/common';
+
 const client = dgram.createSocket('udp4');
 
-function sendLog({ Message, Stack, Detail, Endpoint, Level }) {
-  const message = {
+function sendLog({
+  message = null,
+  stack = null,
+  detail = null,
+  endpoint,
+  level = 'Error',
+}) {
+  const { LOGSTASH_INDEX, LOGSTASH_PORT, LOGSTASH_HOST } = config;
+  const logMessage = {
     '@timestamp': new Date().toISOString(),
     '@metadata': {
-      package: config.LOGSTASH_INDEX,
+      package: LOGSTASH_INDEX,
     },
-    Message,
-    Stack,
-    Detail,
-    Endpoint,
-    Level,
+    message,
+    stack,
+    detail,
+    endpoint,
+    level,
   };
-  client.send(
-    JSON.stringify(message),
-    Number(config.LOGSTASH_PORT),
-    config.LOGSTASH_HOST,
-  );
+  Logger.log(message);
+  if (!!stack) {
+    Logger.log(stack);
+  }
+  client.send(JSON.stringify(logMessage), Number(LOGSTASH_PORT), LOGSTASH_HOST);
 }
 
-export default {
-  sendLog,
-};
+export { sendLog };

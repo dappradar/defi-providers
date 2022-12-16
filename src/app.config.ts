@@ -3,14 +3,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const {
-  HOST = '127.0.0.1',
-  PORT = 3002,
-  DEFI_PROVIDERS_SERVICE_URI = process.env.DEFI_PROVIDERS_SERVICE_URI
-    ? process.env.DEFI_PROVIDERS_SERVICE_URI
-    : 'localhost:3002',
-  LOGSTASH_PORT = process.env.LOGSTASH_PORT || 9999,
-  LOGSTASH_HOST = process.env.LOGSTASH_HOST || 'logstash-01.pr.do.dappradar.ns',
-  LOGSTASH_INDEX = process.env.LOGSTASH_INDEX || 'defi-tracker',
+  HOST = process.env.HOST || '127.0.0.1',
+  PORT = process.env.HOST || 3002,
+  LOGSTASH_PORT = process.env.LOGSTASH_PORT,
+  LOGSTASH_HOST = process.env.LOGSTASH_HOST,
+  LOGSTASH_INDEX = process.env.LOGSTASH_INDEX,
   OPTIMISM_NODE_URL = process.env.OPTIMISM_NODE_URL,
   ETHEREUM_NODE_URL = process.env.ETHEREUM_NODE_URL,
   BSC_NODE_URL = process.env.BSC_NODE_URL,
@@ -40,8 +37,6 @@ const config = {
     'dappradar-proto',
     'defi-providers.proto',
   ),
-  DEFI_PROVIDERS_SERVICE_URI,
-  GRPC_DEFI_PROVIDERS_SERVICE: 'GRPC_DEFI_PROVIDERS_SERVICE',
   LOGSTASH_HOST,
   LOGSTASH_PORT,
   LOGSTASH_INDEX,
