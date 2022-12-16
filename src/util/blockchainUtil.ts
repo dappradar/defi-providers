@@ -43,7 +43,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
  * @param block - The block number for which data is requested
  * @param chain - EVM chain name (providers parent folder name)
  * @param web3 - The Web3 object
- * @returns The return value(s) of the smart contract method.
+ * @returns The return value(s) of the smart contract method
  *
  */
 async function ExecuteCall(
@@ -120,7 +120,7 @@ async function tryExecuteMultiCallsOfTarget(
 }
 
 /**
- * Calls EVM smart contract method with diferent parameters [params.length] times and returns its results in array.
+ * Calls EVM smart contract method with diferent parameters [params.length] times and returns its results in array
  *
  * @param target - The address of the smart contract to call
  * @param ABI - The json interface for the contract to instantiate
@@ -129,7 +129,7 @@ async function tryExecuteMultiCallsOfTarget(
  * @param block - The block number for which data is requested
  * @param chain - EVM chain name (providers parent folder name)
  * @param web3 - The Web3 object
- * @returns The array of return value(s) of the smart contract method call
+ * @returns The array of return value(s) of the smart contract method calls
  *
  */
 async function ExecuteMultiCallsOfTarget(
@@ -235,7 +235,7 @@ async function tryExecuteDifferentCallsOfTarget(
 }
 
 /**
- * Calls EVM smart contract diferent methods [methods.length] times and returns its results in array.
+ * Calls EVM smart contract diferent methods [methods.length] times and returns its results in array
  *
  * @param target - The address of the smart contract to call
  * @param ABI - The json interface for the contract to instantiate
@@ -244,7 +244,7 @@ async function tryExecuteDifferentCallsOfTarget(
  * @param block - The block number for which data is requested
  * @param chain - EVM chain name (providers parent folder name)
  * @param web3 - The Web3 object
- * @returns The array of return value(s) of the smart contract methods call.
+ * @returns The array of return value(s) of the smart contract methods calls
  *
  */
 async function ExecuteDifferentCallsOfTarget(
@@ -364,7 +364,7 @@ async function tryExecuteMultiCallsOfMultiTargets(
 }
 
 /**
- * Calls EVM smart contract method for diferent addresses [targets.length] times and returns its results in array.
+ * Calls EVM smart contract method for diferent addresses [targets.length] times and returns its results in array
  *
  * @param targets - The array of addresses of the smart contract to call
  * @param ABI - The json interface for the contract to instantiate
@@ -373,7 +373,7 @@ async function tryExecuteMultiCallsOfMultiTargets(
  * @param block - The block number for which data is requested
  * @param chain - EVM chain name (providers parent folder name)
  * @param web3 - The Web3 object
- * @returns The array of return value(s) of the smart contract methods call.
+ * @returns The array of return value(s) of the smart contract methods calls
  *
  */
 async function ExecuteMultiCallsOfMultiTargets(
@@ -484,7 +484,7 @@ async function tryExecuteDifferentCallsOfMultiTargets(
 }
 
 /**
- * Calls EVM smart contract diferent methods for diferent addresses [targets.length] times and returns its results in array.
+ * Calls EVM smart contract diferent methods for diferent addresses [targets.length] times and returns its results in array
  *
  * @param targets - The array of addresses of the smart contract to call
  * @param ABI - The json interface for the contract to instantiate
@@ -493,7 +493,7 @@ async function tryExecuteDifferentCallsOfMultiTargets(
  * @param block - The block number for which data is requested
  * @param chain - EVM chain name (providers parent folder name)
  * @param web3 - The Web3 object
- * @returns The array of return value(s) of the smart contract methods call.
+ * @returns The array of return value(s) of the smart contract methods calls
  *
  */
 async function ExecuteDifferentCallsOfMultiTargets(
@@ -611,6 +611,19 @@ async function tryExecuteCallOfMultiTargets(
   }
 }
 
+/**
+ * Calls EVM smart contract method with same parameters for diferent addresses [targets.length] times and returns its results in array
+ *
+ * @param targets - The array of addresses of the smart contract to call
+ * @param ABI - The json interface for the contract to instantiate
+ * @param method - The smart contract method to call
+ * @param param - The array of parameters to use in smart contract method call
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The array of return value(s) of the smart contract methods calls
+ *
+ */
 async function ExecuteCallOfMultiTargets(
   targets,
   ABI,
