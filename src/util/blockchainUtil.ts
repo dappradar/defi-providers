@@ -701,11 +701,11 @@ async function ExecuteCallOfMultiTargets(
 /**
  * Calls ERC20 balanceOf method for provided address
  *
- * @param address - The address of the wallet
- * @param token - The address of the token
+ * @param address - The wallet address
+ * @param token - The token address
  * @param block - The block number for which data is requested
  * @param web3 - The Web3 object
- * @returns - The token balance for address
+ * @returns - The token and token balance of address
  *
  */
 async function GetTokenBalance(
@@ -729,13 +729,24 @@ async function GetTokenBalance(
   }
 }
 
+/**
+ * Calls ERC20 balanceOf method for every token for provided addresses
+ *
+ * @param holders - The array of addresses
+ * @param tokens - The array of token addresses
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The array of tokens and tokens balances of holders
+ *
+ */
 async function GetTokenBalancesOfEachHolder(
-  holders,
-  tokens,
-  block,
-  chain,
-  web3,
-) {
+  holders: string[],
+  tokens: string[],
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<{ token: string; balance: BigNumber }[]> {
   const holderList = [];
   const tokenList = [];
 
@@ -753,7 +764,24 @@ async function GetTokenBalancesOfEachHolder(
   );
 }
 
-async function GetTokenBalancesOfHolders(holders, tokens, block, chain, web3) {
+/**
+ * Calls ERC20 balanceOf method for [i] token for provided addresses
+ *
+ * @param holders - The array of addresses
+ * @param tokens - The array of token addresses
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The array of tokens and tokens balances of holders
+ *
+ */
+async function GetTokenBalancesOfHolders(
+  holders: string[],
+  tokens: string[],
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<{ token: string; balance: BigNumber }[]> {
   let balanceResults = [];
   const tokenLength = tokens.length;
 
@@ -774,7 +802,7 @@ async function GetTokenBalancesOfHolders(holders, tokens, block, chain, web3) {
       }
     } else {
       const contract = new web3.eth.Contract(
-        BULK_BALANCE_ABI,
+        BULK_BALANCE_ABI as AbiItem[],
         BULK_BALANCE_ADDRESSES[chain],
       );
       for (let first = 0; first < tokenLength; first += 500) {
@@ -815,7 +843,24 @@ async function GetTokenBalancesOfHolders(holders, tokens, block, chain, web3) {
   return balanceResults;
 }
 
-async function GetTokenBalances(holder, tokens, block, chain, web3) {
+/**
+ * Calls ERC20 balanceOf method for every token for provided address
+ *
+ * @param holder - The wallet address
+ * @param tokens - The array of token addresses
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The array of tokens and tokens balances of holder
+ *
+ */
+async function GetTokenBalances(
+  holder: string,
+  tokens: string[],
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<{ token: string; balance: BigNumber }[]> {
   let balanceResults = [];
   const tokenLength = tokens.length;
 
@@ -834,7 +879,7 @@ async function GetTokenBalances(holder, tokens, block, chain, web3) {
       }
     } else {
       const multiContract = new web3.eth.Contract(
-        MULTIBALANCES_ABI,
+        MULTIBALANCES_ABI as AbiItem[],
         MULTIBALANCES_ADDRESSES[chain],
       );
       for (let first = 0; first < tokenLength; first += 500) {
@@ -873,7 +918,22 @@ async function GetTokenBalances(holder, tokens, block, chain, web3) {
   return balanceResults;
 }
 
-async function GetBalancesOfHolders(holders, block, chain, web3) {
+/**
+ * Gets native coin balances for provided addresses
+ *
+ * @param holders - The array of addresses
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The array of tokens (wrapped native coins) and tokens balances of holder
+ *
+ */
+async function GetBalancesOfHolders(
+  holders: string[],
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<{ token: string; balance: BigNumber }[]> {
   let balanceResults = [];
   const addressLength = holders.length;
 
@@ -897,7 +957,7 @@ async function GetBalancesOfHolders(holders, block, chain, web3) {
       }
     } else {
       const contract = new web3.eth.Contract(
-        BULK_BALANCE_ABI,
+        BULK_BALANCE_ABI as AbiItem[],
         BULK_BALANCE_ADDRESSES[chain],
       );
       for (let first = 0; first < addressLength; first += 500) {
@@ -932,7 +992,6 @@ async function GetBalancesOfHolders(holders, block, chain, web3) {
       endpoint: 'GetBalancesOfHolders',
     });
   }
-
   return balanceResults;
 }
 
@@ -1331,9 +1390,22 @@ async function ConvertToUnderlyings(tokenBalances, block, chain, web3) {
   return balances;
 }
 
-async function GetTotalSupply(token, block, web3) {
+/**
+ * Calls ERC20 totalSupply method for the token
+ *
+ * @param token - The token address
+ * @param block - The block number for which data is requested
+ * @param web3 - The Web3 object
+ * @returns - The token and tokens total supply
+ *
+ */
+async function GetTotalSupply(
+  token: string,
+  block: number,
+  web3: Web3,
+): Promise<{ token: string; totalSupply: BigNumber }> {
   try {
-    const contract = new web3.eth.Contract(ERC20_ABI, token);
+    const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], token);
     const totalSupply = await contract.methods.totalSupply().call(null, block);
     return {
       token: token.toLowerCase(),
@@ -1344,7 +1416,22 @@ async function GetTotalSupply(token, block, web3) {
   }
 }
 
-async function GetTokenTotalSupplies(tokens, block, chain, web3) {
+/**
+ * Calls ERC20 totalSupply method for every token in the array
+ *
+ * @param tokens - The array of token addresses
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The array of tokens and tokens total supplies
+ *
+ */
+async function GetTokenTotalSupplies(
+  tokens: string[],
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<{ token: string; totalSupply: BigNumber }[]> {
   let totalSupplyResults = [];
   const tokenLength = tokens.length;
 
@@ -1363,7 +1450,7 @@ async function GetTokenTotalSupplies(tokens, block, chain, web3) {
       }
     } else {
       const metadataContract = new web3.eth.Contract(
-        BULK_METADATA_ABI,
+        BULK_METADATA_ABI as AbiItem[],
         BULK_METADATA_ADDRESSES[chain],
       );
       for (let first = 0; first < tokenLength; first += 500) {
@@ -1414,6 +1501,7 @@ async function getLogs(fromBlock, toBlock, topic, target, web3) {
     output: logs,
   };
 }
+
 export default {
   getUnderlyingBalance: GetUnderlyingBalance,
   convertToUnderlyings: ConvertToUnderlyings,
