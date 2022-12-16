@@ -625,13 +625,13 @@ async function tryExecuteCallOfMultiTargets(
  *
  */
 async function ExecuteCallOfMultiTargets(
-  targets,
-  ABI,
-  method,
-  param,
-  block,
-  chain,
-  web3,
+  targets: string[],
+  ABI: any,
+  method: string,
+  param: (string | number)[],
+  block: number,
+  chain: string,
+  web3: Web3,
 ) {
   const targetLength = targets.length;
 
@@ -655,7 +655,7 @@ async function ExecuteCallOfMultiTargets(
       return executeResults;
     } else {
       const contract = new web3.eth.Contract(
-        MULTICALL_ABI,
+        MULTICALL_ABI as AbiItem[],
         MULTICALL_ADDRESSES[chain],
       );
       const method_abi = ABI.find((abi) => abi.name == method);
