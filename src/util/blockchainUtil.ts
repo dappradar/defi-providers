@@ -136,7 +136,7 @@ async function ExecuteMultiCallsOfTarget(
   target: string,
   ABI: any,
   method: string,
-  params: any[] | any[][],
+  params: (string | number)[] | (string | number)[][],
   block: number,
   chain: string,
   web3: Web3,
@@ -251,7 +251,7 @@ async function ExecuteDifferentCallsOfTarget(
   target: string,
   ABI: any,
   methods: string[],
-  params: any[] | any[][],
+  params: (string | number)[] | (string | number)[][],
   block: number,
   chain: string,
   web3: Web3,
@@ -380,7 +380,7 @@ async function ExecuteMultiCallsOfMultiTargets(
   targets: string[],
   ABI: any,
   method: string,
-  params: any[] | any[][],
+  params: (string | number)[] | (string | number)[][],
   block: number,
   chain: string,
   web3: Web3,
@@ -397,7 +397,7 @@ async function ExecuteMultiCallsOfMultiTargets(
           targets.slice(first, last).map(async (target, index) => {
             try {
               const contract = new web3.eth.Contract(ABI, target);
-              return await contract.methods[method](...subParams[index]).call(
+              return await contract.methods[method](...[subParams[index]]).call(
                 null,
                 block,
               );
@@ -483,15 +483,28 @@ async function tryExecuteDifferentCallsOfMultiTargets(
   }
 }
 
+/**
+ * Calls EVM smart contract diferent methods for diferent addresses [targets.length] times and returns its results in array.
+ *
+ * @param targets - The array of addresses of the smart contract to call
+ * @param ABI - The json interface for the contract to instantiate
+ * @param methods - The array of smart contract methods to call
+ * @param params - The array of parameters or the array of parameter arrays to use in smart contract methods calls
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns The array of return value(s) of the smart contract methods call.
+ *
+ */
 async function ExecuteDifferentCallsOfMultiTargets(
-  targets,
-  ABI,
-  methods,
-  params,
-  block,
-  chain,
-  web3,
-) {
+  targets: string[],
+  ABI: any,
+  methods: string[],
+  params: (string | number)[] | (string | number)[][],
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<any[]> {
   const targetLength = targets.length;
 
   try {
@@ -505,7 +518,7 @@ async function ExecuteDifferentCallsOfMultiTargets(
             try {
               const contract = new web3.eth.Contract(ABI, target);
               return await contract.methods[methods[first + index]](
-                ...subParams[index],
+                ...[subParams[index]],
               ).call(null, block);
             } catch {
               return null;
@@ -517,7 +530,7 @@ async function ExecuteDifferentCallsOfMultiTargets(
       return executeResults;
     } else {
       const contract = new web3.eth.Contract(
-        MULTICALL_ABI,
+        MULTICALL_ABI as AbiItem[],
         MULTICALL_ADDRESSES[chain],
       );
       const method_abis = methods.map((method) =>
