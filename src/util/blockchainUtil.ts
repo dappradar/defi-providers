@@ -1488,7 +1488,27 @@ async function GetTokenTotalSupplies(
   return totalSupplyResults;
 }
 
-async function getLogs(fromBlock, toBlock, topic, target, web3) {
+/**
+ * Gets past logs, matching the given options.
+ *
+ * @remarks
+ * More: https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#getpastlogs
+ *
+ * @param fromBlock - The number of the earliest block to get logs
+ * @param toBlock - The number of the latest block to get logs
+ * @param topic - The value which must each appear in the log entries. The order is important
+ * @param target - An address or a list of addresses to only get logs from particular account(s)
+ * @param web3 - The Web3 object
+ * @returns - The object with array of log objects
+ *
+ */
+async function getLogs(
+  fromBlock: number,
+  toBlock: number,
+  topic: string,
+  target: string | string[],
+  web3: Web3,
+) {
   const logs = await web3.eth.getPastLogs({
     fromBlock: fromBlock,
     toBlock: toBlock,
@@ -1497,7 +1517,6 @@ async function getLogs(fromBlock, toBlock, topic, target, web3) {
   });
 
   return {
-    ethCallCount: null,
     output: logs,
   };
 }

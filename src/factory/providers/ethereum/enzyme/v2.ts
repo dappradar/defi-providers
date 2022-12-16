@@ -42,9 +42,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
   ).output;
 
   const vaultProxies = logs.map((log) =>
-    typeof log === 'string'
-      ? log.toLowerCase()
-      : `0x${log.data.slice(64 - 40 + 2, 64 + 2)}`.toLowerCase(),
+    `0x${log.data.slice(64 - 40 + 2, 64 + 2)}`.toLowerCase(),
   );
 
   const holdingTokensResults = await util.executeCallOfMultiTargets(
