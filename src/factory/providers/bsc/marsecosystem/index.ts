@@ -109,7 +109,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     web3,
   );
-  console.log(results);
   results.forEach((result) => {
     const balance = BigNumber(result || 0);
     balances[XMS_ADDRESS] = BigNumber(balances[XMS_ADDRESS] || 0).plus(balance);
