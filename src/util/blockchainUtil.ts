@@ -995,7 +995,27 @@ async function GetBalancesOfHolders(
   return balanceResults;
 }
 
-async function GetUnderlyingBalance(token, balance, block, chain, web3) {
+/**
+ * Gets underlying balance of various pools
+ *
+ * * @remarks
+ * Tries to get underlying balance of various LP and other pools including Uniswap, Curve, One Inch, Beefy.
+ *
+ * @param token - The pool token address
+ * @param balance - The pool token balance
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The array of underlying tokens and their balances
+ *
+ */
+async function GetUnderlyingBalance(
+  token: string,
+  balance: BigNumber,
+  block: number,
+  chain: string,
+  web3: any,
+): Promise<{ token: string; balance: BigNumber }[]> {
   const key = `${data.CHAINS[chain].prefix}${token}`;
   let tries = 0;
   if (typeof underlyingData[key] == 'number') {
@@ -1037,7 +1057,7 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     ];
   }
   try {
-    const contract = new web3.eth.Contract(UNI_ABI, token);
+    const contract = new web3.eth.Contract(UNI_ABI as AbiItem[], token);
     const reserves = await contract.methods.getReserves().call(null, block);
     if (!underlyingData[key].token0) {
       underlyingData[key].token0 = (
@@ -1065,7 +1085,7 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     ];
   } catch {}
   try {
-    const contract = new web3.eth.Contract(CURVE128_ABI, token);
+    const contract = new web3.eth.Contract(CURVE128_ABI as AbiItem[], token);
     await contract.methods.coins(0).call();
     const totalSupply = await contract.methods.totalSupply().call(null, block);
     const ratio = balance.div(BigNumber(totalSupply.toString()));
@@ -1099,7 +1119,7 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     return balances;
   } catch {}
   try {
-    const contract = new web3.eth.Contract(CURVE256_ABI, token);
+    const contract = new web3.eth.Contract(CURVE256_ABI as AbiItem[], token);
     await contract.methods.coins(0).call();
     const totalSupply = await contract.methods.totalSupply().call(null, block);
     const ratio = balance.div(BigNumber(totalSupply.toString()));
@@ -1133,7 +1153,7 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     return balances;
   } catch {}
   try {
-    const contract = new web3.eth.Contract(ONEINCH_ABI, token);
+    const contract = new web3.eth.Contract(ONEINCH_ABI as AbiItem[], token);
     const balances = [];
     await contract.methods.tokens(0).call();
     const totalSupply = await contract.methods.totalSupply().call(null, block);
@@ -1157,7 +1177,10 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
           address = WMAIN_ADDRESS[chain];
           tokenBalance = await web3.eth.getBalance(token, block);
         } else {
-          const tokenContract = new web3.eth.Contract(ERC20_ABI, address);
+          const tokenContract = new web3.eth.Contract(
+            ERC20_ABI as AbiItem[],
+            address,
+          );
           tokenBalance = await tokenContract.methods
             .balanceOf(token)
             .call(null, block);
@@ -1173,7 +1196,7 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     return balances;
   } catch {}
   try {
-    const contract = new web3.eth.Contract(CTOKEN_ABI, token);
+    const contract = new web3.eth.Contract(CTOKEN_ABI as AbiItem[], token);
     const exchangeRate = await contract.methods
       .exchangeRateStored()
       .call(null, block);
@@ -1192,7 +1215,7 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     ];
   } catch {}
   try {
-    const contract = new web3.eth.Contract(CTOKEN_ABI, token);
+    const contract = new web3.eth.Contract(CTOKEN_ABI as AbiItem[], token);
     let cash;
     try {
       cash = await contract.methods.getCash().call(null, block);
@@ -1226,14 +1249,14 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     ];
   } catch {}
   try {
-    const contract = new web3.eth.Contract(ATOKEN_ABI, token);
+    const contract = new web3.eth.Contract(ATOKEN_ABI as AbiItem[], token);
     if (!underlyingData[key].underlyingAsset) {
       underlyingData[key].underlyingAsset = (
         await contract.methods.UNDERLYING_ASSET_ADDRESS().call()
       ).toLowerCase();
     }
     const underlyingContract = new web3.eth.Contract(
-      ERC20_ABI,
+      ERC20_ABI as AbiItem[],
       underlyingData[key].underlyingAsset,
     );
     const underlyingBalance = await underlyingContract.methods
@@ -1249,9 +1272,12 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     ];
   } catch {}
   try {
-    const contract = new web3.eth.Contract(CURVE256_ABI, token);
+    const contract = new web3.eth.Contract(CURVE256_ABI as AbiItem[], token);
     const minter = await contract.methods.minter().call(null, block);
-    const minter_contract = new web3.eth.Contract(CURVE256_ABI, minter);
+    const minter_contract = new web3.eth.Contract(
+      CURVE256_ABI as AbiItem[],
+      minter,
+    );
     await minter_contract.methods.coins(0).call();
     const totalSupply = await contract.methods.totalSupply().call(null, block);
     const ratio = balance.div(BigNumber(totalSupply.toString()));
@@ -1286,7 +1312,10 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
   } catch {}
   // Solarbeam stable swap pool farm
   try {
-    const lpTokenContract = new web3.eth.Contract(BEEFY_VAULT_ABI, token);
+    const lpTokenContract = new web3.eth.Contract(
+      BEEFY_VAULT_ABI as AbiItem[],
+      token,
+    );
     const lpTokenOwner = await lpTokenContract.methods
       .owner()
       .call(null, block);
@@ -1296,7 +1325,7 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
     const ratio = balance.div(BigNumber(lpTokenTotalSupply.toString()));
 
     const ownerContract = new web3.eth.Contract(
-      SOLARBEAM_STABLE_SWAP_POOL_ABI,
+      SOLARBEAM_STABLE_SWAP_POOL_ABI as AbiItem[],
       lpTokenOwner,
     );
 
@@ -1333,7 +1362,25 @@ async function GetUnderlyingBalance(token, balance, block, chain, web3) {
   ];
 }
 
-async function ConvertToUnderlyings(tokenBalances, block, chain, web3) {
+/**
+ * Gets underlying balance of various pools
+ *
+ * * @remarks
+ * Tries to get underlying balance of various LP and other pools including Uniswap, Curve, One Inch, Beefy.
+ *
+ * @param tokenBalances - The pools and their balances
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param web3 - The Web3 object
+ * @returns - The underlying tokens and their balances
+ *
+ */
+async function ConvertToUnderlyings(
+  tokenBalances: { [key: string]: BigNumber },
+  block: number,
+  chain: string,
+  web3: Web3,
+): Promise<{ [key: string]: string }> {
   try {
     underlyingData = JSON.parse(fs.readFileSync('./token01.json', 'utf8'));
   } catch {}
