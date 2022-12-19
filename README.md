@@ -53,3 +53,9 @@ SOLANA_NODE_URL=
 STACKS_NODE_URL=
 TEZOS_NODE_URL=
 ```
+
+## Integration examples
+
+Uniswap V2 clone integration: [Sakeswap](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/ethereum/sakeswap)
+Staking contract integrations: [radarstaking](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/ethereum/radarstaking), [citycoins](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/stacks/citycoins)
+Integration based on subgraph: [rubicon](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/optimism/rubicon)
