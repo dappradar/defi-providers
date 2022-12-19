@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import basicUtil from '../basicUtil';
+import { IBalances } from '../../interfaces/ITvl';
 
 const QUERY_SIZE = 400;
 const POOLS_QUERY = gql`
@@ -33,7 +34,20 @@ async function getPools(endpoint, block, skip, chain) {
   return pools;
 }
 
-async function getTvlFromSubgraph(endpoint, block, chain) {
+/**
+ * Gets TVL of Uniswap V3 (or it's clone) using subgraph
+ *
+ * @param endpoint - The URL of Uniswap V3 (or it's clone) subgraph
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @returns The object containing token addresses and their locked values
+ *
+ */
+async function getTvlFromSubgraph(
+  endpoint: string,
+  block: number,
+  chain: string,
+): Promise<IBalances> {
   const balances = {};
 
   try {
