@@ -35,9 +35,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   ).output;
 
   const financialContracts = logs.map((log) =>
-    typeof log === 'string'
-      ? log.toLowerCase()
-      : `0x${log.topics[1].slice(64 - 40 + 2, 64 + 2)}`.toLowerCase(),
+    `0x${log.topics[1].slice(64 - 40 + 2, 64 + 2)}`.toLowerCase(),
   );
 
   const collaterals = await util.executeCallOfMultiTargets(

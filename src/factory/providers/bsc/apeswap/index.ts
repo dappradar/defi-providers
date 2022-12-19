@@ -124,19 +124,19 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const tokenBalance = await tokenContract.methods
     .balanceOf(MASTER_ADDRESS)
     .call(null, block);
-  balances[TOKEN_ADDRESS] = BigNumber(balances[TOKEN_ADDRESS] || 0).plus(
-    tokenBalance,
-  );
+  balances[TOKEN_ADDRESS] = BigNumber(balances[TOKEN_ADDRESS] || 0)
+    .plus(tokenBalance)
+    .toFixed();
 
   // Lending
   const unitrollerBalances = await unitroller(block, chain, provider, web3);
   formatter.sumMultiBalanceOf(balances, unitrollerBalances);
 
   for (const token in balances) {
-    if (balances[token].isLessThan(100000)) {
+    if (BigNumber(balances[token]).isLessThan(100000)) {
       delete balances[token];
     } else {
-      balances[token] = balances[token].toFixed();
+      balances[token] = BigNumber(balances[token]).toFixed();
     }
   }
 

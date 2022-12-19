@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js';
 import fetch from 'node-fetch';
+import Web3 from 'web3';
 import util from '../blockchainUtil';
 import basicUtil from '../basicUtil';
 import VAULT_ABI from '../../constants/abi/beefyVault.json';
 import formatter from '../formatter';
+import { IBalances } from '../../interfaces/ITvl';
 
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
 let wants = {};
@@ -29,7 +31,22 @@ async function getWants(address, web3) {
   } catch {}
 }
 
-async function getTvl(block, chain, provider, web3) {
+/**
+ * Gets TVL of Beefy Finance
+ *
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param provider - the provider folder name
+ * @param web3 - The Web3 object
+ * @returns The object containing token addresses and their locked values
+ *
+ */
+async function getTvl(
+  block: number,
+  chain: string,
+  provider: string,
+  web3: Web3,
+): Promise<IBalances> {
   try {
     wants = basicUtil.readDataFromFile('cache/wants.json', chain, provider);
   } catch {}
