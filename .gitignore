@@ -35,8 +35,6 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-.env
-
 # Cache
 token01.json
 pairs.json
