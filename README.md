@@ -1,22 +1,14 @@
-## Description
+## DappRadar All Providers
 
-Written in [Nest.js](https://github.com/nestjs/nest), which is popular in the crypto world.
-
-Template microservice
+Written in [Nest.js](https://github.com/nestjs/nest),
 
 ## Installation
 
 ```bash
-$ npm run preinstall
 $ npm run build
-```
-
-## Running the app
-
-```bash
-# development
 $ npm run dev
-
-# production mode
-$ npm run prod
 ```
+
+## Changing RPC Url
+
+Update the .env file according to the blockchain you want to work with and follow the installation steps.

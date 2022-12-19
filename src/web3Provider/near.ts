@@ -1,6 +1,6 @@
 import * as nearAPI from 'near-api-js';
-import serviceData from '../util/data';
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { nodeUrls } from '../app.config';
 
 let near;
 
@@ -8,7 +8,7 @@ let near;
 export class Near implements OnModuleInit {
   async onModuleInit() {
     const { connect } = nearAPI;
-    const nodeUrl = serviceData[`NEAR_NODE_URL`];
+    const nodeUrl = nodeUrls.NEAR_NODE_URL;
     const connectionConfig = {
       networkId: 'mainnet',
       nodeUrl,

@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
-import serviceData from '../util/data';
 import { Injectable } from '@nestjs/common';
+import { nodeUrls } from '../app.config';
 
-const nodeUrl = serviceData[`STACKS_NODE_URL`];
+const nodeUrl = nodeUrls.STACKS_NODE_URL;
 @Injectable()
 export class Stacks {
   async getBlockNumber() {

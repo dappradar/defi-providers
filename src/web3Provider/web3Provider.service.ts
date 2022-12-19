@@ -1,5 +1,5 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import serviceData from '../util/data';
+import { Injectable } from '@nestjs/common';
+import { nodeUrls } from '../app.config';
 import { Everscale } from './everscale';
 import { Hedera } from './hedera';
 import { Near } from './near';
@@ -27,12 +27,16 @@ export class Web3ProviderService {
   ) {}
 
   async getWeb3(chain = 'ethereum', url = null) {
-    const supportChain = serviceData.CHAINS[chain] ? chain : 'ethereum';
-    const node_url =
-      url || serviceData[`${supportChain.toUpperCase()}_NODE_URL`];
+    let node_url;
+    if (url) node_url = url;
+    else {
+      node_url =
+        nodeUrls[`${chain.toUpperCase()}_NODE_URL`] ||
+        nodeUrls[`ETHEREUM_NODE_URL`];
+    }
 
     let web3;
-    switch (supportChain) {
+    switch (chain) {
       case 'everscale': {
         web3 = { eth: this.everscale };
         web3.nodeUrl = node_url;

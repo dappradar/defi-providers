@@ -23,11 +23,14 @@ function sendLog({
     endpoint,
     level,
   };
-  Logger.log(message);
-  if (!!stack) {
-    Logger.log(stack);
+  Logger.log(JSON.stringify(logMessage));
+  if (LOGSTASH_HOST && LOGSTASH_PORT) {
+    client.send(
+      JSON.stringify(logMessage),
+      Number(LOGSTASH_PORT),
+      LOGSTASH_HOST,
+    );
   }
-  client.send(JSON.stringify(logMessage), Number(LOGSTASH_PORT), LOGSTASH_HOST);
 }
 
 export { sendLog };
