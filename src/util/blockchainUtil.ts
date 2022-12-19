@@ -1363,7 +1363,7 @@ async function GetUnderlyingBalance(
 }
 
 /**
- * Gets underlying balance of various pools
+ * Gets underlying balances of various pools
  *
  * * @remarks
  * Tries to get underlying balance of various LP and other pools including Uniswap, Curve, One Inch, Beefy.
