@@ -31,7 +31,9 @@ export class FactoryService {
     if (req.query.block === undefined) {
       throw new RpcException('Block is undefined');
     }
-
+    if (this.web3ProviderService.checkNodeUrl(req?.chain)) {
+      throw new RpcException('Node URL is not provided');
+    }
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider, 'index')
     );
