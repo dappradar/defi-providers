@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
-import serviceData from '../util/data';
+import { nodeUrls } from '../app.config';
 import { Injectable } from '@nestjs/common';
 
-const nodeUrl = serviceData[`EVERSCALE_NODE_URL`];
+const nodeUrl = nodeUrls.EVERSCALE_NODE_URL;
 
 @Injectable()
 export class Everscale {

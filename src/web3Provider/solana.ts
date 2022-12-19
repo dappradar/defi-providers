@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import serviceData from '../util/data';
 import { Injectable } from '@nestjs/common';
+import { nodeUrls } from '../app.config';
 
-const nodeUrl = serviceData[`SOLANA_NODE_URL`];
+const nodeUrl = nodeUrls.SOLANA_NODE_URL;
 
 @Injectable()
 export class Solana {

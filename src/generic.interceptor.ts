@@ -15,7 +15,12 @@ export class GenericInterceptor implements NestInterceptor {
   ): Observable<any> {
     const req = context.switchToHttp().getRequest();
     const endpoint = context.getHandler();
-    sendLog({ message: req, detail: req.toString(), endpoint, level: 'Info' });
+    sendLog({
+      message: JSON.stringify(req),
+      detail: null,
+      endpoint: endpoint.name,
+      level: 'Info',
+    });
     return next.handle().pipe();
   }
 }

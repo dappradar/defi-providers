@@ -3,8 +3,10 @@ import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { nodeUrls } from '../app.config';
+
 const TZKT_API = 'https://api.tzkt.io/v1';
 let tezosRPC: TezosToolkit;
+
 @Injectable()
 export class Tezos implements OnModuleInit {
   async onModuleInit() {

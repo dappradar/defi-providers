@@ -18,6 +18,7 @@ async function bootstrap() {
   sendLog({
     message: `Microservice is listening on ${URI}`,
     endpoint: 'bootstrap',
+    level: 'Info',
   });
 }
 bootstrap();

@@ -2,6 +2,7 @@
 /dist
 /node_modules
 /src/generated
+.env
 
 # Logs
 logs
@@ -34,8 +35,6 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-.env
 
 # Cache
 token01.json

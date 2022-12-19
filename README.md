@@ -1,22 +1,43 @@
-## Description
-
-Written in [Nest.js](https://github.com/nestjs/nest), which is popular in the crypto world.
-
-Template microservice
-
+## DappRadar All Providers
+[DappRadar](https://dappradar.com/)
 ## Installation
 
 ```bash
-$ npm run preinstall
 $ npm run build
+$ npm run dev
 ```
 
-## Running the app
+## Adding Provider 
+You can find the necessary generic functions with their definitions in the util file.
+
+Pull request convention
+```bash
+[CHAIN] [PROVIDER] integration
+```
+
+## Testing
+After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc) or [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts).
+
+## Edit Environment File
+
+Update the .env file according to the blockchain you want to work with and follow the installation steps.
 
 ```bash
-# development
-$ npm run dev
-
-# production mode
-$ npm run prod
+ETHEREUM_NODE_URL=
+BSC_NODE_URL=
+AURORA_NODE_URL=
+AVALANCHE_NODE_URL=
+CELO_NODE_URL=
+EVERSCALE_NODE_URL=
+FANTOM_NODE_URL=
+HEDERA_NODE_URL=
+MOONBEAM_NODE_URL=
+MOONRIVER_NODE_URL=
+NEAR_NODE_URL=
+OPTIMISM_NODE_URL=
+POLYGON_NODE_URL=
+RONIN_NODE_URL=
+SOLANA_NODE_URL=
+STACKS_NODE_URL=
+TEZOS_NODE_URL=
 ```

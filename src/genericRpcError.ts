@@ -23,7 +23,7 @@ export class GenericRpcErrorFilter implements RpcExceptionFilter<RpcException> {
     sendLog({
       message: errorResponse.message,
       detail: errorResponse.errorResponsestatusCode,
-      endpoint: errorResponse.errorName,
+      endpoint: 'GenericRPCError',
       level: 'Error',
     });
     return throwError(() => errorResponse);
