@@ -1,5 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import { ITvlReturn } from '../../interfaces/ITvl';
 import FACTORY_ABI from '../../constants/abi/factory.json';
 import PAIR_ABI from '../../constants/abi/uni.json';
 import RESERVES_ABI from '../../constants/abi/uniReserves.json';
@@ -73,14 +76,26 @@ async function getPoolsReserves(
   return poolReserves;
 }
 
+/**
+ * Gets TVL of Uniswap V2 (or it's clone) using factory address
+ *
+ * @param factoryAddress - The address of factory
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param provider - the provider folder name
+ * @param web3 - The Web3 object
+ * @param usePoolMethods - some factories use pool methods and other pair methods
+ * @returns The object containing object with token addresses and their locked values and object with pool balances
+ *
+ */
 async function getTvl(
-  factoryAddress,
-  block,
-  chain,
-  provider,
-  web3,
+  factoryAddress: string,
+  block: number,
+  chain: string,
+  provider: string,
+  web3: Web3,
   usePoolMethods = false,
-) {
+): Promise<ITvlReturn> {
   const balances = {};
   const poolBalances = {};
 
@@ -97,10 +112,13 @@ async function getTvl(
     );
   } catch {}
 
-  const contract = new web3.eth.Contract(FACTORY_ABI, factoryAddress);
+  const contract = new web3.eth.Contract(
+    FACTORY_ABI as AbiItem[],
+    factoryAddress,
+  );
 
   const bulk_reserves_contract = new web3.eth.Contract(
-    BULK_RESERVES_ABI,
+    BULK_RESERVES_ABI as AbiItem[],
     BULK_RESERVES_ADDRESSES[chain],
   );
 
@@ -243,17 +261,36 @@ async function getTvl(
   }
 
   console.timeEnd('Getting PairInfo');
-
   return { balances, poolBalances };
 }
 
+/**
+ * Gets pool volumes of Uniswap V2 (or it's clone) using subgraph
+ *
+ * @param queryApi - The URL of Uniswap V2 (or it's clone) subgraph
+ * @param querySize - The size of subgprah query
+ * @param pools - The array of pools to query
+ * @param priorBlockNumber - The block number
+ * @param volumeNames - The volume names in subgraph
+ * @returns The object containing pool addresses and their volumes
+ *
+ */
 async function getPoolVolumes(
-  queryApi,
-  querySize,
-  pools,
-  priorBlockNumber,
-  volumeNames,
-) {
+  queryApi: string,
+  querySize: number,
+  pools: string[],
+  priorBlockNumber: number,
+  volumeNames: {
+    volumeToken0: string;
+    volumeToken1: string;
+    volumeUsd: string;
+  },
+): Promise<{
+  [key: string]: {
+    volumes: string[];
+    volumeUsd: string;
+  };
+}> {
   const volumeNameToken0 = volumeNames?.volumeToken0 || 'volumeToken0';
   const volumeNameToken1 = volumeNames?.volumeToken1 || 'volumeToken1';
   const volumeNameVolumeUsd = volumeNames?.volumeUsd || 'volumeUSD';
@@ -321,16 +358,37 @@ async function getPoolVolumes(
     } catch {}
   }
 
+  console.log('uni poolVolumes');
+  console.log(poolVolumes);
   return poolVolumes;
 }
 
+/**
+ * Gets token volumes of Uniswap V2 (or it's clone) using subgraph
+ *
+ * @param queryApi - The URL of Uniswap V2 (or it's clone) subgraph
+ * @param querySize - The size of subgprah query
+ * @param tokens - The array of tokens to query
+ * @param priorBlockNumber - The block number
+ * @param volumeNames - The volume names in subgraph
+ * @returns The object containing pool addresses and their volumes
+ *
+ */
 async function getTokenVolumes(
-  queryApi,
-  querySize,
-  tokens,
+  queryApi: string,
+  querySize: number,
+  tokens: string[],
   priorBlockNumber,
-  volumeNames,
-) {
+  volumeNames: {
+    volume: string;
+    volumeUsd: string;
+  },
+): Promise<{
+  [key: string]: {
+    volume: string;
+    volumeUsd: string;
+  };
+}> {
   const volumeNameVolume = volumeNames?.volume || 'volume';
   const volumeNameVolumeUsd = volumeNames?.volumeUsd || 'volumeUSD';
 

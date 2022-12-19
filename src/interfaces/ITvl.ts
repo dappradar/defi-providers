@@ -11,6 +11,10 @@ export interface ITvlReturn {
   poolBalances: { [key: string]: PoolBalance };
 }
 
+export interface IBalances {
+  [key: string]: string;
+}
+
 export interface PoolBalance {
   tokens: string[];
   balances: string[];

@@ -37,19 +37,21 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     if (result && result.balance.isGreaterThan(0)) {
       const address = result.token;
       if (!balances[address]) {
-        balances[address] = new BigNumber(0);
+        balances[address] = '0';
       }
-      balances[address] = balances[address].plus(result.balance);
+      balances[address] = BigNumber(balances[address])
+        .plus(result.balance)
+        .toFixed();
     }
   });
 
   console.timeEnd('Getting PairInfo');
 
   for (const token in balances) {
-    if (balances[token].isLessThan(100000)) {
+    if (BigNumber(balances[token]).isLessThan(100000)) {
       delete balances[token];
     } else {
-      balances[token] = balances[token].toFixed();
+      balances[token] = BigNumber(balances[token]).toFixed();
     }
   }
 

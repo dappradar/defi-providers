@@ -111,7 +111,9 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
   results.forEach((result) => {
     const balance = BigNumber(result || 0);
-    balances[XMS_ADDRESS] = BigNumber(balances[XMS_ADDRESS] || 0).plus(balance);
+    balances[XMS_ADDRESS] = BigNumber(balances[XMS_ADDRESS] || 0)
+      .plus(balance)
+      .toFixed();
   });
 
   const stakedBalances = await stakedBalance(block, chain, provider, web3);
@@ -120,18 +122,18 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     const balance = BigNumber(stakedBalances[token] || 0);
     if (balance.isGreaterThan(0)) {
       if (!balances[token]) {
-        balances[token] = balance;
+        balances[token] = balance.toFixed();
       } else {
-        balances[token] = balances[token].plus(balance);
+        balances[token] = BigNumber(balances[token]).plus(balance).toFixed();
       }
     }
   }
 
   for (const token in balances) {
-    if (balances[token].isLessThan(100000)) {
+    if (BigNumber(balances[token]).isLessThan(100000)) {
       delete balances[token];
     } else {
-      balances[token] = balances[token].toFixed();
+      balances[token] = BigNumber(balances[token]).toFixed();
     }
   }
 

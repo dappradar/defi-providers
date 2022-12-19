@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
+import Web3 from 'web3';
 import util from '../blockchainUtil';
 import basicUtil from '../basicUtil';
+import { IBalances } from '../../interfaces/ITvl';
 import FACTORY_ABI from '../../constants/abi/curveFactoryAbi.json';
 import POOL_ABI from '../../constants/abi/curvePoolAbi.json';
 
@@ -132,7 +134,24 @@ async function getPools(curveFactory, block, chain, provider, web3) {
   };
 }
 
-async function getTvl(curveFactory, block, chain, provider, web3) {
+/**
+ * Gets TVL of Curve (or it's clone) using factory address
+ *
+ * @param curveFactory - The address of factory
+ * @param block - The block number for which data is requested
+ * @param chain - EVM chain name (providers parent folder name)
+ * @param provider - the provider folder name
+ * @param web3 - The Web3 object
+ * @returns The object containing token addresses and their locked values
+ *
+ */
+async function getTvl(
+  curveFactory: string,
+  block: number,
+  chain: string,
+  provider: string,
+  web3: Web3,
+): Promise<IBalances> {
   const balances = {};
 
   const pools = await getPools(curveFactory, block, chain, provider, web3);
