@@ -74,4 +74,8 @@ export class Web3ProviderService {
     }
     return web3;
   }
+
+  checkNodeUrl(chain: string) {
+    return !nodeUrls[`${chain.toUpperCase()}_NODE_URL`];
+  }
 }
