@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
-import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
