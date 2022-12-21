@@ -65,3 +65,6 @@ Integration based on subgraph: [Rubicon](https://github.com/dappradar/dappradar-
 Integration based on various smart contract methods calls: [Aave](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/avalanche/aave), [Iron](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/polygon/iron)
 
 Integration where LP tokens are locked as TVL so their underlying balances have to be calculated: [Autofarm](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/bsc/autofarm)
+
+## License
+All code committed to this repository belongs to DappRadar Lithuania.
