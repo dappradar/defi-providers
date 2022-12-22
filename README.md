@@ -20,6 +20,8 @@ Pull request convention
 [CHAIN] [PROVIDER] integration
 ```
 
+By submitting the code, you transfer all the rights to the code to DappRadar UAB and retain no copyright or other intellectual property rights to it.
+
 ## Testing
 
 After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc) or [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts).
