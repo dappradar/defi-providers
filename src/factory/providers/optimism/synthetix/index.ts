@@ -1,9 +1,9 @@
-import pageResults from 'graph-results-pager';
 import BigNumber from 'bignumber.js';
 import SYSTEM_SETTINGS_ABI from './abi/systemSettings.json';
 import MINTABLE_SYNTHETIX_ABI from './abi/mintableSynthetix.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
+import { gql, request } from 'graphql-request';
 
 const START_BLOCK = 12840848;
 const SYSTEM_SETTINGS = '0x05e1b1dff853b1d67828aa5e8cb37cc25aa050ee';
@@ -11,35 +11,39 @@ const MINTABLE_SYNTHETIX = '0xfe8e48bf36ccc3254081ec8c65965d1c8b2e744d';
 const SYNTHETIX = '0x8700daec35af8ff88c16bdf0418774cb3d7599b4';
 const GRAPHQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/synthetixio-team/optimism-main';
+const QUERY_NO_BLOCK = gql`
+  query snxholders($block: Int, $skip: Int) {
+    snxholders(
+      orderBy: collateral
+      orderDirection: desc
+      block: { number: $block }
+      where: { collateral_gt: 0 }
+      first: 1000
+      skip: $skip
+    ) {
+      id
+      collateral
+    }
+  }
+`;
 
-async function getSnxHolders(blockNumber) {
-  for (let i = blockNumber; i > blockNumber - 10000; i -= 100) {
+async function getSnxHolders(block) {
+  let holders = [];
+  for (let i = 0; i <= 5000; i += 1000) {
+    console.log(i);
     try {
-      console.log(`Trying to get Holders on block ${i}`);
-      const result = await pageResults({
-        api: GRAPHQL_ENDPOINT,
-        query: {
-          entity: 'snxholders',
-          selection: {
-            orderBy: 'collateral',
-            orderDirection: 'desc',
-            block: {
-              number: i,
-            },
-            where: {
-              collateral_gt: 0,
-            },
-          },
-          properties: ['collateral', 'id'],
-        },
-        max: 6000, // top 6000 SNX holders with collateral.
-      });
-      return result;
+      const holder = (
+        await request(GRAPHQL_ENDPOINT, QUERY_NO_BLOCK, {
+          block,
+          skip: i,
+        })
+      ).snxholders;
+      holders = [...holders, ...holder];
     } catch (e) {
       console.log(`Issue with SubGraph on block ${i - 100}`);
     }
   }
-  return null;
+  return holders;
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {

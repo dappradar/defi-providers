@@ -1,13 +1,27 @@
-import pageResults from 'graph-results-pager';
 import BigNumber from 'bignumber.js';
 import abi from './abi.json';
 import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { request, gql } from 'graphql-request';
 
 const SYNTHETIX_STATE = '0x4b9Ca5607f1fF8019c1C6A3c2f0CC8de622D5B82';
 const SYNTHETIX = '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f';
 const GRAPHQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix';
+const QUERY_NO_BLOCK = gql`
+  query snxholders($block: Int) {
+    snxholders(
+      orderBy: collateral
+      orderDirection: desc
+      block: { number: 16276865 }
+      where: { collateral_gt: 0 }
+      first: 500
+    ) {
+      id
+      collateral
+    }
+  }
+`;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -16,7 +30,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let totalTopStakersSNXLocked = new BigNumber(0);
   let totalTopStakersSNX = new BigNumber(0);
-
   const [holders, issuanceRatio, totalSupply] = await Promise.all([
     SNXHolders(block),
     synthetixStateContract.methods.issuanceRatio().call(null, block),
@@ -53,36 +66,18 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   return { balances };
 }
 
-// Uses graph protocol to run through SNX contract. Since there is a limit of 100 results per query
-// we can use graph-results-pager library to increase the limit.
-async function SNXHolders(blockNumber) {
-  for (let i = blockNumber; i > blockNumber - 10000; i -= 100) {
+async function SNXHolders(block) {
+  for (let i = block; i > block - 10000; i -= 100) {
     try {
-      console.log(`Trying to get Holders on block ${i}`);
-      const result = await pageResults({
-        api: GRAPHQL_ENDPOINT,
-        query: {
-          entity: 'snxholders',
-          selection: {
-            orderBy: 'collateral',
-            orderDirection: 'desc',
-            block: {
-              number: i,
-            },
-            where: {
-              collateral_gt: 0,
-            },
-          },
-          properties: ['collateral', 'id'],
-        },
-        max: 500, // top 5000 SNX holders with collateral. At the time of this commit, there are 51,309 SNX holders. (7/27/2020)
-      });
-      return result;
+      return (
+        await request(GRAPHQL_ENDPOINT, QUERY_NO_BLOCK, {
+          block,
+        })
+      ).snxholders;
     } catch (e) {
-      console.log(`Issue with SubGraph on block ${i - 100}`);
+      console.log(`Issue with SubGraph on block block`);
     }
   }
-  return null;
 }
 
 export { tvl };
