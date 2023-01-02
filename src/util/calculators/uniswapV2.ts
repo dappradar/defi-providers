@@ -12,7 +12,7 @@ import {
   BULK_RESERVES_DEPOLYED,
 } from '../../constants/contracts.json';
 import basicUtil from '../basicUtil';
-import { sendLog } from '../logger';
+import { log } from '../logger/logger';
 
 async function getReserves(address, block, web3) {
   try {
@@ -33,7 +33,7 @@ async function getReserves(address, block, web3) {
         reserve1: BigNumber(reserves._reserve1.toString()),
       };
     } catch (e) {
-      sendLog({
+      log.error({
         message: e?.message || '',
         stack: e?.stack || '',
         detail: `Error: uniswapV2.getReserves`,
@@ -63,7 +63,12 @@ async function getPoolsReserves(
           .getReservesBulk(pInfos)
           .call(null, block);
       } catch (e) {
-        console.log(e.message);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getPoolsReserves`,
+          endpoint: 'getPoolsReserves',
+        });
         poolReserves = await Promise.all(
           pInfos.map((pool) => getReserves(pool, block, web3)),
         );
@@ -71,7 +76,12 @@ async function getPoolsReserves(
     }
     return poolReserves;
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getPoolsReserves`,
+      endpoint: 'getPoolsReserves',
+    });
   }
   return poolReserves;
 }
@@ -134,7 +144,10 @@ async function getTvl(
     return;
   }
 
-  console.log(`Pair counts: ${len}`);
+  log.info({
+    message: `Pair counts: ${len}`,
+    endpoint: 'getTvl',
+  });
 
   let poolInfos = _pairs;
   const pairLength = _pairs.length;
@@ -142,7 +155,10 @@ async function getTvl(
   for (let start = pairLength; start < len; start += 3000) {
     let pInfos = [];
     const end = Math.min(start + 3000, len);
-    console.log(`Getting Pairs from ${start} to ${end}`);
+    log.info({
+      message: `Getting Pairs from ${start} to ${end}`,
+      endpoint: 'getTvl',
+    });
     for (let i = start; i < end; i++) {
       if (!usePoolMethods) {
         pInfos.push(contract.methods.allPairs(i).call());
@@ -174,7 +190,10 @@ async function getTvl(
   const newPoolLength = newPools.length;
   for (let start = 0; start < newPoolLength; start += 300) {
     const end = Math.min(newPoolLength, start + 300);
-    console.log(`Getting Token01 from ${start} to ${end}`);
+    log.info({
+      message: `Getting Token01 from ${start} to ${end}`,
+      endpoint: 'getTvl',
+    });
     const subPools = newPools.slice(start, end);
     try {
       const tokens01 = await bulk_reserves_contract.methods
@@ -187,8 +206,13 @@ async function getTvl(
           token01Infos[subPools[index]].token1 = token.token1.toLowerCase();
         }
       });
-    } catch {
-      console.log(`Getting Token01 got issue at ${start}`);
+    } catch (e) {
+      log.error({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Getting Token01 got issue at ${start}`,
+        endpoint: 'getTvl',
+      });
     }
   }
 
@@ -198,12 +222,13 @@ async function getTvl(
     chain,
     provider,
   );
-
   console.time('Getting PairInfo');
-
   for (let first = 0; first < poolInfos.length; first += 1500) {
     const last = Math.min(poolInfos.length, first + 1500);
-    console.log(`Getting PairInfo from ${first} to ${last}`);
+    log.info({
+      message: `Getting PairInfo from ${first} to ${last}`,
+      endpoint: 'getTvl',
+    });
     const getMultiPoolsReserves = [];
     for (let start = first; start < last; start += 50) {
       const end = Math.min(last, start + 50);
@@ -259,7 +284,6 @@ async function getTvl(
       });
     });
   }
-
   console.timeEnd('Getting PairInfo');
   return { balances, poolBalances };
 }
@@ -357,9 +381,10 @@ async function getPoolVolumes(
       });
     } catch {}
   }
-
-  console.log('uni poolVolumes');
-  console.log(poolVolumes);
+  log.info({
+    message: `uni poolVolumes ${poolVolumes}`,
+    endpoint: 'getPoolVolumes',
+  });
   return poolVolumes;
 }
 

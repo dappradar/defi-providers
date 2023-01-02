@@ -12,6 +12,7 @@ import {
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 const DECIMALS = {
   ETH: 18,
   WETH: 18,
@@ -258,7 +259,12 @@ async function getMakerData(contracts, block, chain, web3) {
 
     return balances;
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getMakerData of ethereum/defisaver`,
+      endpoint: 'getMakerData',
+    });
     return {};
   }
 }
@@ -306,7 +312,12 @@ const getCompoundData = async (contracts, block) => {
 
     return balances;
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getCompoundData of ethereum/defisaver`,
+      endpoint: 'getCompoundData',
+    });
     return {};
   }
 };
@@ -354,7 +365,12 @@ async function getAaveData(contracts, block) {
 
     return balances;
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getAaveData of ethereum/defisaver`,
+      endpoint: 'getAaveData',
+    });
     return {};
   }
 }
@@ -413,7 +429,12 @@ const getAaveV2Data = async (contracts, block) => {
 
     return balances;
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getAaveV2Data of ethereum/defisaver`,
+      endpoint: 'getAaveV2Data',
+    });
     return {};
   }
 };

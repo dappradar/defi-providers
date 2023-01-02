@@ -5,6 +5,7 @@ import VAULT_ABI from './abi.json';
 import VAULTS from './currentVaults.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import basicUtil from '../../../../util/basicUtil';
+import { log } from '../../../../util/logger/logger';
 
 let data = {};
 
@@ -15,7 +16,12 @@ async function getTokens(address, web3) {
       try {
         data[address] = await contract.methods.token().call();
       } catch (e) {
-        console.log(e);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getTokens of ethereum/mushrooms`,
+          endpoint: 'getTokens',
+        });
       }
       data[address] = data[address].toLowerCase();
     }

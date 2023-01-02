@@ -6,6 +6,7 @@ import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import uniswapV2 from '../../../../util/calculators/uniswapV2';
+import { log } from '../../../../util/logger/logger';
 
 const FACTORY_ADDRESS = '0x86873f85Bc12ce40321340392C0ff39C3Bdb8D68';
 const BFACTORY_ADDRESS = '0x48ab312150E1802D57639859d7C3107aE751FE35';
@@ -186,7 +187,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
           ),
         );
       } catch (e) {
-        console.log(e.message);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getBalances of bsc/bunicorn`,
+          endpoint: 'tvl',
+        });
       }
       console.log(`done ${end} out of ${poolPairLength}`);
     }

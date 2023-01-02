@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import basicUtil from '../basicUtil';
 import { IBalances } from '../../interfaces/ITvl';
+import { log } from '../logger/logger';
 
 const QUERY_SIZE = 400;
 const POOLS_QUERY = gql`
@@ -76,7 +77,12 @@ async function getTvlFromSubgraph(
       skip += QUERY_SIZE;
     }
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getTvlFromSubgraph`,
+      endpoint: 'getTvlFromSubgraph',
+    });
     throw e;
   }
 

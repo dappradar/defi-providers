@@ -80,7 +80,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   formatter.convertBalancesToFixed(balances);
-  console.log(balances);
+
   return { balances };
 }
 

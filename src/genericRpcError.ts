@@ -1,4 +1,4 @@
-import { sendLog } from './util/logger';
+import { log } from './util/logger/logger';
 import { Observable, throwError } from 'rxjs';
 import {
   ArgumentsHost,
@@ -20,11 +20,11 @@ export class GenericRpcErrorFilter implements RpcExceptionFilter<RpcException> {
       requestData: ctx.getData(),
     };
 
-    sendLog({
+    log.error({
       message: errorResponse.message,
+      stack: errorResponse.stack || '',
       detail: errorResponse.errorResponsestatusCode,
       endpoint: 'GenericRPCError',
-      level: 'Error',
     });
     return throwError(() => errorResponse);
   }

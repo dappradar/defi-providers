@@ -27,7 +27,7 @@ import {
   MULTICALL_ADDRESSES,
   MULTICALL_DEPOLYED,
 } from '../constants/contracts.json';
-import { sendLog } from './logger';
+import { log } from './logger/logger';
 import formatter from './formatter';
 
 let underlyingData = {};
@@ -80,7 +80,7 @@ async function ExecuteCall(
       return formatter.decodeResult(method_abi, result);
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: ExecuteCall`,
@@ -109,7 +109,7 @@ async function tryExecuteMultiCallsOfTarget(
       )
       .call(null, block);
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: tryExecuteMultiCallsOfTarget`,
@@ -196,7 +196,7 @@ async function ExecuteMultiCallsOfTarget(
       return executeResults;
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: ExecuteMultiCallsOfTarget`,
@@ -224,7 +224,7 @@ async function tryExecuteDifferentCallsOfTarget(
       )
       .call(null, block);
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: tryExecuteDifferentCallsOfTarget`,
@@ -324,7 +324,7 @@ async function ExecuteDifferentCallsOfTarget(
       return executeResults;
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: ExecuteDifferentCallsOfTarget`,
@@ -353,7 +353,7 @@ async function tryExecuteMultiCallsOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: tryExecuteMultiCallsOfMultiTargets`,
@@ -444,7 +444,7 @@ async function ExecuteMultiCallsOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: ExecuteMultiCallsOfMultiTargets`,
@@ -473,7 +473,7 @@ async function tryExecuteDifferentCallsOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: tryExecuteDifferentCallsOfMultiTargets`,
@@ -573,7 +573,7 @@ async function ExecuteDifferentCallsOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: ExecuteDifferentCallsOfMultiTargets`,
@@ -600,8 +600,7 @@ async function tryExecuteCallOfMultiTargets(
       )
       .call(null, block);
   } catch (e) {
-    console.log(e);
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: tryExecuteCallOfMultiTargets`,
@@ -688,7 +687,7 @@ async function ExecuteCallOfMultiTargets(
       return executeResults;
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: ExecuteCallOfMultiTargets`,
@@ -832,7 +831,7 @@ async function GetTokenBalancesOfHolders(
       }
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: GetTokenBalancesOfHolders`,
@@ -906,8 +905,7 @@ async function GetTokenBalances(
       }
     }
   } catch (e) {
-    console.log(e);
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: GetTokenBalances`,
@@ -985,7 +983,7 @@ async function GetBalancesOfHolders(
       }
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: GetBalancesOfHolders`,
@@ -1402,7 +1400,12 @@ async function ConvertToUnderlyings(
     'utf8',
     function (err) {
       if (err) {
-        console.error(err);
+        log.error({
+          message: err?.message || '',
+          stack: err?.stack || '',
+          detail: `Error: writeDataToFileInUnderlyingData`,
+          endpoint: 'writeDataToFileInUnderlyingData',
+        });
       }
     },
   );
@@ -1524,7 +1527,7 @@ async function GetTokenTotalSupplies(
       }
     }
   } catch (e) {
-    sendLog({
+    log.error({
       message: e?.message || '',
       stack: e?.stack || '',
       detail: `Error: GetTokenTotalSupplies`,

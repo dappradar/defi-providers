@@ -9,7 +9,6 @@ const TOKENS = [
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  console.log(params);
   const { block, chain, web3 } = params;
   if (block < START_BLOCK) {
     return {};

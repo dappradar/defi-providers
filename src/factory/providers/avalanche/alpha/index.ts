@@ -89,9 +89,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       .toFixed();
     delete balances[AXELAR_WUST];
   }
-
-  console.log(balances);
-
   return { balances };
 }
 

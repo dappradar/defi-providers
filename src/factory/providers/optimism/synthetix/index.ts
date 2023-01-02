@@ -30,7 +30,6 @@ const QUERY_NO_BLOCK = gql`
 async function getSnxHolders(block) {
   let holders = [];
   for (let i = 0; i <= 5000; i += 1000) {
-    console.log(i);
     try {
       const holder = (
         await request(GRAPHQL_ENDPOINT, QUERY_NO_BLOCK, {

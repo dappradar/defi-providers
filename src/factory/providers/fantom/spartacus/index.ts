@@ -34,8 +34,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  console.log(balances);
-
   return { balances };
 }
 

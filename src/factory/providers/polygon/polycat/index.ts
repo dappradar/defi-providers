@@ -6,6 +6,7 @@ import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import basicUtil from '../../../../util/basicUtil';
+import { log } from '../../../../util/logger/logger';
 
 const CHEF_ADDRESS = '0x8CFD1B9B7478E7B0422916B72d1DB6A9D513D734';
 const VAULT_ADDRESS = '0xBdA1f897E851c7EF22CD490D2Cf2DAce4645A904';
@@ -23,7 +24,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   try {
     poolLength = await contract.methods.poolLength().call(null, block);
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of polygon/polycat`,
+      endpoint: 'tvl',
+    });
   }
 
   let pools = [];
@@ -63,7 +69,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   try {
     wantLength = await vaultContract.methods.poolLength().call(null, block);
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of polygon/polycat`,
+      endpoint: 'tvl',
+    });
   }
 
   let wants = [];

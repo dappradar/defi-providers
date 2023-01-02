@@ -5,6 +5,7 @@ import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 58633327;
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
@@ -18,7 +19,12 @@ async function getVaults() {
 
     return vaults.map((vault) => vault.earnContractAddress.toLowerCase());
   } catch (err) {
-    console.log(err);
+    log.error({
+      message: err?.message || '',
+      stack: err?.stack || '',
+      detail: `Error: getVaults of aurora/beefyfinance`,
+      endpoint: 'getVaults',
+    });
     throw err;
   }
 }

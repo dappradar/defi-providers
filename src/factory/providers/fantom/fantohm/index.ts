@@ -4,6 +4,7 @@ import util from '../../../../util/blockchainUtil';
 import BigNumber from 'bignumber.js';
 import BALANCER_VAULT_ABI from './abi.json';
 import ERC20_ABI from '../../../../constants/abi/erc20.json';
+import { log } from '../../../../util/logger/logger';
 
 const MASTER_CHEF = '0x4897EB3257A5391d80B2f73FB0748CCd4150b586';
 
@@ -86,7 +87,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       });
     });
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of fantom/fantohm`,
+      endpoint: 'tvl',
+    });
   }
 
   const tokenBalances = {};

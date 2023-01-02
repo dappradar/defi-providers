@@ -43,11 +43,9 @@ export class Everscale {
     }));
   }
   async getTokenData(address) {
-    console.log('address', address);
     const res = await fetch(
       `${nodeUrl}/root_contract/root_address/${address}`,
     ).then((res) => res.json());
-    console.log(res);
     return res;
   }
   Contract = Contract;

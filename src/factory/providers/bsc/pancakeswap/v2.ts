@@ -9,6 +9,7 @@ import {
   BULK_RESERVES_DEPOLYED,
 } from '../../../../constants/contracts.json';
 import mostUsedTokens from './mostUsedTokens.json';
+import { log } from '../../../../util/logger/logger';
 
 const WBNB_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
 const PANCAKE_FACTORY = '0xca143ce32fe78f1f7019d7d551a6402fc5350c73';
@@ -72,7 +73,12 @@ async function getBalances(block, date, chain, provider, web3) {
   try {
     _pairs = require('./v2pancakeswappairs.json');
   } catch (e) {
-    console.log();
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getBalances of bsc/pancakeswap`,
+      endpoint: 'getBalances',
+    });
   }
 
   const contract = new web3.eth.Contract(PANCAKE_FACTORY_ABI, PANCAKE_FACTORY);
@@ -174,7 +180,12 @@ async function getBalances(block, date, chain, provider, web3) {
         });
       });
     } catch (e) {
-      console.log(e);
+      log.error({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: getBalances of bsc/pancakeswap`,
+        endpoint: 'getBalances',
+      });
       first -= bigStep;
     }
   }

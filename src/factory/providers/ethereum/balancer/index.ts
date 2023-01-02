@@ -6,6 +6,7 @@ import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import abi from './abi.json';
+import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 9562480;
 const POOLS_GRAPHQL_API =
@@ -144,8 +145,17 @@ async function v1Tvl(balances, block, chain, provider, web3) {
           ),
         );
       } catch (e) {
-        console.log(e.message);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: v1Tvl of ethereum/balancer`,
+          endpoint: 'v1Tvl',
+        });
       }
+      log.info({
+        message: `done ${end} out of ${poolPairLength}`,
+        endpoint: 'v1Tvl of ethereum/balancer',
+      });
       console.log(`done ${end} out of ${poolPairLength}`);
     }
 
@@ -182,12 +192,22 @@ async function v2Tvl(balances, block) {
         }
         skip += QUERY_SIZE;
       } catch (e) {
-        console.log(e);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: v2Tvl of ethereum/balancer`,
+          endpoint: 'v2Tvl',
+        });
         throw e;
       }
     }
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: v2Tvl of ethereum/balancer`,
+      endpoint: 'v2Tvl',
+    });
     throw e;
   }
 }

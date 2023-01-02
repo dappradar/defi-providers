@@ -18,7 +18,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     [token]: balance,
     xtz: tezosBalance,
   };
-  console.log(balances);
+
   return { balances };
 }
 

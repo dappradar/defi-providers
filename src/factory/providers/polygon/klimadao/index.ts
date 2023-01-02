@@ -9,6 +9,7 @@ import {
 } from '../../../../constants/contracts.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import PAIR_ABI from '../../../../constants/abi/uni.json';
+import { log } from '../../../../util/logger/logger';
 
 const TREASURY = '0x7Dd4f0B986F032A44F913BF92c9e8b7c17D77aD7';
 const BCT = '0x2f800db0fdb5223b3c3f354886d907a671414a7f';
@@ -43,7 +44,12 @@ async function getPoolsReserves(bulk_reserves_contract, pools, block, web3) {
           .getReservesBulk(pools)
           .call(null, block);
       } catch (e) {
-        console.log(e.message);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getPoolsReserves of polygon/klimadao`,
+          endpoint: 'getPoolsReserves',
+        });
         poolReserves = await Promise.all(
           pools.map((pool) => getReserves(pool, block, web3)),
         );
@@ -51,7 +57,12 @@ async function getPoolsReserves(bulk_reserves_contract, pools, block, web3) {
     }
     return poolReserves;
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getPoolsReserves of polygon/klimadao`,
+      endpoint: 'getPoolsReserves',
+    });
   }
   return poolReserves;
 }

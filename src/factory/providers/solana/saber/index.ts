@@ -57,7 +57,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     balances[token] = balances[token].toFixed();
   }
 
-  console.log(balances);
   return { balances };
 }
 

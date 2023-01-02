@@ -1,10 +1,14 @@
 import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 dotenv.config();
+dotenv.config({ path: `.env.${process.env.APP_ENV}`, override: true });
 
 const {
   HOST = process.env.HOST || '127.0.0.1',
   PORT = process.env.HOST || 3002,
+  APP_ENV = process.env.APP_ENV,
+  SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL,
+  SLACK_LOGGING = process.env.SLACK_LOGGING,
   LOGSTASH_PORT = process.env.LOGSTASH_PORT,
   LOGSTASH_HOST = process.env.LOGSTASH_HOST,
   LOGSTASH_INDEX = process.env.LOGSTASH_INDEX,
@@ -30,6 +34,7 @@ const {
 const config = {
   HOST,
   PORT,
+  APP_ENV,
   DEFI_PROVIDERS_SERVICE_PACKAGE: 'dappradar.defi.providers',
   DEFI_PROVIDERS_SERVICE_PROTOFILE: resolve(
     __dirname,
@@ -40,6 +45,8 @@ const config = {
   LOGSTASH_HOST,
   LOGSTASH_PORT,
   LOGSTASH_INDEX,
+  SLACK_WEBHOOK_URL,
+  SLACK_LOGGING,
 };
 
 const nodeUrls = {

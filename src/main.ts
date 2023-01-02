@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from './app.config';
 import { Transport } from '@nestjs/microservices';
-import { sendLog } from './util/logger';
+import { log } from './util/logger/logger';
 
 async function bootstrap() {
   const URI = `${config.HOST}:${config.PORT}`;
@@ -15,10 +15,9 @@ async function bootstrap() {
     },
   });
   await app.listen();
-  sendLog({
+  log.info({
     message: `Microservice is listening on ${URI}`,
     endpoint: 'bootstrap',
-    level: 'Info',
   });
 }
 bootstrap();

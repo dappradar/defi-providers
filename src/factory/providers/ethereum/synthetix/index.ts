@@ -3,6 +3,7 @@ import abi from './abi.json';
 import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import { request, gql } from 'graphql-request';
+import { log } from '../../../../util/logger/logger';
 
 const SYNTHETIX_STATE = '0x4b9Ca5607f1fF8019c1C6A3c2f0CC8de622D5B82';
 const SYNTHETIX = '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f';
@@ -75,7 +76,12 @@ async function SNXHolders(block) {
         })
       ).snxholders;
     } catch (e) {
-      console.log(`Issue with SubGraph on block block`);
+      log.error({
+        message: `Issue with SubGraph on block ${block}`,
+        stack: e.stack,
+        detail: `Error: SNXHolders of ethereum/synthetix`,
+        endpoint: 'SNXHolders',
+      });
     }
   }
 }

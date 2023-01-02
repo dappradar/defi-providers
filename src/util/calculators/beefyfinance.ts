@@ -6,6 +6,7 @@ import basicUtil from '../basicUtil';
 import VAULT_ABI from '../../constants/abi/beefyVault.json';
 import formatter from '../formatter';
 import { IBalances } from '../../interfaces/ITvl';
+import { log } from '../logger/logger';
 
 const VAULTS_URI = 'https://api.beefy.finance/vaults';
 let wants = {};
@@ -18,7 +19,12 @@ async function getVaults(chain) {
 
     return vaults.map((vault) => vault.earnContractAddress.toLowerCase());
   } catch (err) {
-    console.log(err);
+    log.error({
+      message: err?.message || '',
+      stack: err?.stack || '',
+      detail: `Error: sumMultiBalanceOf`,
+      endpoint: 'sumMultiBalanceOf',
+    });
     throw err;
   }
 }

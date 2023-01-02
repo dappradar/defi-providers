@@ -14,6 +14,7 @@ const PERL_ADDRESS = '0xeca82185adCE47f39c684352B0439f030f860318';
 const BULK_RESERVES_ADDRESS = BULK_RESERVES_ADDRESSES.ethereum;
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
+import { log } from '../../../../util/logger/logger';
 
 async function getReserves(address, block, web3) {
   try {
@@ -41,7 +42,6 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, web3) {
           .getReservesBulk(pInfos)
           .call(null, block);
       } catch (e) {
-        console.log(e.message);
         poolReserves = await Promise.all(
           pInfos.map((pool) => getReserves(pool, block, web3)),
         );
@@ -49,7 +49,12 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, web3) {
     }
     return poolReserves;
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getPoolsReserves of ethereum/perlinx`,
+      endpoint: 'getPoolsReserves',
+    });
   }
   return poolReserves;
 }
@@ -247,7 +252,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       formatter.sumMultiBalanceOf(balances, balanceResults);
     }
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of ethereum/perlinx`,
+      endpoint: 'tvl',
+    });
   }
 
   for (const token in balances) {

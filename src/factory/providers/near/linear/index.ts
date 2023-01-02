@@ -5,7 +5,6 @@ const LINEAR_CONTRACT = 'linear-protocol.near';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, web3 } = params;
-  console.log(web3);
   if (block < START_BLOCK) {
     return {};
   }

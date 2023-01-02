@@ -77,7 +77,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
   await basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
   formatter.convertBalancesToFixed(balances);
-  console.log(balances);
+
   return { balances };
 }
 

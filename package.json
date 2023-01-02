@@ -8,8 +8,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "preinstall": "git submodule update --init",
-    "dev": "ts-node src/main.ts",
-    "prod": "git submodule update --init && npm run build && ts-node src/main.ts",
+    "dev": "APP_ENV=dev ts-node src/main.ts",
+    "prod": "APP_ENV=prod ts-node src/main.ts",
     "build": "rm -rf src/generated && mkdir src/generated && protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true,nestJs=true,addNestjsRestParameter=true --ts_proto_out=src/generated dappradar-proto/*.proto && tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -38,6 +38,7 @@
     "fs-extra": "^10.1.0",
     "graphql-request": "^5.0.0",
     "log4js": "^6.7.1",
+    "log4js-logstash-appender": "^1.0.0",
     "near-api-js": "^1.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

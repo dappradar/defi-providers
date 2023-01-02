@@ -167,7 +167,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     web3,
   );
-  console.log(balances);
 
   return { balances };
 }

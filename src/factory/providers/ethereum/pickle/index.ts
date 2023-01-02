@@ -5,6 +5,7 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import basicUtil from '../../../../util/basicUtil';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
+import { log } from '../../../../util/logger/logger';
 
 const POOL_ADDRESSES = [
   '0xfAA267C3Bb25a82CFDB604136a29895D30fd3fd8', //UNI PICKLE/ETH
@@ -67,7 +68,12 @@ async function getTokens(address, block, web3) {
       }
     }
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getTokens of ethereum/pickle`,
+      endpoint: 'getTokens',
+    });
   }
 }
 
@@ -80,7 +86,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   try {
     tokens = basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of ethereum/pickle`,
+      endpoint: 'tvl',
+    });
   }
 
   await Promise.all([

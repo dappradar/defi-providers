@@ -46,7 +46,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       chain,
       web3,
     );
-    console.log(poolTokens);
 
     poolTokens.forEach((token, index) => {
       if (token) {

@@ -7,6 +7,7 @@ import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 async function getJoins(block, chain, provider, web3) {
   const relyTopic =
@@ -21,7 +22,6 @@ async function getJoins(block, chain, provider, web3) {
     if (i > block) {
       break;
     }
-    console.log(i, offset);
     try {
       const seperatedLogs = await web3.eth.getPastLogs({
         fromBlock: i,
@@ -137,8 +137,13 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       balances[MakerMCDConstants.DAI] = balances[MakerMCDConstants.DAI]
         ? balances[MakerMCDConstants.DAI].plus(new BigNumber(pie))
         : new BigNumber(pie);
-    } catch {
-      console.log('Failed to get Pie');
+    } catch (e) {
+      log.error({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: Failed to get Pie ethereum/makerdao`,
+        endpoint: 'tvl',
+      });
     }
   }
 

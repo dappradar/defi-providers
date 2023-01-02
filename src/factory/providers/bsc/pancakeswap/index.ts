@@ -21,8 +21,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   if (block < 600615) {
     return {};
   }
-
-  console.log('Calculation Started');
   const balances = {};
 
   const cakeBalances = await util.getTokenBalancesOfHolders(

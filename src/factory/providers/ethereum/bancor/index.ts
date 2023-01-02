@@ -5,6 +5,7 @@ import basicUtil from '../../../../util/basicUtil';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 const V3_START_BLOCK = 14609331;
@@ -202,7 +203,12 @@ async function v3tvl(balances, block, chain, web3) {
     );
     formatter.sumMultiBalanceOf(balances, ethBalance);
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: v3tvl of ethereum/bancor`,
+      endpoint: 'v3tvl',
+    });
     throw e;
   }
 }

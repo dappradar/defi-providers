@@ -29,7 +29,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const tokenLength = tokens.length;
   for (let start = tokenLength; start < len; start += 3000) {
     const end = Math.min(start + 3000, len);
-    console.log(`Getting Tokens from ${start} to ${end}`);
     try {
       const tokenResults = await util.executeMultiCallsOfTarget(
         POOL_ADDRESS,
