@@ -3,6 +3,7 @@ import ABI from './abi.json';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const TREASURY_ADDRESSES = [
   '0x886CE997aa9ee4F8c2282E182aB72A705762399D',
@@ -73,7 +74,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     );
     return { balances };
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of ethereum/olympus`,
+      endpoint: 'tvl',
+    });
   }
 }
 export { tvl };

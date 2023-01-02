@@ -4,6 +4,7 @@ import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
+import { log } from '../../../../util/logger/logger';
 
 const POOLS = [
   '0xa1e72267084192db7387c8cc1328fade470e4149',
@@ -28,7 +29,12 @@ async function getTokens(address, web3) {
       pools[address] = token.toLowerCase();
     }
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getTokens of ethereum/truefi`,
+      endpoint: 'getTokens',
+    });
   }
 }
 

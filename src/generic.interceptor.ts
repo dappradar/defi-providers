@@ -5,7 +5,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { sendLog } from './util/logger';
+import { log } from './util/logger/logger';
 
 @Injectable()
 export class GenericInterceptor implements NestInterceptor {
@@ -15,11 +15,9 @@ export class GenericInterceptor implements NestInterceptor {
   ): Observable<any> {
     const req = context.switchToHttp().getRequest();
     const endpoint = context.getHandler();
-    sendLog({
+    log.info({
       message: JSON.stringify(req),
-      detail: null,
       endpoint: endpoint.name,
-      level: 'Info',
     });
     return next.handle().pipe();
   }

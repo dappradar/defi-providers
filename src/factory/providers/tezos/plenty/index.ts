@@ -3,6 +3,7 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import basicUtil from '../../../../util/basicUtil';
 import PAIR_ABI from '../../../../constants/abi/uni.json';
 import BULK_RESERVES_ABI from '../../../../constants/abi/bulkReserves.json';
+import { log } from '../../../../util/logger/logger';
 
 const BULK_RESERVES_ADDRESS = '0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a';
 let token01Infos;
@@ -42,7 +43,12 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, web3) {
       pInfos.map((pool) => getReserves(pool, block, web3)),
     );
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getPoolsReserves of tezos/plenty`,
+      endpoint: 'getPoolsReserves',
+    });
   }
   return poolReserves;
 }

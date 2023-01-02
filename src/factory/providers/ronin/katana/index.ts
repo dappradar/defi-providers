@@ -3,6 +3,7 @@ import PAIR_ABI from '../../../../constants/abi/uni.json';
 import BULK_RESERVES_ABI from '../../../../constants/abi/bulkReserves.json';
 import basicUtil from '../../../../util/basicUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const BULK_RESERVES_ADDRESS = '0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a';
 
@@ -32,7 +33,12 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, web3) {
           .getReservesBulk(pInfos)
           .call(null, block);
       } catch (e) {
-        console.log(e.message);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getPoolsReserves of ronin/katana`,
+          endpoint: 'getPoolsReserves',
+        });
         poolReserves = await Promise.all(
           pInfos.map((pool) => getReserves(pool, block, web3)),
         );
@@ -40,7 +46,12 @@ async function getPoolsReserves(bulk_reserves_contract, pInfos, block, web3) {
     }
     return poolReserves;
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getPoolsReserves of ronin/katana`,
+      endpoint: 'getPoolsReserves',
+    });
   }
   return poolReserves;
 }
@@ -50,9 +61,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   if (block < 7860907) {
     return {};
   }
-
-  console.log('Calculation Started');
-
   const balances = {};
   const poolBalances = {};
 
@@ -76,9 +84,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   const len = 3;
-
-  console.log(`Pair counts: ${len}`);
-
   let poolInfos = _pairs;
 
   poolInfos = poolInfos.slice(0, len);
@@ -87,7 +92,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const newPools = poolInfos.filter((info) => !_token01[info]);
   const newPoolLength = newPools.length;
   for (let i = 0; i < newPoolLength; i += 1) {
-    console.log(`Getting Token01 of Pair ${i}`);
     const contract = new web3.eth.Contract(PAIR_ABI, newPools[i]);
     token01Infos[newPools[i]] = {};
     token01Infos[newPools[i]].token0 = (
@@ -106,10 +110,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   console.time('Getting PairInfo');
-
+  log.info({
+    message: 'Getting PairInfo',
+    endpoint: 'tvl of ronin/katana',
+  });
   for (let first = 0; first < poolInfos.length; first += 1500) {
     const last = Math.min(poolInfos.length, first + 1500);
-    console.log(`Getting PairInfo from ${first} to ${last}`);
     const getMultiPoolsReserves = [];
     for (let start = first; start < last; start += 50) {
       const end = Math.min(last, start + 50);
@@ -174,8 +180,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       balances[token] = balances[token].toFixed();
     }
   }
-
-  // console.log(balances);
 
   return { balances, poolBalances };
 }

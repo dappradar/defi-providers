@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import TULIP_VAULTS from './tulip_vaults.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 async function getTokenAccountBalance(account, web3) {
   try {
@@ -9,7 +10,12 @@ async function getTokenAccountBalance(account, web3) {
     ]);
     return tokenBalance.value;
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getTokenAccountBalance of solana/tulip`,
+      endpoint: 'getTokenAccountBalance',
+    });
     return 0;
   }
 }

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
+import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 15832998;
 const THEGRAPTH_ENDPOINT =
@@ -55,7 +56,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       });
     }
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of polygon/balancer`,
+      endpoint: 'tvl',
+    });
     throw e;
   }
 

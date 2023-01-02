@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
+import { log } from '../../../../util/logger/logger';
 
 const YOUVES_ADDRESS = 'KT1Xobej4mc6XgEjDoJoHtTKgbD1ELMvcQuL';
 const UTOKEN_ADDRESS = 'KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW';
@@ -101,14 +102,15 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       balanceCalls.push(getTezosUusdBalances(vaults[start].key, block, web3));
     }
 
-    console.log(`Getting tezos balance from ${first} to ${last}`);
+    log.info({
+      message: `Getting tezos balance from ${first} to ${last}`,
+      endpoint: 'tvl of tezos/youves',
+    });
 
     const results = await Promise.all(balanceCalls);
     results.forEach((result) => {
       formatter.sumMultiBalanceOf(balances, result);
     });
-
-    console.log(`Got tezos balance from ${first} to ${last}`);
   }
 
   const youvesContract = new web3.eth.Contract(null, YOUVES_ADDRESS);
@@ -124,11 +126,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       balanceCalls.push(getBalances(POOLS[start], block, web3));
     }
 
-    console.log(`Getting staked balance from ${first} to ${last}`);
-
+    log.info({
+      message: `Getting staked balance from ${first} to ${last}`,
+      endpoint: 'tvl of tezos/youves',
+    });
     const results = await Promise.all(balanceCalls);
     formatter.sumMultiBalanceOf(balances, results);
-    console.log(`Got staked balance from ${first} to ${last}`);
   }
   formatter.convertBalancesToFixed(balances);
   return { balances };

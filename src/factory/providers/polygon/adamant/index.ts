@@ -4,6 +4,7 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
+import { log } from '../../../../util/logger/logger';
 
 const FACTORY_ADDRESS = '0x2FC1B142aF4d0422f554947Cd5FCaA0CceA44199';
 let data = {};
@@ -15,7 +16,12 @@ async function getTokens(address, web3) {
       try {
         data[address] = await contract.methods.token().call();
       } catch (e) {
-        console.log(e);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getTokens of polygon/adamant`,
+          endpoint: 'getTokens',
+        });
       }
       data[address] = data[address].toLowerCase();
     }

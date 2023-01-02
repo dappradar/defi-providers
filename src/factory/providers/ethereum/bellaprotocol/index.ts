@@ -5,6 +5,7 @@ import basicUtil from '../../../../util/basicUtil';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 let data = {};
 
@@ -16,7 +17,12 @@ async function getTokens(address, web3) {
       try {
         data[address] = await contract.methods.token().call();
       } catch (e) {
-        console.log(e, address);
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getTokens of ethereum/bellaprotocol`,
+          endpoint: 'getTokens',
+        });
       }
       data[address] = data[address].toLowerCase();
     }

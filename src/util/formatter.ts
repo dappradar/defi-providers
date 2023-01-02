@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import _ from 'underscore';
+import { log } from './logger/logger';
 
 function encodeParameters(types, values) {
   const abi = new ethers.utils.AbiCoder();
@@ -100,7 +101,12 @@ function sumMultiBalanceOf(balances, results) {
       });
     }
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: sumMultiBalanceOf`,
+      endpoint: 'sumMultiBalanceOf',
+    });
     return balances;
   }
 }

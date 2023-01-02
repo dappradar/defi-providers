@@ -2,6 +2,7 @@ import basicUtil from '../../../../util/basicUtil';
 import CHEF_ABI from './abis/chef.json';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
+import { log } from '../../../../util/logger/logger';
 
 const SMART_CHEF_FACTORY = '0xfff5812c35ec100df51d5c9842e8cc3fe60f9ad7';
 let pools = {
@@ -17,7 +18,10 @@ async function getBalances(block, chain, provider, web3) {
   try {
     for (let i = pools.block; i < block; i += 10000) {
       const endBlock = Math.min(i + 10000, block);
-      console.log(`Getting chefs from block ${i} to ${endBlock}`);
+      log.info({
+        message: `Getting chefs from block ${i} to ${endBlock}`,
+        endpoint: 'getBalances of bsc/pancakeswap',
+      });
 
       const poolLogs = (
         await util.getLogs(
@@ -37,7 +41,12 @@ async function getBalances(block, chain, provider, web3) {
       pools.block = endBlock;
     }
   } catch (e) {
-    console.log(e);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getBalances of bsc/pancakeswap`,
+      endpoint: 'getBalances',
+    });
   }
 
   const chefs = Object.keys(pools.chefs);

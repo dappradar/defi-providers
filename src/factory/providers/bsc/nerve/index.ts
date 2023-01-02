@@ -4,6 +4,7 @@ import BULK_BALANCE_ABI from './abi/bulk_balance_abi.json';
 import ERC20_ABI from '../../../../constants/abi/erc20.json';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const BULK_BALANCE_ADDRESS = '0xAd0fAf54c2dA55e9BC0B2f4b2C9098979E7b3022';
 const BTCPoolAddress = '0x6C341938bB75dDe823FAAfe7f446925c66E6270c';
@@ -87,7 +88,12 @@ async function getUnderlyingBalances(address, balance, block, web3) {
     }
     return { balances };
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getVaults of polygon/beefyfinanace`,
+      endpoint: 'getVaults',
+    });
     return null;
   }
 }

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 const POOLS = [
@@ -23,7 +24,12 @@ async function getETHBalance(pool, block, web3) {
       balance: BigNumber(balance),
     };
   } catch (e) {
-    console.log(e.message);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: getETHBalance of ethereum/nexusmutual`,
+      endpoint: 'getETHBalance',
+    });
     return null;
   }
 }

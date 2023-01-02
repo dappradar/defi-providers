@@ -1,6 +1,7 @@
 import fse from 'fs-extra';
 import { WMAIN_ADDRESS } from '../constants/contracts.json';
 import CHAINS from './data';
+import { log } from './logger/logger';
 
 const DEFAULT_DELAY = 5;
 
@@ -24,7 +25,12 @@ async function writeDataToFile(data, fileName, chain, provider) {
       'utf8',
       function (err) {
         if (err) {
-          console.error(err);
+          log.error({
+            message: err?.message || '',
+            stack: err?.stack || '',
+            detail: `Error: writeDataToFile`,
+            endpoint: 'writeDataToFile',
+          });
         }
         resolve();
       },

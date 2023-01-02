@@ -2,6 +2,27 @@
 
 [DappRadar](https://dappradar.com/)
 
+## Preinstall
+
+Installation [Protoc](http://google.github.io/proto-lens/installing-protoc.html)
+
+#### Mac OS X
+```bash
+PROTOC_ZIP=protoc-3.14.0-osx-x86_64.zip
+curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
+sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+rm -f $PROTOC_ZIP
+```
+
+#### Linux
+```bash
+PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
+curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
+sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+rm -f $PROTOC_ZIP
+```
 ## Installation
 
 ```bash
@@ -10,9 +31,13 @@ $ npm run build
 $ npm run dev
 ```
 
-## Adding Provider
+## Adding New Provider
 
-You can find the necessary generic functions with their definitions in the util file.
+You can see all the chains and providers that have already been added in [providers](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers).
+
+When adding a new provider, open a folder in that file and follow the convention in the integration examples below.
+
+You can find the necessary generic functions with their definitions in the [util](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/util/blockchainUtil.ts) or [calculators](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/util/calculators) file.
 
 Pull request convention
 
@@ -31,7 +56,7 @@ After adding the new provider, you can test it with [Bloomrpc](https://github.co
 Create a copy of environment configuration
 
 ```bash
-$ cp .env.sample .env
+$ cp .env.prod.sample .env.prod
 ```
 
 Update the .env file according to the blockchain you want to work with and follow the installation steps.
@@ -67,3 +92,7 @@ Integration based on subgraph: [Rubicon](https://github.com/dappradar/dappradar-
 Integration based on various smart contract methods calls: [Aave](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/avalanche/aave), [Iron](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/polygon/iron)
 
 Integration where LP tokens are locked as TVL so their underlying balances have to be calculated: [Autofarm](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/bsc/autofarm)
+
+## Contact
+
+Do not hesitate to contact us with any questions. Here is the [discord](https://discord.gg/fd44Kn9N)
