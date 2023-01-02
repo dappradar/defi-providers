@@ -95,4 +95,4 @@ Integration where LP tokens are locked as TVL so their underlying balances have 
 
 ## Contact
 
-Do not hesitate to contact us with any questions. Here is the discord [link
+Do not hesitate to contact us with any questions. Here is the [discord](https://discord.gg/fd44Kn9N)
