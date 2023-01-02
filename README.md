@@ -51,16 +51,6 @@ By submitting the code, you transfer all the rights to the code to DappRadar UAB
 
 After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc) or [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts).
 
-## Environment configuration
-
-Create a copy of environment configuration
-
-```bash
-$ cp .env.prod.sample .env.prod
-```
-
-Update the .env file according to the blockchain you want to work with and follow the installation steps.
-
 ```bash
 ETHEREUM_NODE_URL=
 BSC_NODE_URL=
@@ -95,4 +85,4 @@ Integration where LP tokens are locked as TVL so their underlying balances have 
 
 ## Contact
 
-Do not hesitate to contact us with any questions. Here is the [discord](https://discord.gg/fd44Kn9N)
+Do not hesitate to contact us with any questions. Here is the [discord](https://discord.com/channels/415573887531745281/1059466542162653284)
