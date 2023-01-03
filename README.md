@@ -50,7 +50,10 @@ By submitting the code, you transfer all the rights to the code to DappRadar UAB
 
 ## Testing
 
-After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc) or [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts).
+After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc), [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts) or by running this command:
+```
+npm run test <chain> <provider> <blocknumber>
+```
 
 ## Integration examples
 
