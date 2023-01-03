@@ -162,7 +162,16 @@ const proxyBalance = await util.getTokenBalances(
 );
 ```
 
-If provided block is not lower than START_BLOCK, the function continues by calling the **getTokenBalances** function from the **util** module. **getTokenBalances** function connects to blockchain node requests data and returns balances in this format:
+If provided block is not lower than START_BLOCK, the function continues by calling the **getTokenBalances** function from the **util** module. **getTokenBalances** function calls ERC20 balanceOf method for every token for provided addresses.
+
+- @param holders - The array of addresses
+- @param tokens - The array of token addresses
+- @param block - The block number for which data is requested
+- @param chain - EVM chain name (providers parent folder name)
+- @param web3 - The Web3 object
+- @returns - The array of tokens and tokens balances of holders
+
+Data is returned in this format:
 
 ```
     [
@@ -280,7 +289,15 @@ const { balances, poolBalances } = await uniswapV2.getTvl(
 );
 ```
 
-If provided block is not lower than START_BLOCK, the function continues by calling the **getTvl** function from the **uniswapV2** module. **getTvl** function connects to blockchain node and requests all data that is needed to calculate TVL of any Uniswap V2 clone. In addition to TVL it returns **poolBalances** object that holds data of pool balances.
+If provided block is not lower than START_BLOCK, the function continues by calling the **getTvl** function from the **uniswapV2** module. **getTvl** function calculates TVL of Uniswap V2 (or it's clone) using factory address. In addition to TVL it returns **poolBalances** object that holds data of pool balances.
+
+- @param factoryAddress - The address of factory
+- @param block - The block number for which data is requested
+- @param chain - EVM chain name (providers parent folder name)
+- @param provider - the provider folder name
+- @param web3 - The Web3 object
+- @param usePoolMethods - some factories use pool methods and other pair methods
+- @returns The object containing object with token addresses and their locked values and object with pool balances
 
 Balances are returned in this format:
 
@@ -444,7 +461,18 @@ const results = await util.executeMultiCallsOfTarget(
 );
 ```
 
-**executeMultiCallsOfTarget** function from the **util** module Calls EVM smart contract method with diferent parameters [params.length] times and returns its results in array. So in this case contract method was called 3 times, each time with diferent asset. Then return value were pushed into array and returned:
+**executeMultiCallsOfTarget** function from the **util** module Calls EVM smart contract method with diferent parameters [params.length] times and returns its results in array.
+
+- @param target - The address of the smart contract to call
+- @param ABI - The json interface for the contract to instantiate
+- @param method - The smart contract method to call
+- @param params - The array of parameters or the array of parameter arrays to use in smart contract method calls
+- @param block - The block number for which data is requested
+- @param chain - EVM chain name (providers parent folder name)
+- @param web3 - The Web3 object
+- @returns The array of return value(s) of the smart contract method calls
+
+  So in this case contract method was called 3 times, each time with diferent asset. Then return value were pushed into array and returned:
 
 ```
 [ '11720382157066297278430886', '25859409768811', '11488127214656' ]
@@ -486,10 +514,3 @@ assets.forEach((address, index) => {
 ## Contact
 
 Do not hesitate to contact us with any questions. Here is the [discord](https://discord.com/channels/415573887531745281/1059466542162653284)
-
-````
-
-```
-
-```
-````
