@@ -240,14 +240,6 @@ Every integration must export this function. It calculates and returns locked to
   - chain - provider's chain;
   - provider - provider's name;
   - web3 - web3 object, that let's you connect to blockchain node.
-  
-**Lines 10-12: block number validation**
-```typescript
-  if (block < START_BLOCK) {
-    return {};
-  }
-```
-If provided block is lower than dapp deployment block, empty object is returned.
 
 **Lines 14-20: TVL and pool balances calculation**
 ```typescript
