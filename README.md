@@ -298,6 +298,7 @@ Pool balances are returned in this format:
         balances: [ '1073794839271839181545164', '48612112952162791' ]
       }
 }
+```
 
 **uniswapV2 calculator** is just one of many calculators that can be use to calculate TVL of well known smart contract architectures. More calculators can be found [here](https://github.com/dappradar/dappradar-defi-providers/tree/IN-731/src/util/calculators)
 
