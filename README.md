@@ -7,6 +7,7 @@
 Installation [Protoc](http://google.github.io/proto-lens/installing-protoc.html)
 
 #### Mac OS X
+
 ```bash
 PROTOC_ZIP=protoc-3.14.0-osx-x86_64.zip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
@@ -16,6 +17,7 @@ rm -f $PROTOC_ZIP
 ```
 
 #### Linux
+
 ```bash
 PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
@@ -51,6 +53,7 @@ By submitting the code, you transfer all the rights to the code to DappRadar UAB
 ## Testing
 
 After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc), [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts) or by running this command:
+
 ```
 npm run test <chain> <provider> <blocknumber>
 ```
@@ -104,51 +107,63 @@ export { tvl };
 ```
 
 **Line 5: START_BLOCK constant**
+
 ```typescript
 const START_BLOCK = 15051901;
 ```
+
 Dapp deployment block number.
-  
+
 **Lines 6-7: Other constants**
+
 ```typescript
 const STAKING_REWARDS_PROXY = '0x990d156d511d0493a0b7c32d1af97e0c9e352acd';
 const RADAR_TOKEN = '0x44709a920fccf795fbc57baa433cc3dd53c44dbe';
 ```
+
 STAKING_REWARDS_PROXY is address of contract that holds staked tokens;
 
 RADAR_TOKEN is RADAR token contract address.
-  
+
 **Line 9: tvl calculation function**
+
 ```typescript
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 ```
-Every integration must export this function. It calculates and returns locked tokens balances. It takes a single parameter **params** of type ITvlParams. The tvl function returns a Promise that resolves to a ITvlReturn.
 
-  **params** is an object which has these attributes:
-  - block - block number for which TVL is calculated;
-  - chain - provider's chain;
-  - provider - provider's name;
-  - web3 - web3 object, that let's you connect to blockchain node.
-  
+Every integration must export this function. It calculates and returns locked tokens balances. It takes a single parameter **params** of type **ITvlParams**. The **tvl** function returns a Promise that resolves to a **ITvlReturn**.
+
+**params** is an object which has these attributes:
+
+- block - block number for which TVL is calculated;
+- chain - provider's chain;
+- provider - provider's name;
+- web3 - web3 object, that let's you connect to blockchain node.
+
 **Lines 11-13: block number validation**
+
 ```typescript
-  if (block < START_BLOCK) {
-    return {};
-  }
+if (block < START_BLOCK) {
+  return {};
+}
 ```
+
 If provided block is lower than dapp deployment block, empty object is returned.
 
 **Lines 15-21: TVL calculation**
+
 ```typescript
-  const proxyBalance = await util.getTokenBalances(
-    STAKING_REWARDS_PROXY,
-    [RADAR_TOKEN],
-    block,
-    chain,
-    web3,
-  );
+const proxyBalance = await util.getTokenBalances(
+  STAKING_REWARDS_PROXY,
+  [RADAR_TOKEN],
+  block,
+  chain,
+  web3,
+);
 ```
-If provided block is not lower than START_BLOCK, the function continues by calling the **getTokenBalances** function from the **util** module. getTokenBalances function connects to blockchain node requests data and returns balances in this format:
+
+If provided block is not lower than START_BLOCK, the function continues by calling the **getTokenBalances** function from the **util** module. **getTokenBalances** function connects to blockchain node requests data and returns balances in this format:
+
 ```
     [
       {
@@ -161,10 +176,13 @@ If provided block is not lower than START_BLOCK, the function continues by calli
 **util** module has many helper functions that makes integrations simplier and more readable. More information can be found [here](https://github.com/dappradar/dappradar-defi-providers/blob/IN-731/src/util/blockchainUtil.ts)
 
 **Line 24: summing balances**
+
 ```typescript
-  formatter.sumMultiBalanceOf(balances, proxyBalance);
+formatter.sumMultiBalanceOf(balances, proxyBalance);
 ```
+
 **sumMultiBalanceOf** function from the **formatter** module sums provided balances (in this example **balances** object is still empty). Balances are returned in this format:
+
 ```
     {
       '0x44709a920fccf795fbc57baa433cc3dd53c44dbe': BigNumber { s: 1, e: 24, c: [ 10716899567, 89084106491755 ] }
@@ -172,10 +190,13 @@ If provided block is not lower than START_BLOCK, the function continues by calli
 ```
 
 **Line 25: converting balances to required format**
+
 ```typescript
-  formatter.convertBalancesToFixed(balances);
+formatter.convertBalancesToFixed(balances);
 ```
+
 **convertBalancesToFixed** function from the **formatter** module converts BigNumber objects to strings. Balances are returned in this format:
+
 ```
     {
       '0x44709a920fccf795fbc57baa433cc3dd53c44dbe': '1071689956789084106491755'
@@ -183,7 +204,6 @@ If provided block is not lower than START_BLOCK, the function continues by calli
 ```
 
 **formatter** module has many helper funcions related with data transformation. More information can be found [here](https://github.com/dappradar/dappradar-defi-providers/blob/IN-731/src/util/formatter.ts)
-
 
 ## Code walk through of Sakeswap DEX protocol integration
 
@@ -218,54 +238,64 @@ export { tvl };
 ```
 
 **Line 5: START_BLOCK constant**
+
 ```typescript
 const START_BLOCK = 10932295;
 ```
+
 Dapp deployment block number.
-  
+
 **Lines 6: FACTORY_ADDRESS constant**
+
 ```typescript
 const FACTORY_ADDRESS = '0x75e48C954594d64ef9613AeEF97Ad85370F13807';
 ```
+
 Address of DEX factory. It holds addresses of all DEX pairs that belongs to this protocol.
-  
+
 **Line 8: tvl calculation function**
+
 ```typescript
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 ```
-Every integration must export this function. It calculates and returns locked tokens balances. It takes a single parameter **params** of type ITvlParams. The tvl function returns a Promise that resolves to a ITvlReturn.
 
-  **params** is an object which has these attributes:
-  - block - block number for which TVL is calculated;
-  - chain - provider's chain;
-  - provider - provider's name;
-  - web3 - web3 object, that let's you connect to blockchain node.
+Every integration must export this function. It calculates and returns locked tokens balances. It takes a single parameter **params** of type **ITvlParams**. The tvl function returns a Promise that resolves to a **ITvlReturn**.
+
+**params** is an object which has these attributes:
+
+- block - block number for which TVL is calculated;
+- chain - provider's chain;
+- provider - provider's name;
+- web3 - web3 object, that let's you connect to blockchain node.
 
 **Lines 14-20: TVL and pool balances calculation**
+
 ```typescript
-  const { balances, poolBalances } = await uniswapV2.getTvl(
-    FACTORY_ADDRESS,
-    block,
-    chain,
-    provider,
-    web3,
-  );
+const { balances, poolBalances } = await uniswapV2.getTvl(
+  FACTORY_ADDRESS,
+  block,
+  chain,
+  provider,
+  web3,
+);
 ```
-If provided block is not lower than START_BLOCK, the function continues by calling the **getTvl** function from the **uniswapV2** module. getTvl function connects to blockchain node and requests all data that is needed to calculate TVL of any Uniswap V2 clone. In addition to TVL it returns **poolBalances** object that holds data of pool balances.
+
+If provided block is not lower than START_BLOCK, the function continues by calling the **getTvl** function from the **uniswapV2** module. **getTvl** function connects to blockchain node and requests all data that is needed to calculate TVL of any Uniswap V2 clone. In addition to TVL it returns **poolBalances** object that holds data of pool balances.
 
 Balances are returned in this format:
+
 ```
  {
       '0x066798d9ef0833ccc719076dab77199ecbd178b0': BigNumber { s: 1, e: 25, c: [ 105156604450, 13181649986725 ] },
       '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': BigNumber { s: 1, e: 19, c: [ 248859, 12216779126148 ] },
-      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': BigNumber { s: 1, e: 19, c: [ 456801, 34348242586512 ] },
       ...
-      '0x0ae055097c6d159879521c384f1d2123d1f195e6': BigNumber { s: 1, e: 15, c: [ 17, 13254539808127 ] },
       '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': BigNumber { s: 1, e: 6, c: [ 3462705 ] },
       '0xa1d0e215a23d7030842fc67ce582a6afa3ccab83': BigNumber { s: 1, e: 12, c: [ 1444845745234 ] }
 }
 ```
+
 Pool balances are returned in this format:
+
 ```
   {
       '0x83970b5570e4cb5fc5e21ef9b9f3c4f8a129c2f2': {
@@ -303,10 +333,13 @@ Pool balances are returned in this format:
 **uniswapV2 calculator** is just one of many calculators that can be use to calculate TVL of well known smart contract architectures. More calculators can be found [here](https://github.com/dappradar/dappradar-defi-providers/tree/IN-731/src/util/calculators)
 
 **Line 21: converting balances to required format**
+
 ```typescript
-  formatter.convertBalancesToFixed(balances);
+formatter.convertBalancesToFixed(balances);
 ```
+
 **convertBalancesToFixed** function from the **formatter** module converts BigNumber objects to strings. Balances are returned in this format:
+
 ```
     {
       '0x44709a920fccf795fbc57baa433cc3dd53c44dbe': '1071689956789084106491755'
@@ -315,6 +348,148 @@ Pool balances are returned in this format:
 
 **formatter** module has many helper funcions related with data transformation. More information can be found [here](https://github.com/dappradar/dappradar-defi-providers/blob/IN-731/src/util/formatter.ts)
 
+## Code walk through of Origin Dollar protocol integration
+
+This integration calculates TVL in Origin Dollar stablecoin
+
+```typescript
+import BigNumber from 'bignumber.js';
+import VAULT_ABI from './abi.json';
+import util from '../../../../util/blockchainUtil';
+import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+
+const START_BLOCK = 11551793;
+const VAULT_ADDRESS = '0xE75D77B1865Ae93c7eaa3040B038D7aA7BC02F70';
+
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
+  if (block < START_BLOCK) {
+    return {};
+  }
+
+  const contract = new web3.eth.Contract(VAULT_ABI, VAULT_ADDRESS);
+  const assets = await contract.methods.getAllAssets().call(null, block);
+
+  const results = await util.executeMultiCallsOfTarget(
+    VAULT_ADDRESS,
+    VAULT_ABI,
+    'checkBalance',
+    assets.map((asset) => [asset]),
+    block,
+    chain,
+    web3,
+  );
+
+  const balanceResults = [];
+
+  assets.forEach((address, index) => {
+    const balance = BigNumber(results[index] || 0);
+    if (balance.isGreaterThan(0)) {
+      balanceResults.push({
+        token: address,
+        balance,
+      });
+    }
+  });
+
+  const balances = {};
+  formatter.sumMultiBalanceOf(balances, balanceResults);
+  formatter.convertBalancesToFixed(balances);
+  return { balances };
+}
+
+export { tvl };
+```
+
+_some of the steps are not mentioned as they are described in previous code walk through_
+
+**Line 15: Contract instance**
+
+```typescript
+const contract = new web3.eth.Contract(VAULT_ABI, VAULT_ADDRESS);
+```
+
+Creates a new [web3](https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html) contract instance with all its methods and events defined in its VAULT_ABI object.
+
+**Line 16: contract method call**
+
+```typescript
+const assets = await contract.methods.getAllAssets().call(null, block);
+```
+
+Calls Vault contract **getAllAssets** method for provided block number and stores return value into **assets** variable.
+
+**assets** is equal to:
+
+```
+    [
+      '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+    ]
+```
+
+**Lines 18-26: Execute multi calls of target**
+
+```typescript
+const results = await util.executeMultiCallsOfTarget(
+  VAULT_ADDRESS,
+  VAULT_ABI,
+  'checkBalance',
+  assets.map((asset) => [asset]),
+  block,
+  chain,
+  web3,
+);
+```
+
+**executeMultiCallsOfTarget** function from the **util** module Calls EVM smart contract method with diferent parameters [params.length] times and returns its results in array. So in this case contract method was called 3 times, each time with diferent asset. Then return value were pushed into array and returned:
+
+```
+[ '11720382157066297278430886', '25859409768811', '11488127214656' ]
+```
+
+**Lines 30-38: Merge assets and results variables**
+
+```typescript
+assets.forEach((address, index) => {
+  const balance = BigNumber(results[index] || 0);
+  if (balance.isGreaterThan(0)) {
+    balanceResults.push({
+      token: address,
+      balance,
+    });
+  }
+});
+```
+
+**assets** array is iterated and **balanceResults** variable is filled with data that is ready to be passed to another standard function **formatter.sumMultiBalanceOf**. **balanceResults** is equal to:
+
+```
+    [
+      {
+        token: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        balance: BigNumber { s: 1, e: 25, c: [Array] }
+      },
+      {
+        token: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        balance: BigNumber { s: 1, e: 13, c: [Array] }
+      },
+      {
+        token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        balance: BigNumber { s: 1, e: 13, c: [Array] }
+      }
+    ]
+```
+
 ## Contact
 
 Do not hesitate to contact us with any questions. Here is the [discord](https://discord.com/channels/415573887531745281/1059466542162653284)
+
+````
+
+```
+
+```
+````
