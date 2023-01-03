@@ -36,11 +36,13 @@ $ npm run dev
 
 ## Adding New Provider
 
-You can see all the chains and providers that have already been added in [providers](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers).
+You can see all the chains and providers that have already been added in [providers](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers) and find the necessary generic functions with their definitions in the [util](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/util/blockchainUtil.ts) or [calculators](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/util/calculators) file.
 
 When adding a new provider, open a folder in that file and follow the convention in the integration examples below.
+You can test whether the integrated provider is working as written in the [test](#Testing) section. 
 
-You can find the necessary generic functions with their definitions in the [util](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/util/blockchainUtil.ts) or [calculators](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/util/calculators) file.
+Don't forget to add the [integration](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts) test after making sure it works.
+
 
 Pull request convention
 
@@ -49,14 +51,6 @@ Pull request convention
 ```
 
 By submitting the code, you transfer all the rights to the code to DappRadar UAB and retain no copyright or other intellectual property rights to it.
-
-## Testing
-
-After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc), [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts) or by running this command:
-
-```
-npm run test <chain> <provider> <blocknumber>
-```
 
 ## Integration examples
 
@@ -510,6 +504,14 @@ assets.forEach((address, index) => {
       }
     ]
 ```
+
+## Testing
+
+After adding the new provider, you can test it by running this command:
+```
+npm run test <chain> <provider> <blocknumber>
+```
+You can use [Bloomrpc](https://github.com/bloomrpc/bloomrpc) to test with the grpc endpoint. 
 
 ## Contact
 
