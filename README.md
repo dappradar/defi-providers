@@ -103,17 +103,24 @@ export { tvl };
 ```
 
 **Line 5: START_BLOCK constant**
-
+```typescript
+const START_BLOCK = 15051901;
+```
 Dapp deployment block number.
   
 **Lines 6-7: Other constants**
-
+```typescript
+const STAKING_REWARDS_PROXY = '0x990d156d511d0493a0b7c32d1af97e0c9e352acd';
+const RADAR_TOKEN = '0x44709a920fccf795fbc57baa433cc3dd53c44dbe';
+```
 STAKING_REWARDS_PROXY is address of contract that holds staked tokens;
 
 RADAR_TOKEN is RADAR token contract address.
   
 **Line 9: tvl calculation function**
-
+```typescript
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+```
 Every integration must export this function. It calculates and returns locked tokens balances. It takes a single parameter **params** of type ITvlParams. The tvl function returns a Promise that resolves to a ITvlReturn.
 
   **params** is an object which has these attributes:
@@ -123,11 +130,23 @@ Every integration must export this function. It calculates and returns locked to
   - web3 - web3 object, that let's you connect to blockchain node.
   
 **Lines 11-13: block number validation**
-
+```typescript
+  if (block < START_BLOCK) {
+    return {};
+  }
+```
 If provided block is lower than dapp deployment block, empty object is returned.
 
 **Lines 15-21: TVL calculation**
-
+```typescript
+  const proxyBalance = await util.getTokenBalances(
+    STAKING_REWARDS_PROXY,
+    [RADAR_TOKEN],
+    block,
+    chain,
+    web3,
+  );
+```
 If provided block is not lower than START_BLOCK, the function continues by calling the **getTokenBalances** function from the **util** module. getTokenBalances function connects to blockchain node request data and returns balances in this format:
 ```
     [
@@ -141,7 +160,9 @@ If provided block is not lower than START_BLOCK, the function continues by calli
 **util** module has many helper functions that makes integrations simplier and more readable. More information can be found [here](https://github.com/dappradar/dappradar-defi-providers/blob/IN-731/src/util/blockchainUtil.ts)
 
 **Line 24: converting balances to required format**
-
+```typescript
+  formatter.sumMultiBalanceOf(balances, proxyBalance);
+```
 **sumMultiBalanceOf** function from the **formatter** module sums provided balances (in this example **balances** object is still empty) and converts BigNumber objects to strings. Balances are returned in this format:
 ```
     {
