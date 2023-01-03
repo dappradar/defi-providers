@@ -7,6 +7,7 @@
 Installation [Protoc](http://google.github.io/proto-lens/installing-protoc.html)
 
 #### Mac OS X
+
 ```bash
 PROTOC_ZIP=protoc-3.14.0-osx-x86_64.zip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
@@ -16,6 +17,7 @@ rm -f $PROTOC_ZIP
 ```
 
 #### Linux
+
 ```bash
 PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
@@ -23,6 +25,7 @@ sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
 sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
 rm -f $PROTOC_ZIP
 ```
+
 ## Installation
 
 ```bash
@@ -51,26 +54,6 @@ By submitting the code, you transfer all the rights to the code to DappRadar UAB
 
 After adding the new provider, you can test it with [Bloomrpc](https://github.com/bloomrpc/bloomrpc) or [integration testing](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts).
 
-```bash
-ETHEREUM_NODE_URL=
-BSC_NODE_URL=
-AURORA_NODE_URL=
-AVALANCHE_NODE_URL=
-CELO_NODE_URL=
-EVERSCALE_NODE_URL=
-FANTOM_NODE_URL=
-HEDERA_NODE_URL=
-MOONBEAM_NODE_URL=
-MOONRIVER_NODE_URL=
-NEAR_NODE_URL=
-OPTIMISM_NODE_URL=
-POLYGON_NODE_URL=
-RONIN_NODE_URL=
-SOLANA_NODE_URL=
-STACKS_NODE_URL=
-TEZOS_NODE_URL=
-```
-
 ## Integration examples
 
 Uniswap V2 clone integration: [Sakeswap](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/ethereum/sakeswap)
@@ -82,6 +65,34 @@ Integration based on subgraph: [Rubicon](https://github.com/dappradar/dappradar-
 Integration based on various smart contract methods calls: [Aave](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/avalanche/aave), [Iron](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/polygon/iron)
 
 Integration where LP tokens are locked as TVL so their underlying balances have to be calculated: [Autofarm](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers/bsc/autofarm)
+
+## Uniswap V2 clone integration code walk through
+
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import uniswapV2 from '../../../../util/calculators/uniswapV2';
+import formatter from '../../../../util/formatter';
+
+const START_BLOCK = 10932295;
+const FACTORY_ADDRESS = '0x75e48C954594d64ef9613AeEF97Ad85370F13807';
+
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+const { block, chain, provider, web3 } = params;
+if (block < START_BLOCK) {
+return {};
+}
+
+const { balances, poolBalances } = await uniswapV2.getTvl(
+FACTORY_ADDRESS,
+block,
+chain,
+provider,
+web3,
+);
+formatter.convertBalancesToFixed(balances);
+return { balances, poolBalances };
+}
+
+export { tvl };
 
 ## Contact
 
