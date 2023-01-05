@@ -170,6 +170,12 @@ async function getTvl(
       pInfos = await Promise.all(pInfos);
       pInfos.forEach((info) => poolInfos.push(info));
     } catch (e) {
+      log.error({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: uniswapV2.getTvl of ${chain}/${provider}`,
+        endpoint: 'getTvl',
+      });
       break;
     }
   }

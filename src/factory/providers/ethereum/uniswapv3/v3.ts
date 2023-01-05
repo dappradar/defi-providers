@@ -73,7 +73,7 @@ export async function tvl(block, chain, provider, web3) {
     return {};
   }
 
-  let v3Pairs = { block: START_BLOCK, pairs: [], token01: {} };
+  let v3Pairs = { block: START_BLOCK, pairs: [], token01: [] };
   try {
     v3Pairs = basicUtil.readDataFromFile('cache/v3Pairs.json', chain, provider);
   } catch {}
@@ -91,12 +91,14 @@ export async function tvl(block, chain, provider, web3) {
         await util.getLogs(
           i,
           Math.min(block, i + offset),
-          '0x8ccec77b0cb63ac2cafd0f5de8cdfadab91ce656d262240ba8a6343bccc5f945',
+          '0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118',
           FACTORY,
           web3,
         )
       ).output;
-    } catch {
+      console.log(`Trying from ${i} with offset ${offset}`);
+    } catch (e) {
+      console.log(e);
       if (offset > 10000) {
         offset -= 20000;
       } else if (offset > 1000) {
