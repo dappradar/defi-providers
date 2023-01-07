@@ -30,7 +30,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  const stablePoolsBalances = await util.getTokenBalancesOfEachHolder(
+  const stablePools Balances = await util.getTokenBalancesOfEachHolder(
     STABLE_POOLS,
     TOKENS,
     block,
