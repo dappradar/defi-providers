@@ -109,7 +109,9 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
     const results = await Promise.all(balanceCalls);
     results.forEach((result) => {
-      formatter.sumMultiBalanceOf(balances, result);
+      if (result) {
+        formatter.sumMultiBalanceOf(balances, result);
+      }
     });
   }
 
