@@ -4,9 +4,7 @@ ENV PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
 RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/${PROTOC_ZIP}
 RUN unzip -o ${PROTOC_ZIP} -d ./proto
 RUN chmod 755 -R ./proto/bin
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.13 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe
+RUN curl -sSL "https://github.com/fullstorydev/grpcurl/releases/download/v1.8.7/grpcurl_1.8.7_linux_x86_64.tar.gz" | tar -xz -C /usr/local/bin
 ENV BASE=/usr
 
 RUN cp ./proto/bin/protoc ${BASE}/bin/

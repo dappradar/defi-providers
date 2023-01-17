@@ -32,15 +32,14 @@ spec:
             - secretRef:
                 name: defi-providers-production-secrets
           ports:
-            -
-              name: defi-providers-port
+            - name: defi-providers-port
               containerPort: 3002
           readinessProbe:
             exec:
-              command: ["/bin/grpc_health_probe", "-addr=localhost:3002"]
+              command: ["grpcurl -d '{}' -plaintext -proto ./dappradar-proto/defi-providers.proto 127.0.0.1:3002 dappradar.defi.providers.DefiProviders/Check"]
             initialDelaySeconds: 5
           livenessProbe:
             exec:
-              command: ["/bin/grpc_health_probe", "-addr=localhost:3002"]
+              command: ["grpcurl -d '{}' -plaintext -proto ./dappradar-proto/defi-providers.proto 127.0.0.1:3002 dappradar.defi.providers.DefiProviders/Check"]
             initialDelaySeconds: 10
 

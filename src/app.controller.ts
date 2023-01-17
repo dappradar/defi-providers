@@ -10,10 +10,6 @@ import {
   GetTokenDetailsRequest,
 } from './generated/dappradar-proto/defi-providers';
 import { GenericRpcErrorFilter } from './genericRpcError';
-import {
-  HealthCheckRequest,
-  HealthCheckResponse,
-} from './generated/dappradar-proto/health';
 
 @Controller()
 @UseFilters(new GenericRpcErrorFilter())
@@ -37,12 +33,5 @@ export class AppController {
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
     return await this.appService.getTokenDetails(req);
-  }
-
-  @GrpcMethod('Health', 'Check')
-  async checkServerStatus(
-    req: HealthCheckRequest,
-  ): Promise<HealthCheckResponse> {
-    return { status: 1 };
   }
 }
