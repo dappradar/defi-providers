@@ -4,7 +4,7 @@ name: Auto Deploy to K8s production.
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   setup-build:
