@@ -21,11 +21,7 @@ jobs:
           node-version: '18.x'
       - name: Install dependencies
         run: npm install
-      - name: Protoc Install
-        run: curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/protoc-3.14.0-linux-x86_64.zip
-      - name: Unzip Protoc
-        run: unzip -o protoc-3.14.0-linux-x86_64.zip -d ./proto
-      - name: Chmod Protoc
-        run: chmod 755 -R ./proto/bin
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
       - name: Build
         run: npm run build
