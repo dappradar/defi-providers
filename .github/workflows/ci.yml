@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build
-        run: docker build -t test .
-      - name: Run
-        run: docker run test
+      - uses: actions/checkout@v2
+      -   name: Build and push docker image
+          uses: docker/build-push-action@v1
+          with:
+            dockerfile: Dockerfile
+            tag_with_ref: true
