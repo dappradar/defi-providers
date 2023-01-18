@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Ls
+        run: docker build -t test .
       - name: Build
         run: docker build -t test .
       - name: Run
