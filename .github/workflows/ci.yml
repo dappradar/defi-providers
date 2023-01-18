@@ -12,6 +12,6 @@ jobs:
 
     steps:
       - name: Build
-        run: docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:test .
+        run: docker build -t test .
       - name: Run
-        run: docker run $ECR_REGISTRY/$ECR_REPOSITORY:test
+        run: docker run test
