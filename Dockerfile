@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:14 As development
+FROM --platform=linux/amd64 node:16 As development
 
 ENV PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
 RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/${PROTOC_ZIP}
