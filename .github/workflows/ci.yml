@@ -11,9 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          submodules: true
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          secrets: ${{ secrets.PAT_TOKEN }}
           push: false
           tags: test
