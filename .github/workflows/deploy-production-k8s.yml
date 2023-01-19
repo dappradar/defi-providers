@@ -50,10 +50,10 @@ jobs:
           aws eks --region eu-central-1 update-kubeconfig --name dappradar-production
           sed -i "/image\:/c\          image: ${{ secrets.ECR_PROD }}/defi-providers:${GITHUB_SHA}" kubernetes/prod/deployment.yaml
           aws secretsmanager get-secret-value --secret-id defi-providers-production-secrets --query SecretString --output text > secrets.env
-          kubectl delete secret/defi-providers-production-secrets
-          kubectl create secret generic defi-providers-production-secrets --from-env-file=secrets.env
-          kubectl apply -f kubernetes/prod/deployment.yaml
-          kubectl apply -f kubernetes/prod/service.yaml
+          kubectl delete secret/defi-providers-production-secrets -n defi-providers
+          kubectl create secret generic defi-providers-production-secrets --from-env-file=secrets.env -n defi-providers
+          kubectl apply -f kubernetes/prod/deployment.yaml -n defi-providers
+          kubectl apply -f kubernetes/prod/service.yaml -n defi-providers
         #        kubectl apply -f kubernetes/prod/hpa.yaml
         #        kubectl apply -f kubernetes/prod/ingress-alb-lookup.yaml
         env: # Or as an environment variable
