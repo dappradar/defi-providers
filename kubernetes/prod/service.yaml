@@ -5,8 +5,8 @@ metadata:
   name: defi-providers
 spec:
   ports:
-    - port: 3002
+    - name: grpc
+      port: 3002
       targetPort: 3002
-      protocol: TCP
   selector:
     component: defi-providers
