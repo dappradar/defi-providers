@@ -11,6 +11,7 @@ RUN cp ./proto/bin/protoc ${BASE}/bin/
 RUN cp -R ./proto/include/* ${BASE}/include/
 
 WORKDIR /usr/src/app
+COPY .git/ ./.git/
 COPY package*.json ./
 RUN npm install
 COPY . .
