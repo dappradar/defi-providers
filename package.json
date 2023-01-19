@@ -5,9 +5,11 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "16"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
-    "preinstall": "git submodule update --init",
     "dev": "APP_ENV=dev ts-node src/main.ts",
     "prod": "APP_ENV=prod ts-node src/main.ts",
     "build": "rm -rf src/generated && mkdir src/generated && protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true,nestJs=true,addNestjsRestParameter=true --ts_proto_out=src/generated dappradar-proto/*.proto && tsc -p tsconfig.build.json",
