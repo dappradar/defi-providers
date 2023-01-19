@@ -5,7 +5,7 @@ dotenv.config({ path: `.env.${process.env.APP_ENV || 'dev'}`, override: true });
 
 const {
   HOST = process.env.HOST || '127.0.0.1',
-  PORT = process.env.HOST || 3002,
+  PORT = process.env.PORT || 3002,
   APP_ENV = process.env.APP_ENV,
   SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL,
   SLACK_LOGGING = process.env.SLACK_LOGGING,
