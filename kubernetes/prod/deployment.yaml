@@ -33,7 +33,7 @@ spec:
             - secretRef:
                 name: defi-providers-production-secrets
           ports:
-            - name: defi-providers-port
+            - name: providers-port
               containerPort: 3002
           readinessProbe:
             exec:
