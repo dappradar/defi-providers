@@ -37,5 +37,5 @@ spec:
               containerPort: 3002
           livenessProbe:
             exec:
-              command: ["grpcurl -d '{}' -plaintext -proto dappradar-proto/defi-providers.proto 127.0.0.1:3002 dappradar.defi.providers.DefiProviders/Check"]
+              command: ["grpcurl -d '{}' -plaintext -proto /usr/src/app/dappradar-proto/defi-providers.proto 127.0.0.1:3002 dappradar.defi.providers.DefiProviders/Check"]
             initialDelaySeconds: 10
