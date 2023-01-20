@@ -35,4 +35,7 @@ spec:
           ports:
             - name: providers-port
               containerPort: 3002
-
+          livenessProbe:
+            grpc:
+              port: 3002
+            initialDelaySeconds: 10
