@@ -39,7 +39,7 @@ const config = {
   DEFI_PROVIDERS_SERVICE_PROTOFILE: resolve(
     __dirname,
     '..',
-    'dappradar-proto',
+    'proto',
     'defi-providers.proto',
   ),
   LOGSTASH_HOST,

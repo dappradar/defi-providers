@@ -9,7 +9,7 @@ import {
   TokenVolume,
   GetTokenDetailsRequest,
   GetTokenDetailsReply,
-} from '../generated/dappradar-proto/defi-providers';
+} from '../generated/proto/defi-providers';
 import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 

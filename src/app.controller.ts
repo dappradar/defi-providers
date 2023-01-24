@@ -8,7 +8,7 @@ import {
   GetPoolAndTokenVolumesReply,
   GetTokenDetailsReply,
   GetTokenDetailsRequest,
-} from './generated/dappradar-proto/defi-providers';
+} from './generated/proto/defi-providers';
 import { GenericRpcErrorFilter } from './genericRpcError';
 
 @Controller()

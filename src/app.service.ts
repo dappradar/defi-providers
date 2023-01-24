@@ -6,7 +6,7 @@ import {
   GetPoolAndTokenVolumesReply,
   GetTokenDetailsRequest,
   GetTokenDetailsReply,
-} from './generated/dappradar-proto/defi-providers';
+} from './generated/proto/defi-providers';
 import { FactoryService } from './factory/factory.service';
 
 @Injectable()
