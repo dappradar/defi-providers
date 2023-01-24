@@ -3,7 +3,6 @@ import { FactoryService } from './factory.service';
 import { AppModule } from '../app.module';
 
 describe(process.argv[4], () => {
-  console.log(process.argv);
   let factoryService: FactoryService;
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({

@@ -2,11 +2,13 @@
 
 [DappRadar](https://dappradar.com/)
 
-## Preinstall
+## Installation
+
+### Preinstall (Optional)
 
 Installation [Protoc](http://google.github.io/proto-lens/installing-protoc.html)
 
-#### Mac OS X
+##### Mac OS X
 
 ```bash
 PROTOC_ZIP=protoc-3.14.0-osx-x86_64.zip
@@ -16,7 +18,7 @@ sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
 rm -f $PROTOC_ZIP
 ```
 
-#### Linux
+##### Linux
 
 ```bash
 PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
@@ -26,12 +28,11 @@ sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
 rm -f $PROTOC_ZIP
 ```
 
-## Installation
+### Install Dependency
 
 ```bash
 $ npm install
-$ npm run build
-$ npm run dev
+$ npm run build #If you followed the preinstall step
 ```
 
 ## Adding New Provider
@@ -51,6 +52,14 @@ Pull request convention
 ```
 
 By submitting the code, you transfer all the rights to the code to DappRadar UAB and retain no copyright or other intellectual property rights to it.
+
+## Testing
+
+After adding the new provider, you can test it by running this command:
+```
+npm run test <chain> <provider> <blocknumber>
+```
+You can use [Bloomrpc](https://github.com/bloomrpc/bloomrpc) to test with the grpc endpoint.
 
 ## Integration examples
 
@@ -503,15 +512,7 @@ assets.forEach((address, index) => {
         balance: BigNumber { s: 1, e: 13, c: [Array] }
       }
     ]
-```
-
-## Testing
-
-After adding the new provider, you can test it by running this command:
-```
-npm run test <chain> <provider> <blocknumber>
-```
-You can use [Bloomrpc](https://github.com/bloomrpc/bloomrpc) to test with the grpc endpoint. 
+``` 
 
 ## Contact
 
