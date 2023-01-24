@@ -13,9 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          submodules: true
       - name: Set current date and time as env variable
         id: datetime
         run: echo "::set-output name=datetime::$(date +'%Y-%m-%dT%H:%M:%S')"
