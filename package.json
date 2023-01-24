@@ -5,9 +5,6 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-  "engines": {
-    "node": "16"
-  },
   "scripts": {
     "prebuild": "rimraf dist",
     "dev": "APP_ENV=dev ts-node src/main.ts",
