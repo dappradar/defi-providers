@@ -60,6 +60,7 @@ export class Web3ProviderService {
       }
       case 'tezos': {
         web3 = { eth: this.tezos };
+        await web3.eth.onModuleInit();
         break;
       }
       default: {
