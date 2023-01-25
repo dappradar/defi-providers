@@ -1,7 +1,7 @@
 FROM --platform=linux/amd64 node:16.10.0-alpine as builder
 
 RUN apk --no-cache upgrade && \
-    apk --no-cache add curl unzip make protobuf-dev gcc g++ cmake python3 git protoc
+    apk --no-cache add protoc
 
 WORKDIR /usr/src/app
 COPY .git/ ./.git/
@@ -12,5 +12,5 @@ RUN npm run build
 
 FROM --platform=linux/amd64 node:16.10.0-alpine
 WORKDIR /usr/src/app
-COPY --from=builder . .
+COPY --from=builder /usr/src/app/ /usr/src/app/
 CMD [ "node", "dist/main.js" ]
