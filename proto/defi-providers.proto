@@ -6,19 +6,6 @@ service DefiProviders {
   rpc GetTvl (GetTvlRequest) returns (GetTvlReply);
   rpc GetPoolAndTokenVolumes (GetPoolAndTokenVolumesRequest) returns (GetPoolAndTokenVolumesReply);
   rpc GetTokenDetails (GetTokenDetailsRequest) returns (GetTokenDetailsReply);
-  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
-}
-message HealthCheckRequest {
-  string service = 1;
-}
-
-message HealthCheckResponse {
-  enum ServingStatus {
-    UNKNOWN = 0;
-    SERVING = 1;
-    NOT_SERVING = 2;
-  }
-  ServingStatus status = 1;
 }
 
 message GetTokenDetailsRequest {
