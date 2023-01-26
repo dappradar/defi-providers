@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FactoryService } from './factory.service';
 import { AppModule } from '../app.module';
 
-describe(process.argv[4], () => {
+describe(process.argv[6], () => {
   let factoryService: FactoryService;
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -10,12 +10,16 @@ describe(process.argv[4], () => {
     }).compile();
     factoryService = module.get(FactoryService);
   });
-  it(process.argv[5], async () => {
-    const { balances } = await factoryService.getTvl({
-      provider: process.argv[5],
-      chain: process.argv[4],
-      query: { block: process.argv[6], date: '0' },
-    });
-    console.log(balances);
-  });
+  it(
+    process.argv[7],
+    async () => {
+      const { balances } = await factoryService.getTvl({
+        provider: process.argv[7],
+        chain: process.argv[6],
+        query: { block: process.argv[8], date: '0' },
+      });
+      console.log(balances);
+    },
+    20000,
+  );
 });
