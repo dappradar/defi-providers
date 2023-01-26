@@ -10,7 +10,7 @@ The balances of locked assets should be found as effectively as possible, rememb
 
 ```bash
 $ npm install
-$ npm run build #If you followed the preinstall step
+$ npm run build #If you followed the Protoc Installation step
 ```
 ### Protoc Installation (Optional)
 
