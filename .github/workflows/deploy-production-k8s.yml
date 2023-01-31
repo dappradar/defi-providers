@@ -36,8 +36,8 @@ jobs:
           ECR_DO_REGISTRY: ${{ secrets.ECR_DO_REGISTRY }}
         run: |
           doctl registry login
-          docker build -t $ECR_DO_REGISTRY:defi-providers-${GITHUB_SHA} -t $ECR_DO_REGISTRY:defi-providers-prod .
-          docker image push $ECR_DO_REGISTRY:defi-providers-prod
+          docker build -t registry.digitalocean.com/dr-prod-registry/defi-providers:prod .
+          docker push registry.digitalocean.com/dr-prod-registry/defi-providers:prod
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
