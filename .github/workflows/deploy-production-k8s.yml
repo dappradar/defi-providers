@@ -32,7 +32,7 @@ jobs:
           doctl kubernetes cluster kubeconfig save dr-prod-k8s
 
       - name: Build, tag, and push image to Amazon ECR
-       run: |
+        run: |
           doctl registry login
           docker build -t ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:prod .
           docker push ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:prod
