@@ -30,14 +30,14 @@ jobs:
       - name: Save DigitalOcean kubeconfig and login to DO registry
         run: |
           doctl kubernetes cluster kubeconfig save dr-prod-k8s
-          doctl registry login
 
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_DO_REGISTRY: ${{ secrets.ECR_DO_REGISTRY }}
         run: |
+          doctl registry login
           docker build -t $ECR_DO_REGISTRY:defi-providers-${GITHUB_SHA} -t $ECR_DO_REGISTRY:defi-providers-prod .
-          docker image push --all-tags $ECR_DO_REGISTRY
+          docker image push $ECR_DO_REGISTRY:defi-providers-prod
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
