@@ -34,8 +34,8 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         run: |
           doctl registry login
-          docker build -t ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:prod .
-          docker push ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:prod
+          docker build -t ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:${GITHUB_SHA} .
+          docker push ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:${GITHUB_SHA}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -46,7 +46,7 @@ jobs:
 
       - name: Deploy image to k8s production
         run: |
-          sed -i "/image\:/c\          image: ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:prod" kubernetes/prod/deployment.yaml
+          sed -i "/image\:/c\          image: ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:${GITHUB_SHA}" kubernetes/prod/deployment.yaml
           aws secretsmanager get-secret-value --secret-id defi-providers-production-secrets --query SecretString --output text > secrets.env
           kubectl delete secret/defi-providers-production-secrets -n defi-providers
           kubectl create secret generic defi-providers-production-secrets --from-env-file=secrets.env -n defi-providers

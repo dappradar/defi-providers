@@ -10,4 +10,4 @@ spec:
       targetPort: 3002
   selector:
     component: defi-providers
-  type: NodePort
+  type: ClusterIP
