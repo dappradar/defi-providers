@@ -22,7 +22,7 @@ spec:
       containers:
         -
           name: defi-providers
-          image: "IMAGE"
+          image: registry.digitalocean.com/dr-prod-registry/defi-providers@sha256:9ac1f36e00644e3c129595bf4c91f9025337dd26d81c5d2e0c8e1565fd2dd412
           command: ["node"]
           args: ["dist/main.js"]
           resources:
