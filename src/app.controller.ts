@@ -39,6 +39,7 @@ export class AppController {
 
   @GrpcMethod('DefiProviders', 'HeathCheck')
   async heathCheck(req: HeathCheckRequest): Promise<HeathCheckReply> {
+    console.log('heath check');
     return { run: true };
   }
 }
