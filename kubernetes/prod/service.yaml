@@ -6,7 +6,8 @@ metadata:
 spec:
   ports:
     - name: grpc
-      port: 3002
+      port: 50051
       targetPort: 3002
   selector:
     component: defi-providers
+  type: NodePort
