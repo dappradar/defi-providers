@@ -27,7 +27,7 @@ jobs:
 
       - name: Package project
         run: |
-          mkdir -p ${{ github.workspace }} /build-artifacts
+          mkdir -p ${{ github.workspace }}/build-artifacts
           tar --exclude-vcs -zcpvf ${{ env.PACKAGE_DIR }} -C ${{ github.workspace }}  dist/ node_modules/ package.json package-lock.json
 
       - name: Checkout private tools
