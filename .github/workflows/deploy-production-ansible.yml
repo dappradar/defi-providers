@@ -1,0 +1,51 @@
+name: Deploy to production.
+
+on:
+  push:
+    branches: [ DEVOPS-1167 ]
+
+jobs:
+  build:
+    name: Build and deploy
+    runs-on: dappradar-runner
+
+    env:
+      PACKAGE_DIR: build-artifacts/defi-tracker.tar.gz
+      DESTINATION_PATH: /opt/defi-providers
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Package project
+        run: tar --exclude-vcs -zcpvf ${env.PACKAGE_DIR} -C ${GITHUB_WORKSPACE} dist/ node_modules/ package.json package-lock.json
+
+      - name: Checkout private tools
+        uses: actions/checkout@v3
+        with:
+          repository: dappradar/dappradar-cicd-ansible
+          ref: master
+          ssh-key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
+          path: cicd-ansible
+
+      - name: Run deployment playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: prod-cicd-defi-providers-deployment.yml
+          # Optional, directory where playbooks live
+          directory: ${GITHUB_WORKSPACE}/cicd-ansible
+          # Optional, SSH private key
+          key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
+          # Optional, additional flags to pass to ansible-playbook
+          options: |
+            --inventory hosts
+            --extra-vars ansible_user=root
+            --extra-vars ansistrano_deploy_from=${GITHUB_WORKSPACE}/${env.PACKAGE_DIR}
+            --extra-vars ansistrano_deploy_to=${env.DESTINATION_PATH}
+            --verbose
