@@ -42,7 +42,7 @@ jobs:
           # Required, playbook filepath
           playbook: prod-cicd-defi-providers-deployment.yml
           # Optional, directory where playbooks live
-          directory: ${{ GITHUB_WORKSPACE }}/cicd-ansible
+          directory: ${GITHUB_WORKSPACE}/cicd-ansible
           # Optional, SSH private key
           key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
           # Optional, additional flags to pass to ansible-playbook
