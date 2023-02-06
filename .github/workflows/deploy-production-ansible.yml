@@ -26,7 +26,9 @@ jobs:
         run: npm run build
 
       - name: Package project
-        run: tar --exclude-vcs -zcpvf ${{ env.PACKAGE_DIR }} -C ${{ env.GITHUB_WORKSPACE }} dist/ node_modules/ package.json package-lock.json
+        run: |
+          mkdir -p ${{ env.GITHUB_WORKSPACE }}/build-artifacts
+          tar --exclude-vcs -zcpvf ${{ env.PACKAGE_DIR }} -C ${{ env.GITHUB_WORKSPACE }} dist/ node_modules/ package.json package-lock.json
 
       - name: Checkout private tools
         uses: actions/checkout@v3
