@@ -44,13 +44,13 @@ jobs:
           # Required, playbook filepath
           playbook: prod-cicd-defi-providers-deployment.yml
           # Optional, directory where playbooks live
-          directory: ${{ github.workspace }} /cicd-ansible
+          directory: ${{ github.workspace }}/cicd-ansible
           # Optional, SSH private key
           key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
           # Optional, additional flags to pass to ansible-playbook
           options: |
             --inventory hosts
             --extra-vars ansible_user=root
-            --extra-vars ansistrano_deploy_from=${{ github.workspace }} /${{ env.PACKAGE_DIR }}
+            --extra-vars ansistrano_deploy_from=${{ github.workspace }}/${{ env.PACKAGE_DIR }}
             --extra-vars ansistrano_deploy_to=${{ env.DESTINATION_PATH }}
             --verbose
