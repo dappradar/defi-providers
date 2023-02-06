@@ -27,8 +27,8 @@ jobs:
 
       - name: Package project
         run: |
-          mkdir -p ${{ env.GITHUB_WORKSPACE }}/build-artifacts
-          tar --exclude-vcs -zcpvf ${{ env.PACKAGE_DIR }} -C ${{ env.GITHUB_WORKSPACE }} dist/ node_modules/ package.json package-lock.json
+          mkdir -p ${{ github.workspace }} /build-artifacts
+          tar --exclude-vcs -zcpvf ${{ env.PACKAGE_DIR }} -C ${{ github.workspace }}  dist/ node_modules/ package.json package-lock.json
 
       - name: Checkout private tools
         uses: actions/checkout@v3
@@ -44,13 +44,13 @@ jobs:
           # Required, playbook filepath
           playbook: prod-cicd-defi-providers-deployment.yml
           # Optional, directory where playbooks live
-          directory: ${{ env.GITHUB_WORKSPACE }}/cicd-ansible
+          directory: ${{ github.workspace }} /cicd-ansible
           # Optional, SSH private key
           key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
           # Optional, additional flags to pass to ansible-playbook
           options: |
             --inventory hosts
             --extra-vars ansible_user=root
-            --extra-vars ansistrano_deploy_from=${{ env.GITHUB_WORKSPACE }}/${{ env.PACKAGE_DIR }}
+            --extra-vars ansistrano_deploy_from=${{ github.workspace }} /${{ env.PACKAGE_DIR }}
             --extra-vars ansistrano_deploy_to=${{ env.DESTINATION_PATH }}
             --verbose
