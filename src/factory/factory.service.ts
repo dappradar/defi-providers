@@ -100,6 +100,6 @@ export class FactoryService {
     provider: string,
     path: string,
   ): string {
-    return `./providers/${chain}/${provider}/${path}`;
+    return `${__dirname}/providers/${chain}/${provider}/${path}`;
   }
 }
