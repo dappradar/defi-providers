@@ -56,13 +56,9 @@ jobs:
       - name: Run deployment playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          # Required, playbook filepath
           playbook: prod-cicd-defi-providers-deployment.yml
-          # Optional, directory where playbooks live
           directory: ${{ github.workspace }}/cicd-ansible
-          # Optional, SSH private key
           key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
-          # Optional, additional flags to pass to ansible-playbook
           options: |
             --inventory hosts
             --extra-vars ansible_user=root
