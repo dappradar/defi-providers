@@ -52,6 +52,10 @@ jobs:
           name: defi-providers-archive
           path: ${{ env.PROJECT_ARCHIVE_PATH }}
 
+      - name: Display structure of downloaded files
+        run: ls -Rlah
+        working-directory: ${{ env.PROJECT_ARCHIVE_PATH }}
+
       - name: Checkout CICD repo
         uses: actions/checkout@v3
         with:
