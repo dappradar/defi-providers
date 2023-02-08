@@ -8,8 +8,8 @@ import {
   GetPoolAndTokenVolumesReply,
   GetTokenDetailsReply,
   GetTokenDetailsRequest,
-  HeathCheckRequest,
-  HeathCheckReply,
+  HealthCheckRequest,
+  HealthCheckReply,
 } from './generated/proto/defi-providers';
 import { GenericRpcErrorFilter } from './genericRpcError';
 
@@ -37,8 +37,8 @@ export class AppController {
     return await this.appService.getTokenDetails(req);
   }
 
-  @GrpcMethod('DefiProviders', 'HeathCheck')
-  async heathCheck(req: HeathCheckRequest): Promise<HeathCheckReply> {
+  @GrpcMethod('DefiProviders', 'HealthCheck')
+  async heathCheck(req: HealthCheckRequest): Promise<HealthCheckReply> {
     return { run: true };
   }
 }
