@@ -5,16 +5,16 @@ on:
     branches: [ DEVOPS-1167 ]
   workflow_dispatch:
 
+env:
+  PROJECT_DIR: /opt/defi-providers
+  PROJECT_ARCHIVE_PATH: build-artifacts/defi-tracker.tar.gz
+  ENV_FILE_DEST_PATH: /opt/defi-providers/shared/.env
+  ENV_FILE_TMP_PATH: /tmp/defi-providers-secrets.env
+
 jobs:
   build:
-    name: Build and deploy
+    name: Build
     runs-on: dappradar-runner
-
-    env:
-      PROJECT_DIR: /opt/defi-providers
-      PROJECT_ARCHIVE_PATH: build-artifacts/defi-tracker.tar.gz
-      ENV_FILE_DEST_PATH: /opt/defi-providers/shared/.env
-      ENV_FILE_TMP_PATH: /tmp/defi-providers-secrets.env
 
     steps:
       - uses: actions/checkout@v3
@@ -32,6 +32,25 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}/build-artifacts
           tar --exclude-vcs -zcpvf ${{ env.PROJECT_ARCHIVE_PATH }} -C ${{ github.workspace }}  dist/ proto/ node_modules/ package.json package-lock.json
+
+      - name: Upload defi-providers-archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: defi-providers-archive
+          path: ${{ env.PROJECT_ARCHIVE_PATH }}
+
+  deploy:
+    name: Deploy
+    runs-on: dappradar-runner
+
+    needs: build
+
+    steps:
+      - name: Download defi-providers-archive
+        uses: actions/download-artifact@v3
+        with:
+          name: defi-providers-archive
+          path: ${{ env.PROJECT_ARCHIVE_PATH }}
 
       - name: Checkout CICD repo
         uses: actions/checkout@v3
