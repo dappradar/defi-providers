@@ -3,6 +3,7 @@
 /node_modules
 /src/generated
 .env.prod
+.env
 
 # Logs
 logs
