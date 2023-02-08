@@ -1,0 +1,87 @@
+name: Deploy to production.
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  PROJECT_DIR: /opt/defi-providers
+  PROJECT_ARCHIVE_DIR: build-artifacts
+  PROJECT_ARCHIVE_NAME: defi-tracker.tar.gz
+  ENV_FILE_DEST_PATH: /opt/defi-providers/shared/.env
+  ENV_FILE_TMP_PATH: /tmp/defi-providers-secrets.env
+
+jobs:
+  build:
+    name: Build
+    runs-on: dappradar-runner
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Package project
+        run: |
+          mkdir -p ${{ github.workspace }}/build-artifacts
+          tar --exclude-vcs -zcpvf ${{ env.PROJECT_ARCHIVE_DIR }}/${{ env.PROJECT_ARCHIVE_NAME }} -C ${{ github.workspace }}  dist/ proto/ node_modules/ package.json package-lock.json
+
+      - name: Upload defi-providers-archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: defi-providers-archive
+          path: ${{ env.PROJECT_ARCHIVE_DIR }}/${{ env.PROJECT_ARCHIVE_NAME }}
+
+  deploy:
+    name: Deploy
+    runs-on: dappradar-runner
+    environment: production
+    needs: build
+
+    steps:
+      - name: Download defi-providers-archive
+        uses: actions/download-artifact@v3
+        with:
+          name: defi-providers-archive
+          path: ${{ env.PROJECT_ARCHIVE_DIR }}
+
+      - name: Checkout CICD repo
+        uses: actions/checkout@v3
+        with:
+          repository: dappradar/dappradar-cicd-ansible
+          ref: master
+          ssh-key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
+          path: cicd-ansible
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Get .env file content from AWS parameters store
+        run: aws ssm --region eu-central-1 get-parameter --name "/defi-providers/prod/secrets" --output text --query Parameter.Value > ${{ env.ENV_FILE_TMP_PATH }}
+
+      - name: Run deployment playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: prod-cicd-defi-providers-deployment.yml
+          directory: ${{ github.workspace }}/cicd-ansible
+          key: ${{ secrets.CICD_REPO_DEPLOYMENT_KEY }}
+          options: |
+            --inventory hosts
+            --extra-vars ansible_user=root
+            --extra-vars ansistrano_deploy_from=${{ github.workspace }}/${{ env.PROJECT_ARCHIVE_DIR }}/${{ env.PROJECT_ARCHIVE_NAME }}
+            --extra-vars ansistrano_deploy_to=${{ env.PROJECT_DIR }}
+            --extra-vars env_file_src_path=${{ env.ENV_FILE_TMP_PATH }}
+            --extra-vars env_file_dest_path=${{ env.ENV_FILE_DEST_PATH }}
+            --verbose

@@ -6,13 +6,13 @@ service DefiProviders {
   rpc GetTvl (GetTvlRequest) returns (GetTvlReply);
   rpc GetPoolAndTokenVolumes (GetPoolAndTokenVolumesRequest) returns (GetPoolAndTokenVolumesReply);
   rpc GetTokenDetails (GetTokenDetailsRequest) returns (GetTokenDetailsReply);
-  rpc HeathCheck (HeathCheckRequest) returns (HeathCheckReply);
+  rpc HealthCheck (HealthCheckRequest) returns (HealthCheckReply);
 }
 
-message HeathCheckRequest {
+message HealthCheckRequest {
 }
 
-message HeathCheckReply {
+message HealthCheckReply {
   bool run = 1;
 }
 
