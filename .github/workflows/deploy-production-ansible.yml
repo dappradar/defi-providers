@@ -43,7 +43,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: dappradar-runner
-
+    environment: production
     needs: build
 
     steps:
