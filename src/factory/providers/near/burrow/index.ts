@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 62303110;
@@ -9,22 +10,22 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return {};
   }
 
-  const balances = {};
-
   const assetsCallResponse = await web3.eth.callContractFunction(
     BURROW_CONTRACT,
     'get_assets_paged',
     {},
     block,
   );
+  const balances = {};
+  assetsCallResponse.forEach(([token, asset]) => {
+    const extraDecimals = asset.config.extra_decimals;
+    const amount = BigNumber(asset.supplied.balance)
+      .plus(BigNumber(asset.reserved))
+      .minus(BigNumber(asset.borrowed.balance));
+    const adjustedAmount = amount.shiftedBy(-1 * extraDecimals);
+    balances[token] = adjustedAmount.toString();
+  });
 
-  const assets = assetsCallResponse.map(([asset]) => asset);
-  const amounts = assetsCallResponse.map(
-    (amount) => amount[1].supplied.balance,
-  );
-  for (const asset of assets) {
-    balances[asset] = amounts[assets.indexOf(asset)];
-  }
   return { balances };
 }
 
