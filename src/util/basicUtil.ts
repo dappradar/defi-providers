@@ -6,7 +6,7 @@ import { log } from './logger/logger';
 const DEFAULT_DELAY = 5;
 
 function getPath(chain, provider) {
-  return `./src/factory/providers/${chain}/${provider}`;
+  return `./blockchainCache/${chain}/${provider}`;
 }
 
 function getWmainAddress(chain) {

@@ -90,8 +90,9 @@ export class FactoryService {
   async getTokenDetails(
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
-    const { address, name, symbol, decimals, logo } =
-      basicUtil.readDataFromFile('data.json', req.chain, req.provider);
+    const { address, name, symbol, decimals, logo } = await import(
+      this.getProviderServicePath(req.chain, req.provider, 'data.json')
+    );
     return { address, name, symbol, decimals, logo };
   }
 
