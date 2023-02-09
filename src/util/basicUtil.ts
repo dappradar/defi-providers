@@ -8,7 +8,7 @@ const DEFAULT_DELAY = 5;
 
 function getPath(chain, provider) {
   console.log(appDir);
-  return `${appDir}/../blockchainCache/${chain}/${provider}`;
+  return `/usr/tmp/blockchainCache/${chain}/${provider}`;
 }
 
 function getWmainAddress(chain) {
