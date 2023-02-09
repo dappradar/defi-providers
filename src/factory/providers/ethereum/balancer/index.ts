@@ -40,15 +40,24 @@ async function v1Tvl(balances, block, chain, provider, web3) {
     _pools.tokens = {};
   }
 
-  const poolLogs = (
-    await util.getLogs(
-      Math.max(_pools.start, START_BLOCK),
-      block,
-      '0x8ccec77b0cb63ac2cafd0f5de8cdfadab91ce656d262240ba8a6343bccc5f945',
-      '0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd',
-      web3,
-    )
-  ).output;
+  const blocksLimit = 10000;
+  const poolLogs = [];
+  for (
+    let i = Math.max(_pools.start, START_BLOCK);
+    i < block;
+    i += blocksLimit
+  ) {
+    const logs = (
+      await util.getLogs(
+        i,
+        Math.min(i + blocksLimit, block),
+        '0x8ccec77b0cb63ac2cafd0f5de8cdfadab91ce656d262240ba8a6343bccc5f945',
+        '0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd',
+        web3,
+      )
+    ).output;
+    Array.prototype.push.apply(poolLogs, logs);
+  }
 
   const poolPairs = [];
 
