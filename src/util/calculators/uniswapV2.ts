@@ -160,6 +160,7 @@ async function getTvl(
       endpoint: 'getTvl',
     });
     for (let i = start; i < end; i++) {
+      console.log('here');
       if (!usePoolMethods) {
         pInfos.push(contract.methods.allPairs(i).call());
       } else {
@@ -167,7 +168,9 @@ async function getTvl(
       }
     }
     try {
+      console.log('start promiseAll');
       pInfos = await Promise.all(pInfos);
+      console.log('finish promiseAll');
       pInfos.forEach((info) => poolInfos.push(info));
     } catch (e) {
       log.error({

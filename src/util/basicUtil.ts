@@ -2,11 +2,13 @@ import fse from 'fs-extra';
 import { WMAIN_ADDRESS } from '../constants/contracts.json';
 import CHAINS from './data';
 import { log } from './logger/logger';
-
+import { dirname } from 'path';
+const appDir = dirname(require.main.filename);
 const DEFAULT_DELAY = 5;
 
 function getPath(chain, provider) {
-  return `./blockchainCache/${chain}/${provider}`;
+  console.log(appDir);
+  return `${appDir}/../blockchainCache/${chain}/${provider}`;
 }
 
 function getWmainAddress(chain) {
