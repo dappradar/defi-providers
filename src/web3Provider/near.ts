@@ -45,6 +45,15 @@ export class Near implements OnModuleInit {
     return JSON.parse(Buffer.from(response.result).toString());
   }
 
+  async getBalance(address, block) {
+    const response = await near.connection.provider.query({
+      request_type: 'view_account',
+      block_id: block,
+      account_id: address,
+    });
+    return JSON.parse(Buffer.from(response.amount).toString());
+  }
+
   Contract = Contract;
 }
 

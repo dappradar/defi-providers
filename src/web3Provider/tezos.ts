@@ -66,7 +66,7 @@ export class Tezos implements OnModuleInit {
   public async getAllTokensBalances(account, levelNumber) {
     let tokenBalances = {};
     const params =
-      '&token.tokenId=0&balance.ne=0&sort.desc=balance&select=token.contract.address as token,balance';
+      '&balance.ne=0&sort.desc=balance&select=token.contract.address as token,token.tokenId as tokenId,balance';
     if (levelNumber == 'latest') {
       tokenBalances = await fetch(
         `${TZKT_API}/tokens/balances?account=${account}${params}`,
@@ -78,7 +78,7 @@ export class Tezos implements OnModuleInit {
     }
     return Object.values(tokenBalances).map((token: any) => {
       return {
-        token: token.token,
+        token: `${token.token}_${token.tokenId}`,
         balance: BigNumber(token.balance),
       };
     });
