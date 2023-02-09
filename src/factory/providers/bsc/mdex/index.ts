@@ -21,6 +21,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     provider,
     web3,
   );
+  delete balances['0xe85afccdafbe7f2b096f268e31cce3da8da2990a'];
 
   formatter.convertBalancesToFixed(balances);
 

@@ -1,22 +1,15 @@
+import BigNumber from 'bignumber.js';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import axios from 'axios';
 
-const STAKE_ADDRESS_V1 = '0.0.834119';
-const STAKE_ADDRESS_V2 = '0.0.1027588';
+const hederaStaderUrl = 'https://staderverse.staderlabs.com/tvl';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, web3 } = params;
-
-  if (block < 1649405800) {
-    return {};
-  }
+  const { block, chain, provider, web3 } = params;
+  const tvls = await axios.get(hederaStaderUrl);
 
   const balances = {
-    hbar: (
-      await web3.eth.getBalance(
-        block < 1656460800 ? STAKE_ADDRESS_V1 : STAKE_ADDRESS_V2,
-        block,
-      )
-    ).toFixed(),
+    coingecko_hedera: BigNumber(tvls.data.hedera.native).toFixed(),
   };
 
   return { balances };
