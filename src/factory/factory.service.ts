@@ -12,6 +12,7 @@ import {
 } from '../generated/proto/defi-providers';
 import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
+import basicUtil from '../util/basicUtil';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
@@ -89,9 +90,8 @@ export class FactoryService {
   async getTokenDetails(
     req: GetTokenDetailsRequest,
   ): Promise<GetTokenDetailsReply> {
-    const { address, name, symbol, decimals, logo } = await import(
-      this.getProviderServicePath(req.chain, req.provider, 'data.json')
-    );
+    const { address, name, symbol, decimals, logo } =
+      basicUtil.readDataFromFile('data.json', req.chain, req.provider);
     return { address, name, symbol, decimals, logo };
   }
 
