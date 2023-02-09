@@ -61,11 +61,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   console.log('Calculation Started');
   const balances = {};
   const poolBalances = {};
-  const _pairs = basicUtil.readDataFromFile('./pools.json', chain, provider);
+  const _pairs = basicUtil.readDataFromFile('pools.json', chain, provider);
   let _token01 = {};
   try {
     _token01 = basicUtil.readDataFromFile(
-      './cache/token01.json',
+      'cache/token01.json',
       chain,
       provider,
     );

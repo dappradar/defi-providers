@@ -43,11 +43,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     provider,
   );
   try {
-    data = basicUtil.readDataFromFile('./pools.json', chain, provider);
+    data = basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   await Promise.all(vaults.map((vault) => getTokens(vault, web3)));
-  await basicUtil.writeDataToFile(data, './pools.json', chain, provider);
+  await basicUtil.writeDataToFile(data, 'pools.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     vaults,

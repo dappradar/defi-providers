@@ -38,12 +38,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const poolIDs = Array.from({ length: poolLength }, (v, i) => i);
 
   try {
-    pools = basicUtil.readDataFromFile('./pools.json', chain, provider);
+    pools = basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   await Promise.all(poolIDs.map((id) => getWants(contract, id)));
 
-  await basicUtil.writeDataToFile(pools, './pools.json', chain, provider);
+  await basicUtil.writeDataToFile(pools, 'pools.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     poolIDs.map((id) => pools[id].strat),

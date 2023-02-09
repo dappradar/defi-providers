@@ -11,7 +11,7 @@ async function getPools(chain, provider) {
   let apiPools = [];
 
   try {
-    pools = require('./pools.json');
+    pools = require('pools.json');
   } catch {}
 
   const poolsLength = pools.length;
