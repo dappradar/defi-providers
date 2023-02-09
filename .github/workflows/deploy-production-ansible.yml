@@ -14,7 +14,7 @@ env:
 
 jobs:
   build:
-    name: Build
+    name: Build and deploy
     runs-on: dappradar-runner
 
     steps:
@@ -34,24 +34,24 @@ jobs:
           mkdir -p ${{ github.workspace }}/build-artifacts
           tar --exclude-vcs -zcpvf ${{ env.PROJECT_ARCHIVE_DIR }}/${{ env.PROJECT_ARCHIVE_NAME }} -C ${{ github.workspace }}  dist/ proto/ node_modules/ package.json package-lock.json
 
-      - name: Upload defi-providers-archive
-        uses: actions/upload-artifact@v3
-        with:
-          name: defi-providers-archive
-          path: ${{ env.PROJECT_ARCHIVE_DIR }}/${{ env.PROJECT_ARCHIVE_NAME }}
+  #     - name: Upload defi-providers-archive
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: defi-providers-archive
+  #         path: ${{ env.PROJECT_ARCHIVE_DIR }}/${{ env.PROJECT_ARCHIVE_NAME }}
 
-  deploy:
-    name: Deploy
-    runs-on: dappradar-runner
-    environment: production
-    needs: build
+  # deploy:
+  #   name: Deploy
+  #   runs-on: dappradar-runner
+  #   environment: production
+  #   needs: build
 
-    steps:
-      - name: Download defi-providers-archive
-        uses: actions/download-artifact@v3
-        with:
-          name: defi-providers-archive
-          path: ${{ env.PROJECT_ARCHIVE_DIR }}
+  #   steps:
+  #     - name: Download defi-providers-archive
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: defi-providers-archive
+  #         path: ${{ env.PROJECT_ARCHIVE_DIR }}
 
       - name: Checkout CICD repo
         uses: actions/checkout@v3
