@@ -21,10 +21,12 @@ export class GenericRpcErrorFilter implements RpcExceptionFilter<RpcException> {
     };
 
     log.error({
-      message: errorResponse.message,
-      stack: errorResponse.stack || '',
-      detail: errorResponse.errorResponsestatusCode,
-      endpoint: 'GenericRPCError',
+      message: errorResponse?.message,
+      stack: exception?.stack || '',
+      detail: errorResponse?.errorResponsestatusCode,
+      endpoint: `path: ${host.getArgs()[2]?.call?.handler?.path} chain: ${
+        ctx.getData()?.chain
+      } provider: ${ctx.getData()?.provider}`,
     });
     return throwError(() => errorResponse);
   }
