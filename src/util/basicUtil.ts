@@ -6,7 +6,7 @@ import { dirname } from 'path';
 const DEFAULT_DELAY = 5;
 
 function getPath(chain, provider) {
-  return `/usr/tmp/blockchainCache/${chain}/${provider}`;
+  return `/var/tmp/blockchainCache/${chain}/${provider}`;
 }
 
 function getWmainAddress(chain) {
