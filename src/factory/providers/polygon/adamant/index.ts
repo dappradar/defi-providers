@@ -5,7 +5,7 @@ import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
 import { log } from '../../../../util/logger/logger';
-
+import vaults from './currentVaults.json';
 const FACTORY_ADDRESS = '0x2FC1B142aF4d0422f554947Cd5FCaA0CceA44199';
 let data = {};
 
@@ -36,12 +36,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   // const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
   // const vaults = await contract.methods.getDeployedVaults().call(null, block);
-  // const vaults = require('./currentVaults');
-  const vaults = basicUtil.readDataFromFile(
-    './currentVaults.json',
-    chain,
-    provider,
-  );
+
   try {
     data = basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
