@@ -9,7 +9,7 @@ on:
 jobs:
   setup-build:
     name: Build and Deploy to K8s production
-    runs-on: ubuntu-latest
+    runs-on: dappradar-runner
 
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +47,7 @@ jobs:
       - name: Deploy image to k8s production
         run: |
           sed -i "/image\:/c\          image: ${{ secrets.ECR_DO_REGISTRY }}/defi-providers:${GITHUB_SHA}" kubernetes/prod/deployment.yaml
-          aws secretsmanager get-secret-value --secret-id defi-providers-production-secrets --query SecretString --output text > secrets.env
+          aws ssm --region eu-central-1 get-parameter --name "/defi-providers/prod/secrets" --output text --query Parameter.Value > secrets.env
           kubectl delete secret/defi-providers-production-secrets -n defi-providers
           kubectl create secret generic defi-providers-production-secrets --from-env-file=secrets.env -n defi-providers
           kubectl apply -f kubernetes/prod/deployment.yaml -n defi-providers
