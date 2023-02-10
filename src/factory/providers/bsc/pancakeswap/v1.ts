@@ -75,7 +75,11 @@ async function getBalances(block, date, chain, provider, web3) {
 
   let _pairs = [];
   try {
-    _pairs = require('./pancakeswappairs.json');
+    _pairs = basicUtil.readDataFromFile(
+      'cache/pancakeswappairs.json',
+      chain,
+      provider,
+    );
   } catch (e) {
     log.error({
       message: e?.message || '',

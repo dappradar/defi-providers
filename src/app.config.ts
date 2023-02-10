@@ -29,6 +29,7 @@ const {
   SOLANA_NODE_URL = process.env.SOLANA_NODE_URL,
   STACKS_NODE_URL = process.env.STACKS_NODE_URL,
   TEZOS_NODE_URL = process.env.TEZOS_NODE_URL,
+  BASE_URL = process.env.BASE_URL || './blockchainCache/',
 } = process.env;
 
 const config = {
@@ -47,6 +48,7 @@ const config = {
   LOGSTASH_INDEX,
   SLACK_WEBHOOK_URL,
   SLACK_LOGGING,
+  BASE_URL,
 };
 
 const nodeUrls = {

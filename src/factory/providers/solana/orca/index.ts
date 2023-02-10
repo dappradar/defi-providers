@@ -3,7 +3,7 @@ import ORCA_POOLS from './poolInfos.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 async function getTokenAccountBalance(account, web3) {
-  const tokenBalance = await web3.call('getTokenAccountBalance', [account]);
+  const tokenBalance = await web3.eth.call('getTokenAccountBalance', [account]);
 
   try {
     return tokenBalance.value;

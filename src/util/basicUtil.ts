@@ -2,11 +2,11 @@ import fse from 'fs-extra';
 import { WMAIN_ADDRESS } from '../constants/contracts.json';
 import CHAINS from './data';
 import { log } from './logger/logger';
-import { dirname } from 'path';
+import { config } from '../app.config';
 const DEFAULT_DELAY = 5;
 
 function getPath(chain, provider) {
-  return `/var/tmp/blockchainCache/${chain}/${provider}`;
+  return `${config.BASE_URL}${chain}/${provider}`;
 }
 
 function getWmainAddress(chain) {
@@ -39,6 +39,7 @@ async function writeDataToFile(data, fileName, chain, provider) {
 }
 
 function readDataFromFile(fileName, chain, provider) {
+  console.log(`${getPath(chain, provider)}/${fileName}`);
   return JSON.parse(
     fse.readFileSync(`${getPath(chain, provider)}/${fileName}`, 'utf8'),
   );

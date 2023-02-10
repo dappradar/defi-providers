@@ -52,8 +52,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const newTokens = {};
   results.forEach((result) => {
     if (result) {
-      const tokens = result[0].split(',');
-      const amounts = result[1].split(',');
+      const tokens = result[0]?.split(',');
+      const amounts = result[1]?.split(',');
       tokens.forEach((token, index) => {
         const address = token.toLowerCase();
         if (!store.underlyings[address]) {
