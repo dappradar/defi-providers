@@ -16,7 +16,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools;
   try {
-    pools = basicUtil.readDataFromFile('cache/pairs.json', chain, provider);
+    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
   } catch {
     pools = {
       start: STARTBLOCK,
@@ -62,7 +62,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       start: block,
       pools: CollateralResults,
     },
-    'cache/pairs.json',
+    'cache/pools.json',
     chain,
     provider,
   );
