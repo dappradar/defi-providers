@@ -446,7 +446,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const balanceResults = await Promise.all([
     getMakerData(contracts, block, chain, web3),
     getCompoundData(contracts, block),
-    getAaveData(contracts, block),
+    //getAaveData(contracts, block), // contract is self destructed
     getAaveV2Data(contracts, block),
   ]);
 
