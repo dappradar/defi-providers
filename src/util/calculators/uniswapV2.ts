@@ -67,7 +67,7 @@ async function getPoolsReserves(
         log.error({
           message: e?.message || '',
           stack: e?.stack || '',
-          detail: `Error: getPoolsReserves`,
+          detail: `Error: inner getPoolsReserves chain: ${chain} provider: ${provider}`,
           endpoint: 'getPoolsReserves',
         });
         poolReserves = await Promise.all(
@@ -80,7 +80,7 @@ async function getPoolsReserves(
     log.error({
       message: e?.message || '',
       stack: e?.stack || '',
-      detail: `Error: getPoolsReserves chain: ${chain}`,
+      detail: `Error: out getPoolsReserves chain: ${chain} provider: ${provider}`,
       endpoint: 'getPoolsReserves',
     });
   }
