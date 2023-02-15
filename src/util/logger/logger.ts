@@ -20,22 +20,14 @@ configure({
       appender: 'everything',
       level: 'all',
     },
-    _errors: { type: 'logLevelFilter', appender: 'errors', level: 'error' },
     _slackError: { type: 'logLevelFilter', appender: 'slack', level: 'error' },
     _logstash: { type: 'logLevelFilter', appender: 'logstash', level: 'info' },
   },
   categories: {
     default: {
-      appenders: [
-        'console',
-        '_everything',
-        '_errors',
-        '_slackError',
-        '_logstash',
-      ],
+      appenders: ['console', '_slackError', '_logstash'],
       level: 'all',
     },
-    expressLogger: { appenders: ['expressLogger'], level: 'debug' },
   },
 });
 
