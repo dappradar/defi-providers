@@ -14,6 +14,7 @@ import { log } from '../../../../util/logger/logger';
 const WBNB_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
 const PANCAKE_FACTORY = '0xca143ce32fe78f1f7019d7d551a6402fc5350c73';
 const BULK_RESERVES_ADDRESS = BULK_RESERVES_ADDRESSES.bsc;
+const GetPairsUrlV2 = process.env.BSC_SimplePairsV2;
 
 async function getPairReserve(address, block, web3) {
   try {
@@ -102,9 +103,7 @@ async function getBalances(block, date, chain, provider, web3) {
   console.log(`V2 Pair counts: ${len}`);
 
   const token01Infos = {};
-  const results = await fetch(
-    'https://bsc-token-price-api.dappradar.com/pancakeswap_v2/getSimplePairs',
-  ).then((res) => res.json());
+  const results = await fetch(GetPairsUrlV2).then((res) => res.json());
   const poolInfos = results.map((result) => result.pair);
 
   results.forEach((result) => {
@@ -123,9 +122,9 @@ async function getBalances(block, date, chain, provider, web3) {
     );
   }
 
-  const filteredResults = await fetch(
-    'https://bsc-token-price-api.dappradar.com/pancakeswap_v2/getSimplePairs?filter=true',
-  ).then((res) => res.json());
+  const filteredResults = await fetch(`${GetPairsUrlV2}?filter=true`).then(
+    (res) => res.json(),
+  );
   const filteredPoolInfos = filteredResults.map((result) => result.pair);
 
   console.time('V2 Getting PairInfo');
