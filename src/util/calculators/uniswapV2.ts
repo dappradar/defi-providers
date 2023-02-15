@@ -14,7 +14,7 @@ import {
 import basicUtil from '../basicUtil';
 import { log } from '../logger/logger';
 
-async function getReserves(address, block, web3) {
+async function getReserves(address, block, web3, chain, provider) {
   try {
     const contract = new web3.eth.Contract(PAIR_ABI, address);
     const reserves = await contract.methods.getReserves().call(null, block);
@@ -36,7 +36,7 @@ async function getReserves(address, block, web3) {
       log.error({
         message: e?.message || '',
         stack: e?.stack || '',
-        detail: `Error: uniswapV2.getReserves`,
+        detail: `Error: uniswapV2.getReserves chain: ${chain} provider: ${provider}`,
         endpoint: 'getReserves',
       });
     }
@@ -50,12 +50,13 @@ async function getPoolsReserves(
   block,
   chain,
   web3,
+  provider,
 ) {
   let poolReserves = [];
   try {
     if (block < BULK_RESERVES_DEPOLYED[chain]) {
       poolReserves = await Promise.all(
-        pInfos.map((pool) => getReserves(pool, block, web3)),
+        pInfos.map((pool) => getReserves(pool, block, web3, chain, provider)),
       );
     } else {
       try {
@@ -70,7 +71,7 @@ async function getPoolsReserves(
           endpoint: 'getPoolsReserves',
         });
         poolReserves = await Promise.all(
-          pInfos.map((pool) => getReserves(pool, block, web3)),
+          pInfos.map((pool) => getReserves(pool, block, web3, chain, provider)),
         );
       }
     }
@@ -247,6 +248,7 @@ async function getTvl(
           block,
           chain,
           web3,
+          provider,
         ),
       );
     }
