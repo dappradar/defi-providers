@@ -79,7 +79,7 @@ async function getPoolsReserves(
     log.error({
       message: e?.message || '',
       stack: e?.stack || '',
-      detail: `Error: getPoolsReserves`,
+      detail: `Error: getPoolsReserves chain: ${chain}`,
       endpoint: 'getPoolsReserves',
     });
   }

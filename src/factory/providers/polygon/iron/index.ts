@@ -34,12 +34,17 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       treasuryContract.methods.collateral().call(null, block),
       treasuryContract.methods.globalCollateralBalance().call(null, block),
     ]);
-    formatter.sumMultiBalanceOf(balances, [
-      {
-        token: token.toLowerCase(),
-        balance: BigNumber(balance),
-      },
-    ]);
+    formatter.sumMultiBalanceOf(
+      balances,
+      [
+        {
+          token: token.toLowerCase(),
+          balance: BigNumber(balance),
+        },
+      ],
+      chain,
+      provider,
+    );
   } catch {}
 
   formatter.convertBalancesToFixed(balances);

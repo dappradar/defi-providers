@@ -31,7 +31,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  formatter.sumMultiBalanceOf(balances, cakeBalances);
+  formatter.sumMultiBalanceOf(balances, cakeBalances, chain, provider);
 
   const results = await Promise.all([
     chef.getBalances(block, chain, provider, web3),

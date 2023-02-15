@@ -8,7 +8,7 @@ const STAKING_REWARDS_PROXY_V2 = '0x962B4D8b1f8940D6a67399DC3A8D7549250888B8';
 const RADAR_TOKEN = '0x489580eb70a50515296ef31e8179ff3e77e24965';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
     return {};
   }
@@ -22,7 +22,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, proxyBalance);
+  formatter.sumMultiBalanceOf(balances, proxyBalance, chain, provider);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }

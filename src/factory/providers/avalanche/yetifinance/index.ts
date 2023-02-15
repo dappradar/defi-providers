@@ -119,7 +119,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   const tokenBalances = {};
-  formatter.sumMultiBalanceOf(tokenBalances, collateralBalances);
+  formatter.sumMultiBalanceOf(
+    tokenBalances,
+    collateralBalances,
+    chain,
+    provider,
+  );
 
   const yetiTokens = Object.keys(store.underlyings);
   const totalSupplies = await util.executeCallOfMultiTargets(

@@ -74,7 +74,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   });
 
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   formatter.convertBalancesToFixed(balances);
 
   return { balances };

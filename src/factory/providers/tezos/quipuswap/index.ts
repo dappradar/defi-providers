@@ -59,7 +59,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         balances['xtz'] = BigNumber(balances['xtz'] || 0).plus(xtzBalance);
       }
 
-      formatter.sumMultiBalanceOf(balances, tokenBalances);
+      formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
     }
   }
 

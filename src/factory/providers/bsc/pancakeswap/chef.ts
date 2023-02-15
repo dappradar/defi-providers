@@ -75,7 +75,7 @@ async function getBalances(block, chain, provider, web3) {
   );
 
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
 
   return balances;
 }

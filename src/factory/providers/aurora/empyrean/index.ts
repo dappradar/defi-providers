@@ -10,7 +10,7 @@ const STAKING_CONTRACT = '0xd080cbc2885c64510923ac6f5c8896011f86a6af';
 const TREASURY = '0x4606f4e6d43d501b86fc583f44ae27097a1f9ea7';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -34,10 +34,17 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  formatter.sumMultiBalanceOf(balances, empyrUsdcUnderlyingBalance);
+  formatter.sumMultiBalanceOf(
+    balances,
+    empyrUsdcUnderlyingBalance,
+    chain,
+    provider,
+  );
   formatter.sumMultiBalanceOf(
     balances,
     tokenBalances.filter((t) => t.token !== EMPYR_USDC),
+    chain,
+    provider,
   );
 
   formatter.convertBalancesToFixed(balances);

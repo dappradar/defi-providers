@@ -15,7 +15,7 @@ const PAIRS = gql`
 `;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
     return {};
   }
@@ -25,7 +25,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     STAKING_CONTRACT,
     block,
   );
-  formatter.sumMultiBalanceOf(balances, stakingBalance);
+  formatter.sumMultiBalanceOf(balances, stakingBalance, chain, provider);
 
   const pairs = await request(THEGRAPTH_ENDPOINT, PAIRS);
 
@@ -38,7 +38,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       balances['xtz'] = BigNumber(balances['xtz'] || 0).plus(xtzBalance);
     }
 
-    formatter.sumMultiBalanceOf(balances, tokenBalances);
+    formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   }
 
   formatter.convertBalancesToFixed(balances);

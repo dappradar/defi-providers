@@ -16,7 +16,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const balances = {};
   const tokenBalances = await web3.eth.getAllTokensBalances(YUPANA_CORE, block);
 
-  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
 
   if (balances[WRAPPED_TEZOS]) {
     balances['xtz'] = balances[WRAPPED_TEZOS];

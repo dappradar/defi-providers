@@ -72,7 +72,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log(`Getting staked balance from ${first} to ${last}`);
 
     const results = await Promise.all(reserveCalls);
-    formatter.sumMultiBalanceOf(balances, results);
+    formatter.sumMultiBalanceOf(balances, results, chain, provider);
     console.log(`Got staked balance from ${first} to ${last}`);
   }
   await basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);

@@ -18,7 +18,7 @@ async function getTezosBalance(address, block, web3) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < 1330057) {
     return {};
@@ -49,7 +49,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log(`Getting tezos balance from ${first} to ${last}`);
 
     const results = await Promise.all(balanceCalls);
-    formatter.sumMultiBalanceOf(balances, results);
+    formatter.sumMultiBalanceOf(balances, results, chain, provider);
 
     console.log(`Got tezos balance from ${first} to ${last}`);
   }

@@ -11,7 +11,7 @@ const CONTRACTS = [
 const START_BLOCK = 8159279;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
     return {};
   }
@@ -24,7 +24,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     web3,
   );
-  formatter.sumMultiBalanceOf(balances, bnbBalances);
+  formatter.sumMultiBalanceOf(balances, bnbBalances, chain, provider);
 
   formatter.convertBalancesToFixed(balances);
   //

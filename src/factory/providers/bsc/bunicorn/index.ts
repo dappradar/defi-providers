@@ -200,7 +200,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     const bulkBalances = await Promise.all(balanceCalls);
 
     for (const bulkBalance of bulkBalances) {
-      formatter.sumMultiBalanceOf(balances, bulkBalance);
+      formatter.sumMultiBalanceOf(balances, bulkBalance, chain, provider);
     }
   }
 

@@ -78,7 +78,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log(`Getting reserves from ${first} to ${last}`);
     const results = await Promise.all(reserveCalls);
     results.forEach((result) => {
-      formatter.sumMultiBalanceOf(balances, result);
+      formatter.sumMultiBalanceOf(balances, result, chain, provider);
     });
     console.log(`Got reserves from ${first} to ${last}`);
   }

@@ -37,7 +37,7 @@ const STABLE_POOLID =
 const BALANCER_VAULT = '0x20dd72Ed959b6147912C2e529F0a0C651c33c9ce';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < 20186941) {
     return {};
@@ -96,9 +96,9 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   const tokenBalances = {};
-  formatter.sumMultiBalanceOf(tokenBalances, treasuryBalances);
-  formatter.sumMultiBalanceOf(tokenBalances, gnosisBalances);
-  formatter.sumMultiBalanceOf(tokenBalances, tradfiBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, treasuryBalances, chain, provider);
+  formatter.sumMultiBalanceOf(tokenBalances, gnosisBalances, chain, provider);
+  formatter.sumMultiBalanceOf(tokenBalances, tradfiBalances, chain, provider);
 
   const balances = await util.convertToUnderlyings(
     tokenBalances,

@@ -9,7 +9,7 @@ const TOKEN_API =
   'https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, date, chain, web3 } = params;
+  const { block, date, chain, provider, web3 } = params;
 
   if (block < START_BLOCK) {
     return {};
@@ -52,7 +52,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   formatter.convertBalancesToFixed(balances);
 
   return { balances };

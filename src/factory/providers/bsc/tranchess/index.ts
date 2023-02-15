@@ -14,7 +14,7 @@ const TOKENS = [
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < 8487814) {
     return {};
   }
@@ -28,7 +28,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, balanceResults);
+  formatter.sumMultiBalanceOf(balances, balanceResults, chain, provider);
 
   formatter.convertBalancesToFixed(balances);
 

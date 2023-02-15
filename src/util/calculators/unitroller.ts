@@ -97,7 +97,7 @@ async function getTvl(
   });
 
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   return balances;
 }
 

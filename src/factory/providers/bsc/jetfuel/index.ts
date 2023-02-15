@@ -77,7 +77,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       web3,
     );
 
-    formatter.sumMultiBalanceOf(tokenBalances, balanceResults);
+    formatter.sumMultiBalanceOf(tokenBalances, balanceResults, chain, provider);
   }
 
   try {
@@ -120,7 +120,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    formatter.sumMultiBalanceOf(tokenBalances, balanceResults);
+    formatter.sumMultiBalanceOf(tokenBalances, balanceResults, chain, provider);
 
     basicUtil.writeDataToFile(ftokens, 'cache/markets.json', chain, provider);
   } catch {}
@@ -149,7 +149,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    formatter.sumMultiBalanceOf(tokenBalances, balanceResults);
+    formatter.sumMultiBalanceOf(tokenBalances, balanceResults, chain, provider);
   } catch {}
 
   const balances = await util.convertToUnderlyings(

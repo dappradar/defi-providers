@@ -22,7 +22,7 @@ async function getVaults(chain) {
     log.error({
       message: err?.message || '',
       stack: err?.stack || '',
-      detail: `Error: sumMultiBalanceOf`,
+      detail: `Error: sumMultiBalanceOf beefyfinance`,
       endpoint: 'sumMultiBalanceOf',
     });
     throw err;
@@ -88,7 +88,7 @@ async function getTvl(
   });
 
   const tokenBalances = {};
-  formatter.sumMultiBalanceOf(tokenBalances, wantBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, wantBalances, chain, provider);
 
   return await util.convertToUnderlyings(tokenBalances, block, chain, web3);
 }

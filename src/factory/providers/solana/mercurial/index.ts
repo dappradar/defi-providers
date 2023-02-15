@@ -83,13 +83,13 @@ async function getTokenBalance(address, account, web3) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { web3 } = params;
+  const { web3, chain, provider } = params;
   const tokenBalances = await Promise.all(
     POOLS.map((pool) => getTokenBalance(pool.token, pool.address, web3)),
   );
 
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }

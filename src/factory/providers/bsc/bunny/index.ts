@@ -94,7 +94,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   });
 
-  formatter.sumMultiBalanceOf(balances, stakingTokenBalances);
+  formatter.sumMultiBalanceOf(balances, stakingTokenBalances, chain, provider);
 
   formatter.convertBalancesToFixed(balances);
 

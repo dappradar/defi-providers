@@ -30,7 +30,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       chain,
       web3,
     );
-    formatter.sumMultiBalanceOf(balances, tokenBalances);
+    formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   }
 
   // get issued tokens TVL

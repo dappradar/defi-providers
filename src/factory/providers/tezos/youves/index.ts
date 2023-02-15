@@ -110,7 +110,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     const results = await Promise.all(balanceCalls);
     results.forEach((result) => {
       if (result) {
-        formatter.sumMultiBalanceOf(balances, result);
+        formatter.sumMultiBalanceOf(balances, result, chain, provider);
       }
     });
   }
@@ -133,7 +133,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       endpoint: 'tvl of tezos/youves',
     });
     const results = await Promise.all(balanceCalls);
-    formatter.sumMultiBalanceOf(balances, results);
+    formatter.sumMultiBalanceOf(balances, results, chain, provider);
   }
   formatter.convertBalancesToFixed(balances);
   return { balances };

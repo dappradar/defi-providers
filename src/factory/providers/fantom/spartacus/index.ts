@@ -10,7 +10,7 @@ const TOKENS = [
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < 20740234) {
     return {};
@@ -25,7 +25,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   const treasuryBalances = {};
-  formatter.sumMultiBalanceOf(treasuryBalances, tokenBalances);
+  formatter.sumMultiBalanceOf(treasuryBalances, tokenBalances, chain, provider);
 
   const balances = await util.convertToUnderlyings(
     treasuryBalances,

@@ -10,7 +10,7 @@ const STAKING_CONTRACT = '0xa02f4e8de9a226e8f2f2fe27b9b207fc85cfeed2';
 const TREASURY = '0xe2adcd126b4275cd75e72ff7ddc8cf7e43fc13d4';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
     return {};
   }
@@ -37,6 +37,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   formatter.sumMultiBalanceOf(
     balances,
     tokenBalances.filter((t) => t.token !== IMMO_CUSD),
+    chain,
+    provider,
   );
 
   formatter.convertBalancesToFixed(balances);

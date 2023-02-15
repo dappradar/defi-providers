@@ -160,7 +160,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   results.forEach((result) =>
-    formatter.sumMultiBalanceOf(tokenBalances, result),
+    formatter.sumMultiBalanceOf(tokenBalances, result, chain, provider),
   );
 
   basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
@@ -226,7 +226,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     });
   }
 
-  formatter.sumMultiBalanceOf(tokenBalances, marketBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, marketBalances, chain, provider);
 
   const balances = await util.convertToUnderlyings(
     tokenBalances,

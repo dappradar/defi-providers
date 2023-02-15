@@ -1,7 +1,6 @@
 import 'dotenv/config.js';
 import { getLogger, configure } from 'log4js';
 const logger = getLogger();
-const logs_path = `./logs`;
 
 interface ILogger {
   info: ({ message, endpoint }) => void;
@@ -12,27 +11,6 @@ interface ILogger {
 configure({
   appenders: {
     console: { type: 'console' },
-    everything: {
-      type: 'file',
-      filename: `${logs_path}/logs.log`,
-      maxLogSize: 1000000,
-      backups: 4,
-      compress: false,
-    },
-    errors: {
-      type: 'file',
-      filename: `${logs_path}/errors.log`,
-      maxLogSize: 1000000,
-      backups: 4,
-      compress: false,
-    },
-    expressLogger: {
-      type: 'file',
-      filename: `${logs_path}/express.log`,
-      maxLogSize: 500000,
-      backups: 10,
-      compress: false,
-    },
     logstash: {
       type: `${__dirname}/appenders/logstashAppender`,
     },

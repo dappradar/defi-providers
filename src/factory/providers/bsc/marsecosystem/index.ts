@@ -74,7 +74,7 @@ async function stakedBalance(block, chain, provider, web3) {
   });
 
   const tokenBalances = {};
-  formatter.sumMultiBalanceOf(tokenBalances, wantBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, wantBalances, chain, provider);
 
   const balances = await util.convertToUnderlyings(
     tokenBalances,

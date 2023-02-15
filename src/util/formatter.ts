@@ -67,7 +67,7 @@ function sum(balanceArray) {
   return balances;
 }
 
-function sumMultiBalanceOf(balances, results) {
+function sumMultiBalanceOf(balances, results, chain = '', provider = '') {
   try {
     if (results.output) {
       _.each(results.output, (result) => {
@@ -89,7 +89,7 @@ function sumMultiBalanceOf(balances, results) {
       convertBalancesToBigNumber(balances);
       results.forEach((result) => {
         if (result && result.balance.isGreaterThan(0)) {
-          const address = result.token.startsWith('0x')
+          const address = result?.token?.startsWith('0x')
             ? result.token.toLowerCase()
             : result.token;
 
@@ -104,7 +104,7 @@ function sumMultiBalanceOf(balances, results) {
     log.error({
       message: e?.message || '',
       stack: e?.stack || '',
-      detail: `Error: sumMultiBalanceOf`,
+      detail: `Error: sumMultiBalanceOf chain: ${chain}  provider: ${provider}`,
       endpoint: 'sumMultiBalanceOf',
     });
     return balances;

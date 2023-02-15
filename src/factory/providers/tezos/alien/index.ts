@@ -93,7 +93,7 @@ async function ammFarmBalance(address, block, web3) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < 1565538) {
     return {};
@@ -121,8 +121,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     AMM_FARMS.map((farm) => ammFarmBalance(farm, block, web3)),
   );
 
-  formatter.sumMultiBalanceOf(balances, farmBalances);
-  formatter.sumMultiBalanceOf(balances, ammFarmBalances);
+  formatter.sumMultiBalanceOf(balances, farmBalances, chain, provider);
+  formatter.sumMultiBalanceOf(balances, ammFarmBalances, chain, provider);
   formatter.convertBalancesToFixed(balances);
 
   return { balances };

@@ -123,7 +123,7 @@ async function getPoolBalance(poolAddress, block, chain, web3) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < 17079116) {
     return {};
@@ -210,7 +210,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       });
     });
 
-    formatter.sumMultiBalanceOf(tokenBalances, coinBalances);
+    formatter.sumMultiBalanceOf(tokenBalances, coinBalances, chain, provider);
   } catch {}
 
   const balances = await util.convertToUnderlyings(

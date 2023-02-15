@@ -25,7 +25,7 @@ async function tvl(block, chain, provider, web3) {
       chain,
       web3,
     );
-    formatter.sumMultiBalanceOf(balances, tokenBalances);
+    formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   }
 
   // get issued tokens TVL

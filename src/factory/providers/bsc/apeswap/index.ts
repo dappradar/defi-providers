@@ -130,7 +130,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   // Lending
   const unitrollerBalances = await unitroller(block, chain, provider, web3);
-  formatter.sumMultiBalanceOf(balances, unitrollerBalances);
+  formatter.sumMultiBalanceOf(balances, unitrollerBalances, chain, provider);
 
   for (const token in balances) {
     if (BigNumber(balances[token]).isLessThan(100000)) {

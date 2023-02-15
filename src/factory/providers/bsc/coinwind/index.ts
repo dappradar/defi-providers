@@ -10,7 +10,7 @@ const POOL_ADDRESSES = [
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < 6479185) {
     return {};
   }
@@ -57,7 +57,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   });
 
   const tokenBalances = {};
-  formatter.sumMultiBalanceOf(tokenBalances, wantBalances);
+  formatter.sumMultiBalanceOf(tokenBalances, wantBalances, chain, provider);
 
   const balances = await util.convertToUnderlyings(
     tokenBalances,
