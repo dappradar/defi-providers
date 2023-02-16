@@ -7,11 +7,21 @@ import { Solana } from './solana';
 import { Stacks } from './stacks';
 import { Tezos } from './tezos';
 import Web3 from 'web3';
+import { log } from '../util/logger/logger';
 
 const config = {
+  timeout: 30000,
   clientConfig: {
     maxReceivedFrameSize: 1000000000,
     maxReceivedMessageSize: 1000000000,
+    keepalive: true,
+    keepaliveInterval: 60000,
+  },
+  reconnect: {
+    auto: true,
+    delay: 5000,
+    maxAttempts: 5,
+    onTimeout: false,
   },
 };
 
@@ -65,9 +75,38 @@ export class Web3ProviderService {
       }
       default: {
         if (node_url.startsWith('ws')) {
-          web3 = new Web3(
-            new Web3.providers.WebsocketProvider(node_url, config),
-          );
+          let provider = new Web3.providers.WebsocketProvider(node_url, config);
+          web3 = new Web3(provider);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          provider.on('error', (e) => {
+            log.error({
+              stack: e?.stack || '',
+              message: e?.message || 'uncaughtException',
+              detail: 'Socket on error',
+              endpoint: 'Web3',
+            });
+          });
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          provider.on('end', (e) => {
+            log.error({
+              stack: e?.stack || '',
+              message: e?.message || '',
+              detail: 'Socket on end, attempt to connect',
+              endpoint: 'Web3',
+            });
+            provider = new Web3.providers.WebsocketProvider(node_url, config);
+            provider.on('connect', function () {
+              log.error({
+                stack: e?.stack || '',
+                message: 'connected',
+                detail: 'Socket connected',
+                endpoint: 'Web3',
+              });
+            });
+            web3.setProvider(provider);
+          });
         } else {
           web3 = new Web3(new Web3.providers.HttpProvider(node_url));
         }
