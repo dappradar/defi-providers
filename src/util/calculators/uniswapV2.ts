@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { PromisePool } from '@supercharge/promise-pool';
 import { request, gql } from 'graphql-request';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
@@ -52,6 +53,7 @@ async function getPoolsReserves(
   web3,
   provider,
 ) {
+  console.log(Date().toString());
   let poolReserves = [];
   try {
     if (block < BULK_RESERVES_DEPOLYED[chain]) {
@@ -253,7 +255,11 @@ async function getTvl(
       );
     }
 
-    const poolReserves = await Promise.all(getMultiPoolsReserves);
+    const { results: poolReserves } = await PromisePool.withConcurrency(10)
+      .for(getMultiPoolsReserves)
+      .process(async (data) => {
+        return data;
+      });
 
     poolReserves.forEach((reserves) => {
       reserves.forEach((reserve) => {
