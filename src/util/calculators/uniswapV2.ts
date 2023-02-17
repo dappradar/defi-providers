@@ -66,15 +66,20 @@ async function getPoolsReserves(
           .getReservesBulk(pInfos)
           .call(null, block);
       } catch (e) {
-        log.error({
-          message: e?.message || '',
-          stack: e?.stack || '',
-          detail: `Error: inner getPoolsReserves chain: ${chain} provider: ${provider}`,
-          endpoint: 'getPoolsReserves',
-        });
-        poolReserves = await Promise.all(
-          pInfos.map((pool) => getReserves(pool, block, web3, chain, provider)),
-        );
+        try {
+          poolReserves = await Promise.all(
+            pInfos.map((pool) =>
+              getReserves(pool, block, web3, chain, provider),
+            ),
+          );
+        } catch (e) {
+          log.error({
+            message: e?.message || '',
+            stack: e?.stack || '',
+            detail: `Error: inner getPoolsReserves chain: ${chain} provider: ${provider}`,
+            endpoint: 'getPoolsReserves',
+          });
+        }
       }
     }
     return poolReserves;

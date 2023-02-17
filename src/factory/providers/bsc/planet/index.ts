@@ -160,7 +160,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   results.forEach((result) =>
-    formatter.sumMultiBalanceOf(tokenBalances, result, chain, provider),
+    formatter.sumMultiBalanceOf(
+      tokenBalances,
+      result.balances,
+      chain,
+      provider,
+    ),
   );
 
   basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
