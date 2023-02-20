@@ -20,7 +20,9 @@ async function getMultipleAccountsRaw(accountsArray, web3) {
     throw new Error('Expected accountsArray to be an array of strings');
   }
 
-  const accountsInfo = await web3.call('getMultipleAccounts', [accountsArray]);
+  const accountsInfo = await web3.eth.call('getMultipleAccounts', [
+    accountsArray,
+  ]);
 
   return accountsInfo.value;
 }
@@ -55,7 +57,7 @@ async function getMultipleAccountBuffers(labeledAddresses, web3) {
 }
 
 const getMSolLPTokens = async (lpAmount, web3) => {
-  const connection = new Connection(web3.nodeUrl);
+  const connection = new Connection(web3.eth.getNodeUrl());
   const accountData = await getMultipleAccountBuffers(
     {
       msolTokens: MSOL_LP_MSOL.toString(),
