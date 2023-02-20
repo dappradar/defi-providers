@@ -53,7 +53,6 @@ async function getPoolsReserves(
   web3,
   provider,
 ) {
-  console.log(Date().toString());
   let poolReserves = [];
   try {
     if (block < BULK_RESERVES_DEPOLYED[chain]) {
