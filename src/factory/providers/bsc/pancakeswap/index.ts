@@ -39,6 +39,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     v2.getBalances(block, date, chain, provider, web3),
   ]);
 
+  console.log(results.length);
   results.forEach((result) => {
     if (result) {
       for (const token in result) {
@@ -58,8 +59,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   }
 
-  //
-
+  console.log(balances);
   return { balances };
 }
 
