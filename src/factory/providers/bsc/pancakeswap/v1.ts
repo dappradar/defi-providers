@@ -154,7 +154,6 @@ async function getBalances(block, date, chain, provider, web3) {
     const poolReserves = await Promise.all(getMultiPoolsReserves);
 
     poolReserves.forEach((reserves) => {
-      console.log(reserves.length);
       reserves.forEach((reserve) => {
         const poolAddress = reserve?.pool_address?.toLowerCase();
         if (token01Infos[poolAddress] && reserve.reserve0 && reserve.reserve1) {
