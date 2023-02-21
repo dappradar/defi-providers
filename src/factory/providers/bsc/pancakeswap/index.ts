@@ -59,7 +59,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   }
 
-  console.log(balances);
   return { balances };
 }
 
