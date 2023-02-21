@@ -108,7 +108,7 @@ async function getBalances(block, date, chain, provider, web3) {
 
   const token01Infos = {};
   const results = await fetch(GetPairsUrl).then((res) => res.json());
-  const poolInfos = results.map((result) => result.pair);
+  const poolInfos = results.map((result) => result?.pair);
 
   results.forEach((result) => {
     token01Infos[result.pair] = {
@@ -154,8 +154,9 @@ async function getBalances(block, date, chain, provider, web3) {
     const poolReserves = await Promise.all(getMultiPoolsReserves);
 
     poolReserves.forEach((reserves) => {
+      console.log(reserves.length);
       reserves.forEach((reserve) => {
-        const poolAddress = reserve.pool_address.toLowerCase();
+        const poolAddress = reserve?.pool_address?.toLowerCase();
         if (token01Infos[poolAddress] && reserve.reserve0 && reserve.reserve1) {
           const token0 = token01Infos[poolAddress].token0;
           const token1 = token01Infos[poolAddress].token1;

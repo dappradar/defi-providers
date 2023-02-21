@@ -1,6 +1,6 @@
 import fse from 'fs-extra';
 import { WMAIN_ADDRESS } from '../constants/contracts.json';
-import CHAINS from './data';
+import data from './data';
 import { log } from './logger/logger';
 import { config } from '../app.config';
 const DEFAULT_DELAY = 5;
@@ -14,7 +14,7 @@ function getWmainAddress(chain) {
 }
 
 function getDelay(chain) {
-  return CHAINS[chain].delay || DEFAULT_DELAY;
+  return data.CHAINS[chain].delay || DEFAULT_DELAY;
 }
 
 async function writeDataToFile(data, fileName, chain, provider) {

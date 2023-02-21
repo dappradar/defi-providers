@@ -73,7 +73,7 @@ const data = {
       chainID: 'optimism',
       coingecko: 'optimistic-ethereum',
       start: '2021-11-11',
-      delay: '1000',
+      delay: 1000,
     },
     polygon: {
       prefix: 'mat_',
