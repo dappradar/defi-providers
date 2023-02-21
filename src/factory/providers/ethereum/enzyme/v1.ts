@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js';
 import VERSION_ABI from './abi/v1abi.json';
-import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
-import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { ITvlParams } from '../../../../interfaces/ITvl';
 import basicUtil from '../../../../util/basicUtil';
 
 const VERSIONS = [
@@ -111,6 +110,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     chain,
     provider,
   );
+
   let balances = [];
 
   balanceResults.forEach((result) => {
