@@ -14,6 +14,11 @@ async function bootstrap() {
         url: URI,
         package: config.DEFI_PROVIDERS_SERVICE_PACKAGE,
         protoPath: config.DEFI_PROVIDERS_SERVICE_PROTOFILE,
+        channelOptions: {
+          'grpc.max_send_message_length': 1024 * 1024 * 1024,
+          'grpc.max_receive_message_length': 1024 * 1024 * 1024,
+          'grpc.max_concurrent_streams': 10,
+        },
       },
     },
   );
