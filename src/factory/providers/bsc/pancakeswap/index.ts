@@ -35,7 +35,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const results = await Promise.all([
     chef.getBalances(block, chain, provider, web3),
-    v1.getBalances(block, date, chain, provider, web3),
+    // v1.getBalances(block, date, chain, provider, web3),
     v2.getBalances(block, date, chain, provider, web3),
   ]);
 
