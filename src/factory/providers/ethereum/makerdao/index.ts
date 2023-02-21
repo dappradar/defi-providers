@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import ERC20_ABI from '../../../../constants/abi/erc20.json';
 import MakerSCDConstants from './makerdao.json';
 import MakerMCDConstants from './maker-mcd.json';
-import stored_log from './makerdao_log.json';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
@@ -15,10 +14,17 @@ async function getJoins(block, chain, provider, web3) {
 
   // get list of auths
   let offset = 100000;
+  const stored_log = basicUtil.readDataFromFile(
+    'makerdao_log.json',
+    chain,
+    provider,
+  );
+  console.log(stored_log);
   let i = Math.max(MakerMCDConstants.STARTBLOCK, Number(stored_log.block) || 0);
   const logs = stored_log.data || [];
 
   for (;;) {
+    console.log(i);
     if (i > block) {
       break;
     }
