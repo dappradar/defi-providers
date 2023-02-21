@@ -4,6 +4,7 @@ import MINTABLE_SYNTHETIX_ABI from './abi/mintableSynthetix.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
 import { gql, request } from 'graphql-request';
+import basicUtil from '../../../../util/basicUtil';
 
 const START_BLOCK = 12840848;
 const SYSTEM_SETTINGS = '0x05e1b1dff853b1d67828aa5e8cb37cc25aa050ee';
@@ -27,10 +28,10 @@ const QUERY_NO_BLOCK = gql`
   }
 `;
 
-async function getSnxHolders(block) {
+async function getSnxHolders(block, chain) {
   let holders = [];
-  for (let i = 0; i <= 5000; i += 1000) {
-    try {
+  try {
+    for (let i = 0; i <= 5000; i += 1000) {
       const holder = (
         await request(GRAPHQL_ENDPOINT, QUERY_NO_BLOCK, {
           block,
@@ -38,10 +39,12 @@ async function getSnxHolders(block) {
         })
       ).snxholders;
       holders = [...holders, ...holder];
-    } catch (e) {
-      console.log(`Issue with SubGraph on block ${i - 100}`);
     }
+  } catch (e) {
+    console.log(`Issue with SubGraph on block ${block}`);
+    holders = await getSnxHolders(block - basicUtil.getDelay(chain), chain);
   }
+
   return holders;
 }
 
@@ -60,7 +63,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   let totalTopStakersSNX = new BigNumber(0);
 
   const [holders, issuanceRatio, totalSupply] = await Promise.all([
-    getSnxHolders(block),
+    getSnxHolders(block, chain),
     systemSettingsContract.methods.issuanceRatio().call(null, block),
     util
       .getTokenTotalSupplies([MINTABLE_SYNTHETIX], block, chain, web3)

@@ -6,15 +6,12 @@ const QLKUSD = 'KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA';
 const KUSD = 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV';
 
 async function getTezosBalance(address, block, web3) {
-  try {
-    const tezosBalance = await web3.eth.getBalance(address, block);
+  const tezosBalance = await web3.eth.getBalance(address, block);
 
-    return {
-      token: 'xtz',
-      balance: tezosBalance,
-    };
-  } catch {}
-  return null;
+  return {
+    token: 'xtz',
+    balance: tezosBalance,
+  };
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
@@ -25,10 +22,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   const balances = {};
-  try {
-    const kusdBalance = await web3.eth.getTokenBalance(KUSD, QLKUSD, block);
-    balances[KUSD] = kusdBalance[0].balance;
-  } catch {}
+  const kusdBalance = await web3.eth.getTokenBalance(KUSD, QLKUSD, block);
+  balances[KUSD] = kusdBalance[0].balance;
 
   const ovenRegistry = new web3.eth.Contract(null, OVEN_REGISTRY);
   await ovenRegistry.init();

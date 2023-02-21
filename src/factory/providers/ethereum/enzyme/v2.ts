@@ -1,18 +1,10 @@
 import BigNumber from 'bignumber.js';
 import abi from './abi/v2abi.json';
-import getBalancesBulk from './abi/getBalancesBulk.json';
-import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
-import { web3 } from '@project-serum/anchor';
 import basicUtil from '../../../../util/basicUtil';
-import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-
-/*==================================================
-  Settings
-  ==================================================*/
+import { ITvlParams } from '../../../../interfaces/ITvl';
 
 const DISPATCHER = '0xC3DC853dD716bd5754f421ef94fdCbac3902ab32';
-const HELPER_BALANCES = '0xb173393e08496209ad1cd9d57c769de76bdcea5a';
 const START_BLOCK = 11636493;
 
 async function tvl(params: ITvlParams): Promise<any[]> {
@@ -30,6 +22,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
       proxies: [],
     };
   }
+
   /* pull melon fund holding addresses */
   const logs = (
     await util.getLogs(
@@ -64,6 +57,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
       });
     }
   });
+
   basicUtil.writeDataToFile(
     {
       start: block,
@@ -73,7 +67,6 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     chain,
     provider,
   );
-
   /* supported tokens */
   const proxyInfo = proxyResults
     .map((result) =>
@@ -81,55 +74,37 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     )
     .reduce((a, b) => a.concat(b), []);
 
-  const tempholders = [];
-  const temptokens = [];
-  const multiTokenBalances = [];
-  let i,
-    j,
-    // eslint-disable-next-line prefer-const
-    chunk = 50;
+  const callParams = [];
+  let i, j, tempholders, temptokens;
+  const chunk = 50;
+  const balanceOfResult = [];
+
   for (i = 0, j = proxyInfo.length; i < j; i += chunk) {
     const tempProxyInfo = proxyInfo.slice(i, i + chunk);
-    multiTokenBalances.push(
-      await util.getTokenBalancesOfHolders(
-        tempProxyInfo.map((info) => info.holder),
-        tempProxyInfo.map((info) => info.token),
-        block,
-        chain,
-        web3,
-      ),
+    tempholders = tempProxyInfo.map((info) => info.holder);
+    temptokens = tempProxyInfo.map((info) => info.token);
+
+    callParams.push([tempholders, temptokens]);
+    const multiTokenBalances = await util.getTokenBalancesOfHolders(
+      tempholders,
+      temptokens,
+      block,
+      chain,
+      web3,
     );
-    // tempholders.push(tempProxyInfo.map((info) => info.holder));
-    // temptokens.push(tempProxyInfo.map((info) => info.token));
-
-    // tokenBalanceCalls.push({
-    //   target: HELPER_BALANCES,
-    //   params: [tempholders, temptokens],
-    // });
+    multiTokenBalances.forEach(function (tokenBalance) {
+      balanceOfResult.push(tokenBalance);
+    });
   }
-
-  console.log('[v2] getting token balances');
-  // const multiTokenBalances = await util.getTokenBalancesOfHolders(
-  //   mergedArrayHolder,
-  //   mergedArrayTokens,
-  //   block,
-  //   chain,
-  //   web3,
-  // );
-
-  const balanceOfResult = [];
-  multiTokenBalances.forEach(function (tokenBalance) {
-    balanceOfResult.push(...tokenBalance);
-  });
 
   /* combine token volumes on multiple funds */
   const tokenBalances = {};
   balanceOfResult.forEach((result) => {
-    if (result && result.token_address && result.balance) {
+    if (result && result.token && result.balance) {
       const balance = BigNumber(result.balance);
-      if (Number(balance) <= 0) return;
+      if (balance.lte(0)) return;
 
-      const asset = result.token_address.toLowerCase();
+      const asset = result.token.toLowerCase();
       const total = tokenBalances[asset];
 
       if (total) {
@@ -146,7 +121,6 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     chain,
     web3,
   );
-
   const results = [];
 
   for (const token in balances) {
@@ -158,4 +132,5 @@ async function tvl(params: ITvlParams): Promise<any[]> {
 
   return results;
 }
+
 export { tvl };
