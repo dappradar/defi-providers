@@ -6,12 +6,15 @@ const QLKUSD = 'KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA';
 const KUSD = 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV';
 
 async function getTezosBalance(address, block, web3) {
-  const tezosBalance = await web3.eth.getBalance(address, block);
+  try {
+    const tezosBalance = await web3.eth.getBalance(address, block);
 
-  return {
-    token: 'xtz',
-    balance: tezosBalance,
-  };
+    return {
+      token: 'xtz',
+      balance: tezosBalance,
+    };
+  } catch {}
+  return null;
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
@@ -22,8 +25,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   const balances = {};
-  const kusdBalance = await web3.eth.getTokenBalance(KUSD, QLKUSD, block);
-  balances[KUSD] = kusdBalance[0].balance;
+  try {
+    const kusdBalance = await web3.eth.getTokenBalance(KUSD, QLKUSD, block);
+    balances[KUSD] = kusdBalance[0].balance;
+  } catch {}
 
   const ovenRegistry = new web3.eth.Contract(null, OVEN_REGISTRY);
   await ovenRegistry.init();
@@ -34,8 +39,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const pools = ovens.map((oven) => oven.key);
 
   const poolLength = pools.length;
-  for (let first = 0; first < poolLength; first += 50) {
-    const last = Math.min(poolLength, first + 50);
+  for (let first = 0; first < poolLength; first += 10) {
+    const last = Math.min(poolLength, first + 10);
     const balanceCalls = [];
     for (let start = first; start < last; start++) {
       balanceCalls.push(getTezosBalance(pools[start], block, web3));
