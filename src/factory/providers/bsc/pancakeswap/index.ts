@@ -5,8 +5,7 @@ import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 600615;
-const THEGRAPTH_ENDPOINT =
-  'https://open-platform.nodereal.io/c12c3655e9f9462db96ae9f61c556011/pancakeswap/graphql';
+const THEGRAPTH_ENDPOINT = process.env.PANCAKESWAP_GRAPH;
 const QUERY_SIZE = 1000;
 /*const TOKENS = gql`
   query getTokens($block: Block_height!,  $skip: Int!) {
