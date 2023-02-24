@@ -7,15 +7,6 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 const START_BLOCK = 600615;
 const THEGRAPTH_ENDPOINT = process.env.PANCAKESWAP_GRAPH;
 const QUERY_SIZE = 1000;
-/*const TOKENS = gql`
-  query getTokens($block: Block_height!,  $skip: Int!) {
-    tokens(block: $block, skip: $skip, first: ${QUERY_SIZE} orderBy: tradeVolumeUSD, orderDirection: desc) {
-      id
-      decimals
-      totalLiquidity
-    }
-  }
-`;*/
 const TOKENS = gql`
   query getTokens($skip: Int!) {
     tokens(skip: $skip, first: ${QUERY_SIZE} orderBy: tradeVolumeUSD, orderDirection: desc) {
