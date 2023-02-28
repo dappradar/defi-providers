@@ -12,6 +12,7 @@ The balances of locked assets should be found as effectively as possible, rememb
 $ npm install
 $ npm run build #If you followed the Protoc Installation step
 ```
+
 ### Protoc Installation (Optional)
 
 If you want to test the provider you added with grpc, you need to install it.
@@ -43,12 +44,11 @@ rm -f $PROTOC_ZIP
 You can see all the chains and providers that have already been added in [providers](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/factory/providers) and find the necessary generic functions with their definitions in the [util](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/util/blockchainUtil.ts) or [calculators](https://github.com/dappradar/dappradar-defi-providers/tree/master/src/util/calculators) file.
 
 When adding a new provider, open a folder in that file and follow the convention in the integration examples below.
-You can test whether the integrated provider is working as written in the [test](#Testing) section. 
+You can test whether the integrated provider is working as written in the [test](#Testing) section.
 
 Don't forget to add the [integration](https://github.com/dappradar/dappradar-defi-providers/blob/master/src/factory/factory.spec.ts) test after making sure it works.
 
-
-Pull request convention 
+Pull request convention
 
 ```bash
 [CHAIN] [PROVIDER] integration
@@ -59,15 +59,18 @@ By submitting the code, you transfer all the rights to the code to DappRadar UAB
 ## Testing
 
 After adding the new provider, you can test it by running this command:
+
 ```
 npm run test <chain> <provider> <blocknumber>
 
 Example:
 npm run test ethereum stargate 16484613
-npm run test bsc alpaca 25094000 
-npm run test polygon curve 38513512 
+npm run test ethereum radarstaking 16484613
+npm run test bsc alpaca 25094000
+npm run test polygon curve 38513512
 npm run test solana saber 167690535
 
+<sub>Some providers might not work with free RPC endpoints. RPC URLs can be changed in .env.dev</sub>
 ```
 
 You can use [Bloomrpc](https://github.com/bloomrpc/bloomrpc) to test with the grpc endpoint.
@@ -523,7 +526,7 @@ assets.forEach((address, index) => {
         balance: BigNumber { s: 1, e: 13, c: [Array] }
       }
     ]
-``` 
+```
 
 ## Contact
 
