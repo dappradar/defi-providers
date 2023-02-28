@@ -70,7 +70,7 @@ npm run test bsc alpaca 25094000
 npm run test polygon curve 38513512
 npm run test solana saber 167690535
 
-<sub>Some providers might not work with free RPC endpoints. RPC URLs can be changed in .env.dev</sub>
+Some providers might not work with free RPC endpoints. RPC URLs can be changed in .env.dev
 ```
 
 You can use [Bloomrpc](https://github.com/bloomrpc/bloomrpc) to test with the grpc endpoint.
