@@ -4,6 +4,10 @@ Providers in this service get chain block heights and timestamps and return the 
 The balances of locked assets should be found as effectively as possible, remembering that each request communicates with the blockchain.
 [DappRadar](https://dappradar.com/)
 
+## Prerequisites
+
+If dapp doesn't exist on [DappRadar DeFi page](https://dappradar.com/defi), it can be submitted [here](https://dappradar.com/dashboard/submit-dapp).
+
 ## Installation
 
 ### Install Dependency
