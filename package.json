@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.7.3",
+    "@hashgraph/hethers": "^1.2.6",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/microservices": "^9.2.0",
