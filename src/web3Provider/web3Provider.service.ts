@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { nodeUrls } from '../app.config';
+import { nodeUrls, returnNewUrl } from '../app.config';
 import { Everscale } from './everscale';
 import { Hedera } from './hedera';
 import { Near } from './near';
@@ -7,10 +7,9 @@ import { Solana } from './solana';
 import { Stacks } from './stacks';
 import { Tezos } from './tezos';
 import Web3 from 'web3';
-import { log } from '../util/logger/logger';
 
 const webSocketConfig = {
-  timeout: 30000,
+  timeout: 60000,
   clientConfig: {
     maxReceivedFrameSize: 1000000000,
     maxReceivedMessageSize: 1000000000,
@@ -25,11 +24,7 @@ const webSocketConfig = {
   },
 };
 
-const httpConfig = {
-  keepAlive: true,
-  timeout: 20000,
-};
-
+const mappedWeb3 = new Map();
 @Injectable()
 export class Web3ProviderService {
   constructor(
@@ -41,7 +36,10 @@ export class Web3ProviderService {
     private readonly tezos: Tezos,
   ) {}
 
-  async getWeb3(chain = 'ethereum', url = null) {
+  async getWeb3(chain = 'ethereum', url = null, changeMappedWeb3 = false) {
+    if (!!mappedWeb3.get(chain) && !changeMappedWeb3) {
+      return mappedWeb3.get(chain);
+    }
     let node_url;
     if (url) node_url = url;
     else {
@@ -84,12 +82,11 @@ export class Web3ProviderService {
             new Web3.providers.WebsocketProvider(node_url, webSocketConfig),
           );
         } else {
-          web3 = new Web3(
-            new Web3.providers.HttpProvider(node_url, httpConfig),
-          );
+          web3 = new Web3(new Web3.providers.HttpProvider(node_url));
         }
       }
     }
+    mappedWeb3.set(chain, web3);
     return web3;
   }
 

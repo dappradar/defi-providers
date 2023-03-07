@@ -16,7 +16,8 @@ export class GenericInterceptor implements NestInterceptor {
     const req = context.switchToHttp().getRequest();
     const endpoint = context.getHandler();
     log.info({
-      message: JSON.stringify(req),
+      message:
+        endpoint.name == 'getPoolAndTokenVolumes' ? '' : JSON.stringify(req),
       endpoint: endpoint.name,
     });
     return next.handle().pipe();
