@@ -7,10 +7,9 @@ import { Solana } from './solana';
 import { Stacks } from './stacks';
 import { Tezos } from './tezos';
 import Web3 from 'web3';
-import { log } from '../util/logger/logger';
 
 const webSocketConfig = {
-  timeout: 30000,
+  timeout: 60000,
   clientConfig: {
     maxReceivedFrameSize: 1000000000,
     maxReceivedMessageSize: 1000000000,
@@ -25,11 +24,7 @@ const webSocketConfig = {
   },
 };
 
-const httpConfig = {
-  keepAlive: true,
-  timeout: 20000,
-};
-
+const mappedWeb3 = new Map();
 @Injectable()
 export class Web3ProviderService {
   constructor(
@@ -41,14 +36,20 @@ export class Web3ProviderService {
     private readonly tezos: Tezos,
   ) {}
 
-  async getWeb3(chain = 'ethereum', url = null) {
-    let node_url;
-    if (url) node_url = url;
-    else {
-      node_url =
-        nodeUrls[`${chain.toUpperCase()}_NODE_URL`] ||
-        nodeUrls[`ETHEREUM_NODE_URL`];
+  async getWeb3(chain = 'ethereum') {
+    if (!!mappedWeb3.get(chain)) {
+      return mappedWeb3.get(chain);
     }
+    return await this.createWeb3Instance(chain);
+  }
+
+  async createWeb3Instance(chain = 'ethereum', url = null) {
+    let node_url;
+    url
+      ? (node_url = url)
+      : (node_url =
+          nodeUrls[`${chain.toUpperCase()}_NODE_URL`] ||
+          nodeUrls[`ETHEREUM_NODE_URL`]);
 
     let web3;
     switch (chain) {
@@ -84,13 +85,29 @@ export class Web3ProviderService {
             new Web3.providers.WebsocketProvider(node_url, webSocketConfig),
           );
         } else {
-          web3 = new Web3(
-            new Web3.providers.HttpProvider(node_url, httpConfig),
-          );
+          web3 = new Web3(new Web3.providers.HttpProvider(node_url));
         }
       }
     }
+    mappedWeb3.set(chain, web3);
     return web3;
+  }
+  async changeInstance(chainName: string) {
+    const allEnv = Object.keys(process.env);
+    const possibleUrls = [];
+    allEnv.forEach((key) => {
+      if (key.startsWith(`${chainName.toUpperCase()}_NODE_URL`)) {
+        possibleUrls.push(process.env[key]);
+      }
+    });
+    if (possibleUrls.length > 1) {
+      const nodeUrl = possibleUrls.filter(
+        (possibleUrl) =>
+          possibleUrl !== nodeUrls[`${chainName.toUpperCase()}_NODE_URL`],
+      );
+      nodeUrls[`${chainName.toUpperCase()}_NODE_URL`] = nodeUrl[0];
+      await this.createWeb3Instance(chainName, nodeUrl[0]);
+    }
   }
 
   checkNodeUrl(chain: string) {
