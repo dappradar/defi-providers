@@ -7,7 +7,6 @@ import { Solana } from './solana';
 import { Stacks } from './stacks';
 import { Tezos } from './tezos';
 import Web3 from 'web3';
-import process from 'process';
 
 const webSocketConfig = {
   timeout: 60000,

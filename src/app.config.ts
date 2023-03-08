@@ -1,6 +1,5 @@
 import { resolve } from 'path';
 import * as dotenv from 'dotenv';
-import * as process from 'process';
 dotenv.config();
 dotenv.config({ path: `.env.${process.env.APP_ENV || 'dev'}`, override: true });
 
