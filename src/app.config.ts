@@ -1,5 +1,6 @@
 import { resolve } from 'path';
 import * as dotenv from 'dotenv';
+import * as process from 'process';
 dotenv.config();
 dotenv.config({ path: `.env.${process.env.APP_ENV || 'dev'}`, override: true });
 
@@ -53,7 +54,7 @@ const config = {
 
 const nodeUrls = {
   OPTIMISM_NODE_URL,
-  ETHEREUM_NODE_URL: ETHEREUM_NODE_URL.split(',')[0],
+  ETHEREUM_NODE_URL,
   BSC_NODE_URL,
   AURORA_NODE_URL,
   AVALANCHE_NODE_URL,
@@ -71,10 +72,4 @@ const nodeUrls = {
   TEZOS_NODE_URL,
 };
 
-function returnNewUrl(chainName: string) {
-  const nodeUrl = process.env[`${chainName.toUpperCase()}_NODE_URL`].split(',');
-  return nodeUrl.filter(
-    (url) => url != nodeUrls[`${chainName.toUpperCase()}_NODE_URL`],
-  );
-}
-export { config, nodeUrls, returnNewUrl };
+export { config, nodeUrls };

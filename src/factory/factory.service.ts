@@ -12,7 +12,7 @@ import {
 } from '../generated/proto/defi-providers';
 import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
-import basicUtil from '../util/basicUtil';
+import { log } from '../util/logger/logger';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
@@ -27,8 +27,10 @@ interface IProvider {
 @Injectable()
 export class FactoryService {
   constructor(private readonly web3ProviderService: Web3ProviderService) {}
-
-  async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
+  async getTvl(
+    req: GetTvlRequest,
+    timeoutErrorCount = 0,
+  ): Promise<GetTvlReply> {
     if (req.query.block === undefined) {
       throw new RpcException('Block is undefined');
     }
@@ -38,15 +40,35 @@ export class FactoryService {
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider, 'index')
     );
-    const tvlData = await providerService.tvl({
-      web3: await this.web3ProviderService.getWeb3(req?.chain),
-      chain: req?.chain,
-      provider: req?.provider,
-      block: parseInt(req.query?.block),
-      date: req.query?.date,
-    });
+    try {
+      const tvlData = await providerService.tvl({
+        web3: await this.web3ProviderService.getWeb3(req?.chain),
+        chain: req?.chain,
+        provider: req?.provider,
+        block: parseInt(req.query?.block),
+        date: req.query?.date,
+      });
 
-    return { balances: tvlData.balances, poolBalances: tvlData.poolBalances };
+      return { balances: tvlData.balances, poolBalances: tvlData.poolBalances };
+    } catch (err) {
+      log.error({
+        message: err?.message || '',
+        stack: err?.stack || '',
+        detail: `Error: chain: ${req.chain}, provider: ${req?.provider}, blocknumber: ${req.query?.block}, `,
+        endpoint: 'getTvl',
+      });
+      if (err?.message?.toLowerCase() == 'timeout' && timeoutErrorCount < 3) {
+        log.error({
+          message: err?.message || '',
+          stack: err?.stack || '',
+          detail: `Error: web3Instance changed for chain: ${req.chain}, provider: ${req?.provider}, blocknumber: ${req.query?.block} `,
+          endpoint: 'getTvl',
+        });
+        timeoutErrorCount++;
+        await this.web3ProviderService.changeInstance(req?.chain);
+        return this.getTvl(req, timeoutErrorCount);
+      }
+    }
   }
 
   async getPoolAndTokenVolumes(

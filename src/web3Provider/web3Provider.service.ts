@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { nodeUrls, returnNewUrl } from '../app.config';
+import { nodeUrls } from '../app.config';
 import { Everscale } from './everscale';
 import { Hedera } from './hedera';
 import { Near } from './near';
@@ -7,6 +7,7 @@ import { Solana } from './solana';
 import { Stacks } from './stacks';
 import { Tezos } from './tezos';
 import Web3 from 'web3';
+import process from 'process';
 
 const webSocketConfig = {
   timeout: 60000,
@@ -36,17 +37,20 @@ export class Web3ProviderService {
     private readonly tezos: Tezos,
   ) {}
 
-  async getWeb3(chain = 'ethereum', url = null, changeMappedWeb3 = false) {
-    if (!!mappedWeb3.get(chain) && !changeMappedWeb3) {
+  async getWeb3(chain = 'ethereum') {
+    if (!!mappedWeb3.get(chain)) {
       return mappedWeb3.get(chain);
     }
+    return await this.createWeb3Instance(chain);
+  }
+
+  async createWeb3Instance(chain = 'ethereum', url = null) {
     let node_url;
-    if (url) node_url = url;
-    else {
-      node_url =
-        nodeUrls[`${chain.toUpperCase()}_NODE_URL`] ||
-        nodeUrls[`ETHEREUM_NODE_URL`];
-    }
+    url
+      ? (node_url = url)
+      : (node_url =
+          nodeUrls[`${chain.toUpperCase()}_NODE_URL`] ||
+          nodeUrls[`ETHEREUM_NODE_URL`]);
 
     let web3;
     switch (chain) {
@@ -88,6 +92,23 @@ export class Web3ProviderService {
     }
     mappedWeb3.set(chain, web3);
     return web3;
+  }
+  async changeInstance(chainName: string) {
+    const allEnv = Object.keys(process.env);
+    const possibleUrls = [];
+    allEnv.forEach((key) => {
+      if (key.startsWith(`${chainName.toUpperCase()}_NODE_URL`)) {
+        possibleUrls.push(process.env[key]);
+      }
+    });
+    if (possibleUrls.length > 1) {
+      const nodeUrl = possibleUrls.filter(
+        (possibleUrl) =>
+          possibleUrl !== nodeUrls[`${chainName.toUpperCase()}_NODE_URL`],
+      );
+      nodeUrls[`${chainName.toUpperCase()}_NODE_URL`] = nodeUrl[0];
+      await this.createWeb3Instance(chainName, nodeUrl[0]);
+    }
   }
 
   checkNodeUrl(chain: string) {
