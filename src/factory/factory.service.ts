@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
 import {
   GetTvlRequest,
@@ -13,6 +13,7 @@ import {
 import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 import { log } from '../util/logger/logger';
+import basicUtil from '../util/basicUtil';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
@@ -49,7 +50,8 @@ export class FactoryService {
         date: req.query?.date,
       });
 
-      return { balances: tvlData.balances, poolBalances: tvlData.poolBalances };
+      const balances = basicUtil.checkZeroBalance(tvlData.balances);
+      return { balances, poolBalances: tvlData.poolBalances };
     } catch (err) {
       log.error({
         message: err?.message || '',
