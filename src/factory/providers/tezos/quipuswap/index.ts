@@ -33,8 +33,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   for (const factory of FACTORY_ADDRESSES) {
-    console.log(`Starting processing factory ${factory}`);
-
     pools[factory] = pools[factory] || [];
 
     const contract = new web3.eth.Contract(null, factory);
@@ -69,8 +67,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   for (const farmFactory of FARM_FACTORY_ADDRESSES) {
-    console.log(`Starting processing farm factory ${farmFactory}`);
-
     pools[farmFactory] = pools[farmFactory] || [];
 
     const farmFactoryContract = new web3.eth.Contract(null, farmFactory);
