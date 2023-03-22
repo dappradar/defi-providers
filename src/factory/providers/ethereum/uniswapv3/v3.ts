@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
+import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 12369621;
 const FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
@@ -59,10 +60,22 @@ async function getReserves(startPool, block) {
             10 ** pool.token1.decimals,
           ),
         });
-      } catch {}
+      } catch (e) {
+        log.error({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: getReserves of ethereum/uniswapv3`,
+          endpoint: 'getReserves',
+        });
+      }
     });
   } catch (e) {
-    console.log(`[v3] Issue with SubGraph on from ${startPool}`);
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `[v3] Issue with SubGraph on from ${startPool}`,
+      endpoint: 'getReserves',
+    });
   }
 
   return balances;
@@ -82,12 +95,12 @@ export async function tvl(block, chain, provider, web3) {
   console.log('[v3] start getting tvl');
   console.log('[v3] get logs1');
 
-  let offset = 300000;
+  let offset = 10000;
   for (let i = Math.max(v3Pairs.block, START_BLOCK); ; ) {
     console.log(`Trying from ${i} with offset ${offset}`);
-    let log = [];
+    let eventLog = [];
     try {
-      log = (
+      eventLog = (
         await util.getLogs(
           i,
           Math.min(block, i + offset),
@@ -98,10 +111,13 @@ export async function tvl(block, chain, provider, web3) {
       ).output;
       console.log(`Trying from ${i} with offset ${offset}`);
     } catch (e) {
-      console.log(e);
-      if (offset > 10000) {
-        offset -= 20000;
-      } else if (offset > 1000) {
+      log.error({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: tvl of ethereum/uniswapv3`,
+        endpoint: 'tvl',
+      });
+      if (offset > 1000) {
         offset -= 2000;
       } else if (offset > 100) {
         offset -= 200;
@@ -112,16 +128,8 @@ export async function tvl(block, chain, provider, web3) {
       }
       continue;
     }
-    logs = logs.concat(log);
-    if (offset < 100) {
-      offset += 20;
-    } else if (offset < 1000) {
-      offset += 200;
-    } else if (offset < 10000) {
-      offset += 2000;
-    } else {
-      offset += 20000;
-    }
+    logs = logs.concat(eventLog);
+
     i += offset;
     if (block < i) {
       break;
