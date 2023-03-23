@@ -14,6 +14,11 @@ const FACTORY_ADDRESSES = [
   'KT1MMLb2FVrrE9Do74J3FH1RNNc4QhDuVCNX',
 ];
 
+const FARM_FACTORY_ADDRESSES = [
+  'KT1VgrfMd2PUN1Y2yQfCBaxn6yzXwrXR8YWy',
+  'KT1SDLvKnyrZTFStVHRP9CMJhdPxsW116iqU',
+];
+
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
@@ -28,8 +33,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   for (const factory of FACTORY_ADDRESSES) {
-    console.log(`Starting processing factory ${factory}`);
-
     pools[factory] = pools[factory] || [];
 
     const contract = new web3.eth.Contract(null, factory);
@@ -47,6 +50,42 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
 
     for (const pool of pools[factory]) {
+      let tokenBalances;
+      let xtzBalance;
+      try {
+        [tokenBalances, xtzBalance] = await Promise.all([
+          web3.eth.getAllTokensBalances(pool, block),
+          web3.eth.getBalance(pool, block),
+        ]);
+      } catch {}
+      if (xtzBalance.isGreaterThan(0)) {
+        balances['xtz'] = BigNumber(balances['xtz'] || 0).plus(xtzBalance);
+      }
+
+      formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
+    }
+  }
+
+  for (const farmFactory of FARM_FACTORY_ADDRESSES) {
+    pools[farmFactory] = pools[farmFactory] || [];
+
+    const farmFactoryContract = new web3.eth.Contract(null, farmFactory);
+    await farmFactoryContract.init();
+
+    const poolCounter = await farmFactoryContract.methods
+      .pool_counter()
+      .call(null, block);
+
+    if (pools[farmFactory].length < poolCounter) {
+      const stakingPools = await farmFactoryContract.methods
+        .getBigmap('staking_pools')
+        .call(null, block);
+      for (let i = pools[farmFactory].length; i < poolCounter; i++) {
+        pools[farmFactory].push(stakingPools[i].value);
+      }
+    }
+
+    for (const pool of pools[farmFactory]) {
       let tokenBalances;
       let xtzBalance;
       try {
