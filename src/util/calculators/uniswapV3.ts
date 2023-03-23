@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js';
 import { request, gql } from 'graphql-request';
 import basicUtil from '../basicUtil';
-import { IBalances } from '../../interfaces/ITvl';
+import { ITvlReturn } from '../../interfaces/ITvl';
 import { log } from '../logger/logger';
 
 const QUERY_SIZE = 400;
 const POOLS_QUERY = gql`
   query getPools($block: Int!, $skip: Int!) {
     pools(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}) {
+      id
       token0 {
         id
         decimals
@@ -48,8 +49,9 @@ async function getTvlFromSubgraph(
   endpoint: string,
   block: number,
   chain: string,
-): Promise<IBalances> {
+): Promise<ITvlReturn> {
   const balances = {};
+  const poolBalances = {};
 
   try {
     let skip = 0;
@@ -57,20 +59,23 @@ async function getTvlFromSubgraph(
       const pools = await getPools(endpoint, block, skip, chain);
 
       pools.forEach((pool) => {
+        const token0Balance = BigNumber(pool.totalValueLockedToken0).shiftedBy(
+          Number(pool.token0.decimals),
+        );
+        const token1Balance = BigNumber(pool.totalValueLockedToken1).shiftedBy(
+          Number(pool.token1.decimals),
+        );
         balances[pool.token0.id] = BigNumber(
           balances[pool.token0.id] || 0,
-        ).plus(
-          BigNumber(pool.totalValueLockedToken0).shiftedBy(
-            Number(pool.token0.decimals),
-          ),
-        );
+        ).plus(token0Balance);
         balances[pool.token1.id] = BigNumber(
           balances[pool.token1.id] || 0,
-        ).plus(
-          BigNumber(pool.totalValueLockedToken1).shiftedBy(
-            Number(pool.token1.decimals),
-          ),
-        );
+        ).plus(token1Balance);
+
+        poolBalances[pool.id.toLowerCase()] = {
+          tokens: [pool.token0.id, pool.token1.id],
+          balances: [token0Balance.toFixed(), token1Balance.toFixed()],
+        };
       });
 
       if (pools.length < QUERY_SIZE) break;
@@ -86,7 +91,7 @@ async function getTvlFromSubgraph(
     throw e;
   }
 
-  return balances;
+  return { balances, poolBalances };
 }
 
 export default {

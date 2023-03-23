@@ -4,10 +4,10 @@ import uniswapV3 from '../../../../util/calculators/uniswapV3';
 
 const START_BLOCK = 0;
 const THEGRAPTH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/ianlapham/optimism-post-regenesis';
+  'https://api.thegraph.com/subgraphs/name/revert-finance/uniswap-v3-bnb';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  const { block, chain } = params;
   if (block < START_BLOCK) {
     return {};
   }
