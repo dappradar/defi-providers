@@ -12,12 +12,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return {};
   }
 
-  const balances = await uniswapV3.getTvlFromSubgraph(
+  const { balances, poolBalances } = await uniswapV3.getTvlFromSubgraph(
     THEGRAPTH_ENDPOINT,
     block,
     chain,
   );
   formatter.convertBalancesToFixed(balances);
-  return { balances };
+  return { balances, poolBalances };
 }
 export { tvl };
