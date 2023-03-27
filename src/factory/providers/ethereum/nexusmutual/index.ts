@@ -1,38 +1,11 @@
-import BigNumber from 'bignumber.js';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import { log } from '../../../../util/logger/logger';
+import POOL_ABI from './pool_abi.json';
+import VAULT_LIB_ABI from './vault_lib_abi.json';
 
-const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
-const POOLS = [
-  '0xcafea35cE5a2fc4CED4464DA4349f81A122fd12b', // current pool
-  '0xfd61352232157815cf7b71045557192bf0ce1884',
-  '0x7cbe5682be6b648cc1100c76d4f6c96997f753d6',
-];
-const TOKENS = [
-  '0x6b175474e89094c44da98b954eedeac495271d0f', // DAI
-  '0xae7ab96520de3a18e5e111b5eaab095312d7fe84', // stETH
-  '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', // SAI
-];
-
-async function getETHBalance(pool, block, web3) {
-  try {
-    const balance = await web3.eth.getBalance(pool, block);
-    return {
-      token: WETH_ADDRESS,
-      balance: BigNumber(balance),
-    };
-  } catch (e) {
-    log.error({
-      message: e?.message || '',
-      stack: e?.stack || '',
-      detail: `Error: getETHBalance of ethereum/nexusmutual`,
-      endpoint: 'getETHBalance',
-    });
-    return null;
-  }
-}
+const POOL_ADDRESS = '0xcafea112db32436c2390f5ec988f3adb96870627';
+const VAULT_PROXY_ADDRESS = '0x27f23c710dd3d878fe9393d93465fed1302f2ebd';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -40,15 +13,53 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return {};
   }
 
-  const [balanceResults, ethResults] = await Promise.all([
-    util.getTokenBalancesOfEachHolder(POOLS, TOKENS, block, chain, web3),
-    Promise.all(POOLS.map((pool) => getETHBalance(pool, block, web3))),
-  ]);
-
   const balances = {};
-  formatter.sumMultiBalanceOf(balances, balanceResults);
-  formatter.sumMultiBalanceOf(balances, ethResults);
+
+  const poolAssets = await util
+    .executeCall(POOL_ADDRESS, POOL_ABI, 'getAssets', [], block, chain, web3)
+    .then((assets: string[]) =>
+      assets.map((asset) => asset.split(',')[0].toLowerCase()),
+    );
+
+  const vaultAssets = await util.executeCall(
+    VAULT_PROXY_ADDRESS,
+    VAULT_LIB_ABI,
+    'getTrackedAssets',
+    [],
+    block,
+    chain,
+    web3,
+  );
+
+  const poolBalances = await util.getTokenBalances(
+    POOL_ADDRESS,
+    poolAssets,
+    block,
+    chain,
+    web3,
+  );
+
+  const vaultBalances = await util.getTokenBalances(
+    VAULT_PROXY_ADDRESS,
+    vaultAssets,
+    block,
+    chain,
+    web3,
+  );
+
+  const ethBalances = await util.getBalancesOfHolders(
+    [POOL_ADDRESS, VAULT_PROXY_ADDRESS],
+    block,
+    chain,
+    web3,
+  );
+
+  formatter.sumMultiBalanceOf(balances, poolBalances);
+  formatter.sumMultiBalanceOf(balances, vaultBalances);
+  formatter.sumMultiBalanceOf(balances, ethBalances, chain, provider);
+
   formatter.convertBalancesToFixed(balances);
+
   return { balances };
 }
 
