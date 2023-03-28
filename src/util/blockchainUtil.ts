@@ -1383,7 +1383,11 @@ async function ConvertToUnderlyings(
   web3: Web3,
 ): Promise<{ [key: string]: string }> {
   try {
-    underlyingData = JSON.parse(fs.readFileSync('./token01.json', 'utf8'));
+    underlyingData = basicUtil.readDataFromFile(
+      'token01.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const getUnderlyings = [];
@@ -1396,22 +1400,7 @@ async function ConvertToUnderlyings(
   }
 
   const balanceResults = await Promise.all(getUnderlyings);
-  basicUtil.writeDataToFile(underlyingData, 'token01', chain, provider);
-  fs.writeFile(
-    './token01.json',
-    JSON.stringify(underlyingData, null, 2),
-    'utf8',
-    function (err) {
-      if (err) {
-        log.error({
-          message: err?.message || '',
-          stack: err?.stack || '',
-          detail: `Error: writeDataToFileInUnderlyingData`,
-          endpoint: 'writeDataToFileInUnderlyingData',
-        });
-      }
-    },
-  );
+  basicUtil.writeDataToFile(underlyingData, 'token01.json', chain, provider);
 
   const balances = {};
 
