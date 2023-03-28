@@ -32,18 +32,21 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return {};
   }
 
+  // delayed as subgraph was updated and missing last blocks data
+  const blockWithDelay = block - 20000;
+
   const balances = {};
 
   try {
     let poolCount;
     await request(THEGRAPTH_ENDPOINT, POOL_COUNT_QUERY, {
-      block: block,
+      block: blockWithDelay,
     }).then((data) => (poolCount = data.balancer.poolCount));
 
     for (let i = 0; i < poolCount; i += 1000) {
       let pools;
       await request(THEGRAPTH_ENDPOINT, POOLS_QUERY, {
-        block: block,
+        block: blockWithDelay,
         skip: i,
       }).then((data) => (pools = data.pools));
 
