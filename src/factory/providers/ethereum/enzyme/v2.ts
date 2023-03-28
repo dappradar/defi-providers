@@ -119,6 +119,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     tokenBalances,
     block,
     chain,
+    provider,
     web3,
   );
   const results = [];
