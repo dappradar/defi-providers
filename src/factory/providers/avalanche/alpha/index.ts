@@ -4,7 +4,6 @@ import abi from './abi.json';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import * as process from 'process';
 
 const SAFE_BOX_API = 'https://homora-api.alphafinance.io/v2/43114/safeboxes';
 const POOLS_API = 'https://homora-api.alphafinance.io/v2/43114/pools';
