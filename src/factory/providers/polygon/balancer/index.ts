@@ -6,7 +6,7 @@ import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 15832998;
 const THEGRAPTH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2';
+  'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2-beta';
 const POOL_COUNT_QUERY = gql`
   query getPoolCount($block: Int!) {
     balancer(id: 2, block: { number: $block }) {
@@ -32,21 +32,18 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return {};
   }
 
-  // delayed as subgraph was updated and missing last blocks data
-  const blockWithDelay = block - 20000;
-
   const balances = {};
 
   try {
     let poolCount;
     await request(THEGRAPTH_ENDPOINT, POOL_COUNT_QUERY, {
-      block: blockWithDelay,
+      block: block,
     }).then((data) => (poolCount = data.balancer.poolCount));
 
     for (let i = 0; i < poolCount; i += 1000) {
       let pools;
       await request(THEGRAPTH_ENDPOINT, POOLS_QUERY, {
-        block: blockWithDelay,
+        block: block,
         skip: i,
       }).then((data) => (pools = data.pools));
 
