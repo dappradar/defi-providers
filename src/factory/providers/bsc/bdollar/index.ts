@@ -128,6 +128,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     tokenBalances,
     block,
     chain,
+    provider,
     web3,
   );
 

@@ -81,7 +81,7 @@ async function v1_tvl(params) {
 }
 
 async function v2_tvl(params) {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   const tokenBalances = {};
 
   if (block <= START_BLOCK) {
@@ -142,7 +142,13 @@ async function v2_tvl(params) {
     });
   });
 
-  return await util.convertToUnderlyings(tokenBalances, block, chain, web3);
+  return await util.convertToUnderlyings(
+    tokenBalances,
+    block,
+    chain,
+    provider,
+    web3,
+  );
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
