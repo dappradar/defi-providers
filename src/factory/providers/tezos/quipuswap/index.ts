@@ -58,7 +58,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
           web3.eth.getBalance(pool, block),
         ]);
       } catch {}
-      if (xtzBalance.isGreaterThan(0)) {
+      if (BigNumber(xtzBalance).isGreaterThan(0)) {
         balances['xtz'] = BigNumber(balances['xtz'] || 0).plus(xtzBalance);
       }
 

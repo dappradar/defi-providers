@@ -1,140 +1,143 @@
 import BigNumber from 'bignumber.js';
+import { request, gql } from 'graphql-request';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
-import { log } from '../../../../util/logger/logger';
 
-const YOUVES_ADDRESS = 'KT1Xobej4mc6XgEjDoJoHtTKgbD1ELMvcQuL';
-const UTOKEN_ADDRESS = 'KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW';
-const VAULT_CREATOR = 'KT1FFE2LC5JpVakVjHm5mM36QVp2p3ZzH4hH';
-const ORACLE_ADDRESS = 'KT1P8Ep9y8EsDSD9YkvakWnDvF2orDcpYXSq';
-const POOLS = [
-  'KT1Lz5S39TMHEA7izhQn8Z1mQoddm6v1jTwH',
-  'KT1TFPn4ZTzmXDzikScBrWnHkoqTA7MBt9Gi',
-  'KT1TMfRfmJ5mkJEXZGRCsqLHn2rgnV1SdUzb',
-  'KT1Kvg5eJVuYfTC1bU1bwWyn4e1PRGKAf6sy',
-  'KT1M8asPmVQhFG6yujzttGonznkghocEkbFk',
-  'KT19bkpis4NSDnt6efuh65vYxMaMHBoKoLEw',
-  'KT1KNbtEBKumoZoyp5uq6A4v3ETN7boJ9ArF',
+const START_BLOCK = 1568116;
+
+const THEGRAPTH_ENDPOINT =
+  'https://youves-mainnet-indexer.prod.gke.papers.tech/v1/graphql';
+
+const TZBTC_XTZ_POOL_ADDRESS = 'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5';
+const TZBTC_ADDRESS = 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn';
+const USDT_ADDRESS = 'KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o';
+
+const ENGINES = [
+  {
+    engineAddress: 'KT1FFE2LC5JpVakVjHm5mM36QVp2p3ZzH4hH',
+    token: 'xtz',
+  },
+  {
+    engineAddress: 'KT1DHndgk8ah1MLfciDnCV2zPJrVbnnAH9fd',
+    token: 'xtz',
+  },
+  {
+    engineAddress: 'KT1JmfujyCYTw5krfu9bSn7YbLYuz2VbNaje',
+    token: USDT_ADDRESS,
+  },
+  {
+    engineAddress: 'KT1V9Rsc4ES3eeQTr4gEfJmNhVbeHrAZmMgC',
+    token: TZBTC_ADDRESS,
+  },
+  {
+    engineAddress: 'KT1HxgqnVjGy7KsSUTEsQ6LgpD5iKSGu7QpA',
+    token: TZBTC_ADDRESS,
+  },
+  {
+    engineAddress: 'KT1FzcHaNhmpdYPNTgfb8frYXx7B5pvVyowu',
+    token: TZBTC_XTZ_POOL_ADDRESS,
+  },
+  {
+    engineAddress: 'KT1F1JMgh6SfqBCK6T6o7ggRTdeTLw91KKks',
+    token: TZBTC_XTZ_POOL_ADDRESS,
+  },
+  {
+    engineAddress: 'KT1LQcsXGpmLXnwrfftuQdCLNvLRLUAuNPCV',
+    token: 'xtz',
+  },
+  {
+    engineAddress: 'KT1E45AvpSr7Basw2bee3g8ri2LK2C2SV2XG',
+    token: TZBTC_XTZ_POOL_ADDRESS,
+  },
+  {
+    engineAddress: 'KT1VjQoL5QvyZtm9m1voQKNTNcQLi5QiGsRZ',
+    token: 'xtz',
+  },
+  {
+    engineAddress: 'KT1CP1C8afHqdNfBsSE3ggQhzM2iMHd4cRyt',
+    token: 'xtz',
+  },
+  {
+    engineAddress: 'KT1NFWUqr9xNvVsz2LXCPef1eRcexJz5Q2MH',
+    token: TZBTC_XTZ_POOL_ADDRESS,
+  },
+  {
+    engineAddress: 'KT1G6RzVX25YnoU55Xb7Vve3zvuZKmouf24a',
+    token: TZBTC_XTZ_POOL_ADDRESS,
+  },
 ];
 
-async function getBalances(address, block, web3) {
-  try {
-    const contract = new web3.eth.Contract(null, address);
-    await contract.init();
+const DEXES = [
+  'KT1UJBvm4hv11Uvu6r4c8zE5K2EfmwiRVgsm',
+  'KT1JeWiS8j1kic4PHx7aTnEr9p4xVtJNzk5b',
+  'KT1T974a8qau4xP3RAAWPYCZM9xtwU9FLjPS',
+  'KT1XvH5f2ja2jzdDbv6rxPmecZFU7s3obquN',
+  'KT1AVbWyM8E7DptyBCu4B5J5B7Nswkq7Skc6',
+  'KT1Xbx9pykNd38zag4yZvnmdSNBknmCETvQV',
+];
 
-    const totalStake = await contract.methods.total_stake().call(null, block);
+const QUERY = gql`
+  query getVaultAggregates($engineAddress: String!) {
+    vault_aggregate(
+      where: { engine_contract_address: { _eq: $engineAddress } }
+    ) {
+      aggregate {
+        sum {
+          balance
+        }
+      }
+    }
+  }
+`;
 
-    return {
-      token: POOLS[address],
-      balance: BigNumber(totalStake),
-    };
-  } catch {}
-  return null;
-}
+async function getEnginesTvl(block, web3) {
+  const balances = {};
 
-async function getTezosUusdBalances(address, block, web3) {
-  try {
-    const tezosBalance = await web3.eth.getBalance(address, block);
+  const tzbtcXtzPool = new web3.eth.Contract(null, TZBTC_XTZ_POOL_ADDRESS);
+  await tzbtcXtzPool.init();
+  const [xtzPool, tokenPool, lqtTotal] = await Promise.all([
+    tzbtcXtzPool.methods.xtzPool().call(null, block),
+    tzbtcXtzPool.methods.tokenPool().call(null, block),
+    tzbtcXtzPool.methods.lqtTotal().call(null, block),
+  ]);
 
-    return [
-      {
-        token: 'xtz',
-        balance: tezosBalance,
-      },
-    ];
-  } catch {}
-  return null;
+  for (const engine of ENGINES) {
+    const balance = await request(THEGRAPTH_ENDPOINT, QUERY, {
+      engineAddress: engine.engineAddress,
+    }).then((data) => data.vault_aggregate.aggregate.sum.balance);
+
+    if (engine.token === TZBTC_XTZ_POOL_ADDRESS) {
+      console.log(xtzPool);
+      console.log(lqtTotal);
+      balances['xtz'] = BigNumber(balances['xtz'] || 0).plus(
+        (balance * xtzPool) / lqtTotal,
+      );
+      balances[TZBTC_ADDRESS] = BigNumber(balances[TZBTC_ADDRESS] || 0).plus(
+        (balance * tokenPool) / lqtTotal,
+      );
+    } else {
+      balances[engine.token] = BigNumber(balances[engine.token] || 0).plus(
+        balance,
+      );
+    }
+  }
+
+  return balances;
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
-  if (block < 1568116) {
+  if (block < START_BLOCK) {
     return {};
   }
 
-  const balances = {};
+  const balances = await getEnginesTvl(block, web3);
 
-  const uusdContract = new web3.eth.Contract(null, UTOKEN_ADDRESS);
-  await uusdContract.init();
-  const totalSupplies = await uusdContract.methods
-    .getBigmap('total_supply')
-    .call(null, block);
-
-  let uDefiPrice;
-  try {
-    const oracleContract = new web3.eth.Contract(null, ORACLE_ADDRESS);
-    await oracleContract.init();
-    uDefiPrice = await oracleContract.methods
-      .valid_defi_price()
-      .call(null, block);
-  } catch {}
-
-  totalSupplies.forEach((result) => {
-    try {
-      if (result.key == 1 && uDefiPrice) {
-        balances['coingecko_usd-coin'] = BigNumber(result.value)
-          .times(uDefiPrice)
-          .div(1e18)
-          .toFixed();
-      } else if (result.key == 2) {
-        balances['coingecko_bitcoin'] = BigNumber(result.value)
-          .div(1e12)
-          .toFixed();
-      } else {
-        balances[`${UTOKEN_ADDRESS}_${result.key}`] = result.value;
-      }
-    } catch {
-      balances[`${UTOKEN_ADDRESS}_${result.key}`] = result.value;
-    }
-  });
-
-  const vaultCreator = new web3.eth.Contract(null, VAULT_CREATOR);
-  await vaultCreator.init();
-  const vaults = await vaultCreator.methods
-    .getBigmap('vault_lookup')
-    .call(null, block);
-
-  const vaultLength = vaults.length;
-  for (let first = 0; first < vaultLength; first += 50) {
-    const last = Math.min(vaultLength, first + 50);
-    const balanceCalls = [];
-    for (let start = first; start < last; start++) {
-      balanceCalls.push(getTezosUusdBalances(vaults[start].key, block, web3));
-    }
-
-    log.info({
-      message: `Getting tezos balance from ${first} to ${last}`,
-      endpoint: 'tvl of tezos/youves',
-    });
-
-    const results = await Promise.all(balanceCalls);
-    results.forEach((result) => {
-      if (result) {
-        formatter.sumMultiBalanceOf(balances, result, chain, provider);
-      }
-    });
+  for (const dex of DEXES) {
+    const tokenBalances = await web3.eth.getAllTokensBalances(dex, block);
+    formatter.sumMultiBalanceOf(balances, tokenBalances, chain, provider);
   }
 
-  const youvesContract = new web3.eth.Contract(null, YOUVES_ADDRESS);
-  await youvesContract.init();
-  const balance = await youvesContract.methods.total_stake().call(null, block);
-  balances[YOUVES_ADDRESS] = BigNumber(balance).div(1e6);
-
-  const poolLength = POOLS.length;
-  for (let first = 0; first < poolLength; first += 50) {
-    const last = Math.min(poolLength, first + 50);
-    const balanceCalls = [];
-    for (let start = first; start < last; start++) {
-      balanceCalls.push(getBalances(POOLS[start], block, web3));
-    }
-
-    log.info({
-      message: `Getting staked balance from ${first} to ${last}`,
-      endpoint: 'tvl of tezos/youves',
-    });
-    const results = await Promise.all(balanceCalls);
-    formatter.sumMultiBalanceOf(balances, results, chain, provider);
-  }
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }

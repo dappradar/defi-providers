@@ -6,7 +6,7 @@ import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 15832998;
 const THEGRAPTH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2';
+  'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2-beta';
 const POOL_COUNT_QUERY = gql`
   query getPoolCount($block: Int!) {
     balancer(id: 2, block: { number: $block }) {
