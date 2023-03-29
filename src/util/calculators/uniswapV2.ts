@@ -13,6 +13,7 @@ import {
   BULK_RESERVES_DEPOLYED,
 } from '../../constants/contracts.json';
 import basicUtil from '../basicUtil';
+import util from '../blockchainUtil';
 import { log } from '../logger/logger';
 
 async function getReserves(address, block, web3, chain, provider) {
@@ -211,16 +212,42 @@ async function getTvl(
     });
     const subPools = newPools.slice(start, end);
     try {
-      const tokens01 = await bulk_reserves_contract.methods
-        .getToken01Bulk(subPools)
-        .call();
-      tokens01.forEach((token, index) => {
-        if (token) {
-          token01Infos[subPools[index]] = {};
-          token01Infos[subPools[index]].token0 = token.token0.toLowerCase();
-          token01Infos[subPools[index]].token1 = token.token1.toLowerCase();
-        }
-      });
+      if (block < BULK_RESERVES_DEPOLYED[chain]) {
+        const tokens0 = await util.executeCallOfMultiTargets(
+          subPools,
+          PAIR_ABI,
+          'token0',
+          [],
+          block,
+          chain,
+          web3,
+        );
+        const tokens1 = await util.executeCallOfMultiTargets(
+          subPools,
+          PAIR_ABI,
+          'token1',
+          [],
+          block,
+          chain,
+          web3,
+        );
+        subPools.forEach((subPool, index) => {
+          token01Infos[subPool] = {};
+          token01Infos[subPool].token0 = tokens0[index];
+          token01Infos[subPool].token1 = tokens1[index];
+        });
+      } else {
+        const tokens01 = await bulk_reserves_contract.methods
+          .getToken01Bulk(subPools)
+          .call();
+        tokens01.forEach((token, index) => {
+          if (token) {
+            token01Infos[subPools[index]] = {};
+            token01Infos[subPools[index]].token0 = token.token0.toLowerCase();
+            token01Infos[subPools[index]].token1 = token.token1.toLowerCase();
+          }
+        });
+      }
     } catch (e) {
       log.error({
         message: e?.message || '',

@@ -29,6 +29,7 @@ const {
   SOLANA_NODE_URL,
   STACKS_NODE_URL,
   TEZOS_NODE_URL,
+  CRONOS_NODE_URL,
   BASE_URL = './blockchainCache/',
 } = process.env;
 
@@ -69,6 +70,7 @@ const nodeUrls = {
   SOLANA_NODE_URL,
   STACKS_NODE_URL,
   TEZOS_NODE_URL,
+  CRONOS_NODE_URL,
 };
 
 export { config, nodeUrls };
