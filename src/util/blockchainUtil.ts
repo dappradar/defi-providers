@@ -1384,7 +1384,7 @@ async function ConvertToUnderlyings(
 ): Promise<{ [key: string]: string }> {
   try {
     underlyingData = basicUtil.readDataFromFile(
-      'token01.json',
+      'underlyingList.json',
       chain,
       provider,
     );
@@ -1400,7 +1400,12 @@ async function ConvertToUnderlyings(
   }
 
   const balanceResults = await Promise.all(getUnderlyings);
-  basicUtil.writeDataToFile(underlyingData, 'token01.json', chain, provider);
+  basicUtil.writeDataToFile(
+    underlyingData,
+    'underlyingList.json',
+    chain,
+    provider,
+  );
 
   const balances = {};
 
