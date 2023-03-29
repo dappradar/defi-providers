@@ -31,6 +31,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     treasuryBalances,
     block,
     chain,
+    provider,
     web3,
   );
 

@@ -80,6 +80,7 @@ async function stakedBalance(block, chain, provider, web3) {
     tokenBalances,
     block,
     chain,
+    provider,
     web3,
   );
 

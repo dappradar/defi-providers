@@ -74,7 +74,7 @@ const POOL_ADDRESSES = [
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   const results1 = await util.executeCallOfMultiTargets(
     POOL_ADDRESSES.map((pool) => pool.settAddress),
@@ -107,6 +107,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     tokenBalances,
     block,
     chain,
+    provider,
     web3,
   );
 

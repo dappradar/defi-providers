@@ -10,7 +10,7 @@ const bALPHA_CHEF_ADDR = '0xf20084ba368567fa3da1da85b43ac1ac310880c8';
 const BDP_CHEF_ADDR = '0x0De845955E2bF089012F682fE9bC81dD5f11B372';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < 11968394) {
     return {};
   }
@@ -95,6 +95,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     tokenBalances,
     block,
     chain,
+    provider,
     web3,
   );
 

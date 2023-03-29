@@ -6,7 +6,7 @@ const WAXG_ADDRESS = '0xb140A429c342083E97Daf42d5D82634bd7Ade7d4';
 const WAXE_ETH_LP = '0x0ee0cb563a52ae1170ac34fbb94c50e89adde4bd';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
   if (block < 11538969) {
     return {};
   }
@@ -25,6 +25,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     tokenBalances,
     block,
     chain,
+    provider,
     web3,
   );
   return { balances };

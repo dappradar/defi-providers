@@ -29,6 +29,7 @@ import {
 } from '../constants/contracts.json';
 import { log } from './logger/logger';
 import formatter from './formatter';
+import basicUtil from './basicUtil';
 
 let underlyingData = {};
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -1369,6 +1370,7 @@ async function GetUnderlyingBalance(
  * @param tokenBalances - The pools and their balances
  * @param block - The block number for which data is requested
  * @param chain - EVM chain name (providers parent folder name)
+ * @param provider
  * @param web3 - The Web3 object
  * @returns - The underlying tokens and their balances
  *
@@ -1377,10 +1379,15 @@ async function ConvertToUnderlyings(
   tokenBalances: { [key: string]: BigNumber },
   block: number,
   chain: string,
+  provider: string,
   web3: Web3,
 ): Promise<{ [key: string]: string }> {
   try {
-    underlyingData = JSON.parse(fs.readFileSync('./token01.json', 'utf8'));
+    underlyingData = basicUtil.readDataFromFile(
+      'underlyingList.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const getUnderlyings = [];
@@ -1393,21 +1400,11 @@ async function ConvertToUnderlyings(
   }
 
   const balanceResults = await Promise.all(getUnderlyings);
-
-  fs.writeFile(
-    './token01.json',
-    JSON.stringify(underlyingData, null, 2),
-    'utf8',
-    function (err) {
-      if (err) {
-        log.error({
-          message: err?.message || '',
-          stack: err?.stack || '',
-          detail: `Error: writeDataToFileInUnderlyingData`,
-          endpoint: 'writeDataToFileInUnderlyingData',
-        });
-      }
-    },
+  basicUtil.writeDataToFile(
+    underlyingData,
+    'underlyingList.json',
+    chain,
+    provider,
   );
 
   const balances = {};

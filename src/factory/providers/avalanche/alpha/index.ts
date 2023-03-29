@@ -11,7 +11,7 @@ const AXELAR_WUST = '0x260bbf5698121eb85e7a74f2e45e16ce762ebe11';
 const USDT = '0xc7198437980c041c805a1edcba50c1ce5db95118';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, web3 } = params;
+  const { block, chain, provider, web3 } = params;
 
   if (block < 5658993) {
     return {};
@@ -80,6 +80,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     tokenBalances,
     block,
     chain,
+    provider,
     web3,
   );
 
