@@ -9,7 +9,8 @@
     "moonbeam": "0xacc15dc74880c9944775448304b263d191c6077f",
     "moonriver": "0x98878b06940ae243284ca214f92bb71a2b032b8a",
     "optimism": "0x4200000000000000000000000000000000000006",
-    "polygon": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+    "polygon": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+    "cronos": "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23"
   },
   "BULK_BALANCE_ADDRESSES": {
     "ethereum": "0xb173393e08496209ad1cd9d57c769de76bdcea5a",
@@ -21,7 +22,8 @@
     "moonbeam": "0xb81bB004BD9ccc0EEd7a1A60D3D8eD8DC52D11d8",
     "moonriver": "0xb81bB004BD9ccc0EEd7a1A60D3D8eD8DC52D11d8",
     "optimism": "0x63aCCa16a1fcfD406d3EA8Ec5137884861863828",
-    "polygon": "0xb81bB004BD9ccc0EEd7a1A60D3D8eD8DC52D11d8"
+    "polygon": "0xb81bB004BD9ccc0EEd7a1A60D3D8eD8DC52D11d8",
+    "cronos": "0x63aCCa16a1fcfD406d3EA8Ec5137884861863828"
   },
   "BULK_BALANCE_DEPOLYED": {
     "ethereum": 11439603,
@@ -33,7 +35,8 @@
     "moonbeam": 500789,
     "moonriver": 1535697,
     "optimism": 20246974,
-    "polygon": 16836227
+    "polygon": 16836227,
+    "cronos": 7617073
   },
   "BULK_RESERVES_ADDRESSES": {
     "ethereum": "0x4261b012f3d0d752ee9d738a4664df7117a148ab",
@@ -45,7 +48,8 @@
     "moonbeam": "0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a",
     "moonriver": "0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a",
     "optimism": "0x47012c5a5A20893f342d279DdC6Fd0847f196898",
-    "polygon": "0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a"
+    "polygon": "0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a",
+    "cronos": "0xBb90C1A84F51d57c2046741B15156810D20f3592"
   },
   "BULK_RESERVES_DEPOLYED": {
     "ethereum": 11438212,
@@ -57,7 +61,8 @@
     "moonbeam": 455829,
     "moonriver": 1511120,
     "optimism": 20249129,
-    "polygon": 15823447
+    "polygon": 15823447,
+    "cronos": 7617098
   },
   "MULTIBALANCES_ADDRESSES": {
     "ethereum": "0x09b6fd79f8c6bdaba4d94731f0fc90edd15742af",
@@ -69,7 +74,8 @@
     "moonbeam": "0xCCbBc9c7a65C0CA5Bc4899f155dA521cdC828e1f",
     "moonriver": "0xCCbBc9c7a65C0CA5Bc4899f155dA521cdC828e1f",
     "optimism": "0x5a3CF2C199bBB28cD0A2f380d1f96B8d73D74B78",
-    "polygon": "0x3e9E7c58dc5f5b25DA878790bed0E17Ea4290278"
+    "polygon": "0x3e9E7c58dc5f5b25DA878790bed0E17Ea4290278",
+    "cronos": "0x5a3CF2C199bBB28cD0A2f380d1f96B8d73D74B78"
   },
   "MULTIBALANCES_DEPOLYED": {
     "ethereum": 11606340,
@@ -81,7 +87,8 @@
     "moonbeam": 500842,
     "moonriver": 1535714,
     "optimism": 20250087,
-    "polygon": 16354960
+    "polygon": 16354960,
+    "cronos": 7617273
   },
   "BULK_METADATA_ADDRESSES": {
     "ethereum": "0x570B73444cC1077398f83777f34Bd672a50235cD",
@@ -93,7 +100,8 @@
     "moonbeam": "0x0888f6CF6012258dCFB46be0D95F5e1a2bB4ec61",
     "moonriver": "0x0888f6CF6012258dCFB46be0D95F5e1a2bB4ec61",
     "optimism": "0x7d9965AeE6b51C944b20beb8954Fe5018781fb19",
-    "polygon": "0x06A9b1F8f87968137D57D53eA40fF1Bfa7Be6dcA"
+    "polygon": "0x06A9b1F8f87968137D57D53eA40fF1Bfa7Be6dcA",
+    "cronos": "0x7d9965AeE6b51C944b20beb8954Fe5018781fb19"
   },
   "BULK_METADATA_DEPOLYED": {
     "ethereum": 12825801,
@@ -105,7 +113,8 @@
     "moonbeam": 469111,
     "moonriver": 1517802,
     "optimism": 20249542,
-    "polygon": 16851733
+    "polygon": 16851733,
+    "cronos": 7617255
   },
   "MULTICALL_ADDRESSES": {
     "ethereum": "0x092C637b120Ad6C5DF6CFc2b2A9b284ed2E5b11F",
@@ -117,7 +126,8 @@
     "moonbeam": "0x06A9b1F8f87968137D57D53eA40fF1Bfa7Be6dcA",
     "moonriver": "0x06A9b1F8f87968137D57D53eA40fF1Bfa7Be6dcA",
     "optimism": "0xD3C43fb98512E5965034087b891F4460223F8940",
-    "polygon": "0x5b0a546efac0ce2914f3ce163b6379bceef9b50a"
+    "polygon": "0x5b0a546efac0ce2914f3ce163b6379bceef9b50a",
+    "cronos": "0xD3C43fb98512E5965034087b891F4460223F8940"
   },
   "MULTICALL_DEPOLYED": {
     "ethereum": 12949381,
@@ -129,6 +139,7 @@
     "moonbeam": 500870,
     "moonriver": 1535738,
     "optimism": 20250330,
-    "polygon": 17554810
+    "polygon": 17554810,
+    "cronos": 7617284
   }
 }
