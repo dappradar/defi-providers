@@ -1568,6 +1568,43 @@ async function getLogs(
   };
 }
 
+async function getDecodedLogsParameters(
+  fromBlock: number,
+  toBlock: number,
+  topic: string,
+  target: string,
+  typesArray: { type: string; name: string }[],
+  web3: Web3,
+  batchSize = 10000,
+  chunkSize = 10,
+) {
+  const decodedLogsParameters = [];
+
+  const calls = [];
+  for (let i = fromBlock; i < toBlock; i += batchSize) {
+    calls.push(
+      getLogs(i, Math.min(i + batchSize - 1, toBlock), topic, target, web3),
+    );
+  }
+  for (let i = 0; i < calls.length; i += chunkSize) {
+    const chunk = calls.slice(i, i + chunkSize);
+
+    const chunkLogs = await Promise.all(chunk);
+
+    chunkLogs.forEach((logs) => {
+      logs.output.forEach((log: { data: string }) => {
+        const decodedLogParameters = web3.eth.abi.decodeParameters(
+          typesArray,
+          log.data,
+        );
+        decodedLogsParameters.push(decodedLogParameters);
+      });
+    });
+  }
+
+  return decodedLogsParameters;
+}
+
 export default {
   getUnderlyingBalance: GetUnderlyingBalance,
   convertToUnderlyings: ConvertToUnderlyings,
@@ -1585,4 +1622,5 @@ export default {
   executeCallOfMultiTargets: ExecuteCallOfMultiTargets,
   ZERO_ADDRESS: ZERO_ADDRESS,
   getLogs,
+  getDecodedLogsParameters,
 };
