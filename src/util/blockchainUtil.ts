@@ -1576,7 +1576,7 @@ async function getDecodedLogsParameters(
   typesArray: { type: string; name: string }[],
   web3: Web3,
   batchSize = 10000,
-  chunkSize = 10,
+  chunkSize = 2,
 ) {
   const decodedLogsParameters = [];
 
