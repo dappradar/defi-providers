@@ -16,8 +16,9 @@ const MARKETS = [
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
+  const balances = {};
   if (block < START_BLOCK) {
-    return { balances: {} };
+    return { balances };
   }
   const underlyings = await util.executeCallOfMultiTargets(
     MARKETS,
@@ -36,7 +37,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  const balances = {};
   formatter.sumMultiBalanceOf(balances, balanceResults);
   formatter.convertBalancesToFixed(balances);
   return { balances };
