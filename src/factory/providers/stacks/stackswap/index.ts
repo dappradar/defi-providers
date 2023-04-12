@@ -12,13 +12,24 @@ async function getPools(chain, provider) {
   let apiPools = [];
 
   try {
-    pools = require('pools.json');
+    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
   } catch {}
+
+  log.info({
+    message: `Got ${pools.length} pools from cache`,
+    endpoint: 'getPools',
+  });
 
   const poolsLength = pools.length;
 
   try {
     apiPools = await fetch(poolsApiUri).then((res) => res.json());
+
+    log.info({
+      message: `apiPool: ${JSON.stringify(apiPools)}`,
+      endpoint: 'getPools',
+    });
+
     apiPools.forEach((apiPool) => {
       if (!pools.includes(apiPool.liquidity_token_addr)) {
         pools.push(apiPool.liquidity_token_addr);
