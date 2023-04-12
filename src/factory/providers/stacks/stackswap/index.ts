@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const poolsApiUri = 'https://app.stackswap.org/api/v1/pools';
 const START_BLOCK = 33556;
@@ -29,6 +30,11 @@ async function getPools(chain, provider) {
     await basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
   }
 
+  log.info({
+    message: `Got ${pools.length} pools`,
+    endpoint: 'getPools',
+  });
+
   return pools;
 }
 
@@ -49,6 +55,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const pools = await getPools(chain, provider);
   await calculate(pools, block, balances, web3);
   formatter.convertBalancesToFixed(balances);
+
+  log.info({
+    message: `Balances: ${JSON.stringify(balances)}`,
+    endpoint: 'tvl',
+  });
+
   return { balances };
 }
 
