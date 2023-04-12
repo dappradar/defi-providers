@@ -35,7 +35,14 @@ async function getPools(chain, provider) {
         pools.push(apiPool.liquidity_token_addr);
       }
     });
-  } catch {}
+  } catch (err) {
+    log.error({
+      message: err?.message || '',
+      stack: err?.stack || '',
+      detail: `Error: getPools stackswap`,
+      endpoint: 'getPools',
+    });
+  }
 
   if (poolsLength < pools.length) {
     await basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
