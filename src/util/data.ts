@@ -102,6 +102,11 @@ const data = {
       chainID: 'stacks',
       coingecko: '',
     },
+    cronos: {
+      prefix: 'cro_',
+      chainID: 'cronos',
+      coingecko: 'cronos',
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
