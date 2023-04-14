@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import ERC20_ABI from '../../../../constants/abi/erc20.json';
 import abi from './abi.json';
 import startBlocks from './startBlocks.json';
-import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
@@ -19,8 +18,6 @@ const BASE_TOKENS = {
     '0x6b175474e89094c44da98b954eedeac495271d0f',
   '0x26ea744e5b887e5205727f55dfbe8685e3b21951':
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  '0xe6354ed5bc4b393a5aad09f21c46e101e692d447':
-    '0xdac17f958d2ee523a2206206994597c13d831ec7',
   '0x04bc0ab673d88ae9dbc9da2380cb6b79c4bca9ae':
     '0x4fabb145d64652a948d72533023f6e7a623c7c53',
   '0x16de59092dae5ccf4a1e6439d611fd0653f0bd01':
