@@ -3,6 +3,7 @@ import { hethers } from '@hashgraph/hethers';
 import BigNumber from 'bignumber.js';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 1675123200;
 
@@ -32,6 +33,15 @@ const TOKENS = gql`
     }
   }
 `;
+const LATEST_TOKENS = gql`
+  query getTokens {
+    tokens {
+      id
+      decimals
+      totalLiquidity
+    }
+  }
+`;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -45,9 +55,20 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     timestamp: block,
   });
 
-  const tokensResult = await request(PANGOLIN_ENDPOINT, TOKENS, {
-    blockNumber: Number(blocksResult.blocks[0].number),
-  });
+  let tokensResult;
+  try {
+    tokensResult = await request(PANGOLIN_ENDPOINT, TOKENS, {
+      blockNumber: Number(blocksResult.blocks[0].number),
+    });
+  } catch (e) {
+    log.warning({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: tvl of hedera/pangolin`,
+      endpoint: 'tvl',
+    });
+    tokensResult = await request(PANGOLIN_ENDPOINT, LATEST_TOKENS);
+  }
 
   for (const token of tokensResult.tokens) {
     if (BigNumber(token.totalLiquidity).gt(0)) {
