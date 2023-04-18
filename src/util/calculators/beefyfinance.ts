@@ -34,7 +34,14 @@ async function getWants(address, web3) {
     const contract = new web3.eth.Contract(VAULT_ABI, address);
     const want = await contract.methods.want().call();
     wants[address] = want.toLowerCase();
-  } catch {}
+  } catch (err) {
+    log.error({
+      message: err?.message || '',
+      stack: err?.stack || '',
+      detail: `Error: getWants beefyfinance`,
+      endpoint: 'getWants',
+    });
+  }
 }
 
 /**

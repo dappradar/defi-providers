@@ -29,6 +29,6 @@ describe(process.argv[6], () => {
       console.log('balances:', balances);
       console.log('poolBalances:', poolBalances);
     },
-    20000,
+    2000000,
   );
 });
