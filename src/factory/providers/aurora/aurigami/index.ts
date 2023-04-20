@@ -21,6 +21,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   formatter.convertBalancesToFixed(balances);
+
   return { balances };
 }
 export { tvl };
