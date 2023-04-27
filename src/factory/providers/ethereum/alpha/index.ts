@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import abi from './abi.json';
 import startBlocks from './startBlocks.json';
 import LEGACY_POOLS from './legacyPools.json';
+import V1_POOLS from './v1Pools.json';
 import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import { log } from '../../../../util/logger/logger';
@@ -60,13 +61,7 @@ async function tvlV1(block, chain, web3) {
     return BigNumber(0);
   }
 
-  const pool_v1 = await fetch(
-    'https://homora.alphafinance.io/static/contracts.json',
-  ).then((res) => res.json());
-
-  const bankAddress = pool_v1.bankAddress.toLowerCase();
-
-  let pools = pool_v1.pools;
+  let pools = V1_POOLS.pools;
 
   let uniswapPools = pools.filter(
     (pool) => pool.exchange === 'Uniswap' || pool.exchange === 'IndexCoop',
@@ -87,7 +82,7 @@ async function tvlV1(block, chain, web3) {
 
   const bankContract = new web3.eth.Contract(
     [abi['totalETH'], abi['glbDebtVal']],
-    bankAddress,
+    V1_POOLS.bankAddress,
   );
   const [_totalETH, _totalDebt] = await Promise.all([
     bankContract.methods.totalETH().call(null, block),
@@ -113,7 +108,7 @@ async function tvlV1(block, chain, web3) {
     sushiswapPools.map((pool) => pool.lpStakingAddress),
     [abi['userInfo']],
     'userInfo',
-    sushiswapPools.map((pool) => [[pool.id], pool.goblinAddress]),
+    sushiswapPools.map((pool) => [pool.id, pool.goblinAddress]),
     block,
     chain,
     web3,
