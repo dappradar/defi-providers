@@ -30,6 +30,7 @@ const {
   STACKS_NODE_URL,
   TEZOS_NODE_URL,
   CRONOS_NODE_URL,
+  ARBITRUM_NODE_URL,
   BASE_URL = './blockchainCache/',
 } = process.env;
 
@@ -71,6 +72,7 @@ const nodeUrls = {
   STACKS_NODE_URL,
   TEZOS_NODE_URL,
   CRONOS_NODE_URL,
+  ARBITRUM_NODE_URL,
 };
 
 export { config, nodeUrls };
