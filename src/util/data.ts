@@ -107,6 +107,10 @@ const data = {
       chainID: 'cronos',
       coingecko: 'cronos',
     },
+    arbitrum: {
+      prefix: 'arb_',
+      delay: 3000,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
