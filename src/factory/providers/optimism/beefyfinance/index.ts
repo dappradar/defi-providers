@@ -19,7 +19,7 @@ const TOKEN_CONVERT = {
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
-    return {};
+    return { balances: {} };
   }
 
   const balances = await beefyfinance.getTvl(block, chain, provider, web3);
