@@ -2,8 +2,8 @@ import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
 import BigNumber from 'bignumber.js';
-import ERC20_ABI from '../../../../constants/abi/erc20.json';
 import abi from './abi.json';
+import curve from '../../../../util/calculators/curve';
 
 const FACTORY_ADDRESS = '0x686d67265703d1f124c45e33d47d794c566889ba';
 
@@ -74,54 +74,6 @@ const CURVE_POOLS = [
   '0xDee85272EAe1aB4afBc6433F4d819BaBC9c7045A',
 ];
 
-async function getPoolBalance(poolAddress, block, chain, web3) {
-  try {
-    const poolInfo = {};
-    let coins = await util.executeMultiCallsOfTarget(
-      poolAddress,
-      [abi['coins128']],
-      'coins',
-      Array.from({ length: 20 }, (v, i) => [i]),
-      block,
-      chain,
-      web3,
-    );
-    coins = coins.filter((coin) => coin);
-    if (coins.length == 0) {
-      coins = await util.executeMultiCallsOfTarget(
-        poolAddress,
-        [abi['coins256']],
-        'coins',
-        Array.from({ length: 20 }, (v, i) => [i]),
-        block,
-        chain,
-        web3,
-      );
-      coins = coins.filter((coin) => coin);
-    }
-
-    const results = await util.executeCallOfMultiTargets(
-      coins,
-      ERC20_ABI,
-      'balanceOf',
-      [poolAddress],
-      block,
-      chain,
-      web3,
-    );
-    coins.forEach((coin, index) => {
-      poolInfo[coin.toLowerCase()] = BigNumber(results[index] || 0);
-    });
-
-    return {
-      poolAddress,
-      poolInfo,
-    };
-  } catch {
-    return null;
-  }
-}
-
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
 
@@ -134,7 +86,9 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const getBalanceCalls = [];
   for (let i = 0; i < CURVE_POOLS.length; i++) {
-    getBalanceCalls.push(getPoolBalance(CURVE_POOLS[i], block, chain, web3));
+    getBalanceCalls.push(
+      curve.getPoolBalance(CURVE_POOLS[i], block, chain, web3),
+    );
   }
 
   const balanceResults = await Promise.all(getBalanceCalls);
