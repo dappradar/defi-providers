@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
-import ERC20_ABI from '../../../../constants/abi/erc20.json';
 import abi from './abi.json';
-import startBlocks from './startBlocks.json';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import curve from '../../../../util/calculators/curve';
 
 const CURVE_ADDRESS_PROVIDER = '0x0000000022d53366457f9d5e68ec105046fc4383';
 const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
@@ -57,54 +56,6 @@ const CURVE_POOLS = [
   '0xc5424B857f758E906013F3555Dad202e4bdB4567',
   '0xDeBF20617708857ebe4F679508E7b7863a8A8EeE',
 ];
-
-async function getPoolBalance(poolAddress, block, chain, web3) {
-  if (block < startBlocks[poolAddress.toLowerCase()]) {
-    return null;
-  }
-
-  const poolInfo = {};
-  let coins = await util.executeMultiCallsOfTarget(
-    poolAddress,
-    [abi['coins128']],
-    'coins',
-    Array.from({ length: 20 }, (v, i) => [i]),
-    block,
-    chain,
-    web3,
-  );
-  coins = coins.filter((coin) => coin);
-  if (coins.length == 0) {
-    coins = await util.executeMultiCallsOfTarget(
-      poolAddress,
-      [abi['coins256']],
-      'coins',
-      Array.from({ length: 20 }, (v, i) => [i]),
-      block,
-      chain,
-      web3,
-    );
-    coins = coins.filter((coin) => coin);
-  }
-
-  const results = await util.executeCallOfMultiTargets(
-    coins,
-    ERC20_ABI,
-    'balanceOf',
-    [poolAddress],
-    block,
-    chain,
-    web3,
-  );
-  coins.forEach((coin, index) => {
-    poolInfo[coin] = BigNumber(results[index] || 0);
-  });
-
-  return {
-    poolAddress,
-    poolInfo,
-  };
-}
 
 function convertToBaseToken(address) {
   const token = address.toLowerCase();
@@ -176,7 +127,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const getBalanceCalls = [];
   for (let i = 0; i < poolCount; i++) {
     getBalanceCalls.push(
-      getPoolBalance(
+      curve.getPoolBalance(
         registryStart ? pools[i] : CURVE_POOLS[i],
         block,
         chain,

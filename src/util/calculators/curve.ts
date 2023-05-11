@@ -5,6 +5,56 @@ import basicUtil from '../basicUtil';
 import { IBalances } from '../../interfaces/ITvl';
 import FACTORY_ABI from '../../constants/abi/curveFactoryAbi.json';
 import POOL_ABI from '../../constants/abi/curvePoolAbi.json';
+import abi from '../../constants/abi/curveRegisteryAbi.json';
+import ERC20_ABI from '../../constants/abi/erc20.json';
+
+async function getPoolBalance(poolAddress, block, chain, web3) {
+  try {
+    const poolInfo = {};
+    let coins = await util.executeMultiCallsOfTarget(
+      poolAddress,
+      [abi['coins128']],
+      'coins',
+      Array.from({ length: 20 }, (v, i) => [i]),
+      block,
+      chain,
+      web3,
+    );
+    coins = coins.filter((coin) => coin);
+    if (coins.length == 0) {
+      coins = await util.executeMultiCallsOfTarget(
+        poolAddress,
+        [abi['coins256']],
+        'coins',
+        Array.from({ length: 20 }, (v, i) => [i]),
+        block,
+        chain,
+        web3,
+      );
+      coins = coins.filter((coin) => coin);
+    }
+
+    const results = await util.executeCallOfMultiTargets(
+      coins,
+      ERC20_ABI,
+      'balanceOf',
+      [poolAddress],
+      block,
+      chain,
+      web3,
+    );
+    coins.forEach((coin, index) => {
+      poolInfo[coin.toLowerCase()] = BigNumber(results[index] || 0);
+    });
+
+    return {
+      poolAddress,
+      poolInfo,
+    };
+  } catch {
+    return null;
+  }
+}
 
 async function getTokens(pools, block, chain, web3) {
   let poolsTokens = [];
@@ -178,4 +228,4 @@ async function getTvl(
   return balances;
 }
 
-export default { getTvl };
+export default { getTvl, getPoolBalance };
