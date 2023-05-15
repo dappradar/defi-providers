@@ -1,7 +1,7 @@
-import fs from 'fs';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
+import { request, gql } from 'graphql-request';
 import ERC20_ABI from '../constants/abi/erc20.json';
 import UNI_ABI from '../constants/abi/uni.json';
 import CURVE128_ABI from '../constants/abi/curve128.json';
@@ -30,6 +30,10 @@ import {
 import { log } from './logger/logger';
 import formatter from './formatter';
 import basicUtil from './basicUtil';
+const balancerSubgraph = {
+  arbitrum:
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2',
+};
 
 let underlyingData = {};
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -1055,145 +1059,318 @@ async function GetUnderlyingBalance(
       },
     ];
   }
+
   try {
-    const contract = new web3.eth.Contract(UNI_ABI as AbiItem[], token);
-    const reserves = await contract.methods.getReserves().call(null, block);
-    if (!underlyingData[key].token0) {
-      underlyingData[key].token0 = (
-        await contract.methods.token0().call()
-      ).toLowerCase();
-    }
-    if (!underlyingData[key].token1) {
-      underlyingData[key].token1 = (
-        await contract.methods.token1().call()
-      ).toLowerCase();
-    }
-    const totalSupply = await contract.methods.totalSupply().call(null, block);
-    const ratio = balance.div(BigNumber(totalSupply.toString()));
-    const token0Balance = BigNumber(reserves._reserve0.toString()).times(ratio);
-    const token1Balance = BigNumber(reserves._reserve1.toString()).times(ratio);
-    return [
-      {
-        token: underlyingData[key].token0,
-        balance: token0Balance,
-      },
-      {
-        token: underlyingData[key].token1,
-        balance: token1Balance,
-      },
-    ];
-  } catch {}
-  try {
-    const contract = new web3.eth.Contract(CURVE128_ABI as AbiItem[], token);
-    await contract.methods.coins(0).call();
-    const totalSupply = await contract.methods.totalSupply().call(null, block);
-    const ratio = balance.div(BigNumber(totalSupply.toString()));
-    if (!underlyingData[key].coins) {
-      underlyingData[key].coins = {};
-    }
-    for (let id = 0; ; id += 1) {
+    const totalSupply = await GetTotalSupply(token, block, web3).then(
+      (res) => res.totalSupply,
+    );
+    const ratio = balance.div(totalSupply);
+
+    try {
+      const contract = new web3.eth.Contract(UNI_ABI as AbiItem[], token);
+      const reserves = await contract.methods.getReserves().call(null, block);
+      if (!underlyingData[key].token0) {
+        underlyingData[key].token0 = (
+          await contract.methods.token0().call()
+        ).toLowerCase();
+      }
+      if (!underlyingData[key].token1) {
+        underlyingData[key].token1 = (
+          await contract.methods.token1().call()
+        ).toLowerCase();
+      }
+      const token0Balance = BigNumber(reserves._reserve0.toString()).times(
+        ratio,
+      );
+      const token1Balance = BigNumber(reserves._reserve1.toString()).times(
+        ratio,
+      );
+      return [
+        {
+          token: underlyingData[key].token0,
+          balance: token0Balance,
+        },
+        {
+          token: underlyingData[key].token1,
+          balance: token1Balance,
+        },
+      ];
+    } catch {}
+
+    try {
+      const contract = new web3.eth.Contract(CURVE128_ABI as AbiItem[], token);
+      await contract.methods.coins(0).call();
+      if (!underlyingData[key].coins) {
+        underlyingData[key].coins = {};
+      }
+      for (let id = 0; ; id += 1) {
+        try {
+          if (!underlyingData[key].coins[id]) {
+            underlyingData[key].coins[id] = (
+              await contract.methods.coins(id).call()
+            ).toLowerCase();
+          }
+        } catch {
+          break;
+        }
+      }
+      const coinBalances = await ExecuteMultiCallsOfTarget(
+        token,
+        CURVE128_ABI,
+        'balances',
+        Object.keys(underlyingData[key].coins).map((id) => [id]),
+        block,
+        chain,
+        web3,
+      );
+      const balances = coinBalances.map((balance, index) => ({
+        token: underlyingData[key].coins[index],
+        balance: new BigNumber(balance).times(ratio),
+      }));
+      return balances;
+    } catch {}
+
+    try {
+      const contract = new web3.eth.Contract(CURVE256_ABI as AbiItem[], token);
+      await contract.methods.coins(0).call();
+      if (!underlyingData[key].coins) {
+        underlyingData[key].coins = {};
+      }
+      for (let id = 0; ; id += 1) {
+        try {
+          if (!underlyingData[key].coins[id]) {
+            underlyingData[key].coins[id] = (
+              await contract.methods.coins(id).call()
+            ).toLowerCase();
+          }
+        } catch {
+          break;
+        }
+      }
+      const coinBalances = await ExecuteMultiCallsOfTarget(
+        token,
+        CURVE256_ABI,
+        'balances',
+        Object.keys(underlyingData[key].coins).map((id) => [id]),
+        block,
+        chain,
+        web3,
+      );
+      const balances = coinBalances.map((balance, index) => ({
+        token: underlyingData[key].coins[index],
+        balance: new BigNumber(balance).times(ratio),
+      }));
+      return balances;
+    } catch {}
+
+    try {
+      const contract = new web3.eth.Contract(ONEINCH_ABI as AbiItem[], token);
+      const balances = [];
+      await contract.methods.tokens(0).call();
+      if (!underlyingData[key].tokens) {
+        underlyingData[key].tokens = {};
+      }
+      for (let id = 0; ; id += 1) {
+        try {
+          if (!underlyingData[key].tokens[id]) {
+            underlyingData[key].tokens[id] = (
+              await contract.methods.tokens(id).call()
+            ).toLowerCase();
+          }
+          let address = underlyingData[key].tokens[id];
+          let tokenBalance;
+          if (
+            address == ZERO_ADDRESS ||
+            address == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ) {
+            address = WMAIN_ADDRESS[chain];
+            tokenBalance = await web3.eth.getBalance(token, block);
+          } else {
+            const tokenContract = new web3.eth.Contract(
+              ERC20_ABI as AbiItem[],
+              address,
+            );
+            tokenBalance = await tokenContract.methods
+              .balanceOf(token)
+              .call(null, block);
+          }
+          balances.push({
+            token: address,
+            balance: new BigNumber(tokenBalance).times(ratio),
+          });
+        } catch {
+          break;
+        }
+      }
+      return balances;
+    } catch {}
+
+    try {
+      const contract = new web3.eth.Contract(CTOKEN_ABI as AbiItem[], token);
+      let cash;
       try {
-        if (!underlyingData[key].coins[id]) {
-          underlyingData[key].coins[id] = (
-            await contract.methods.coins(id).call()
+        cash = await contract.methods.getCash().call(null, block);
+      } catch {
+        try {
+          cash = await contract.methods.balanceStrategy().call(null, block);
+        } catch {
+          cash = await contract.methods.balance().call(null, block);
+        }
+      }
+      try {
+        if (!underlyingData[key].underlying) {
+          underlyingData[key].underlying = (
+            await contract.methods.underlying().call()
           ).toLowerCase();
         }
       } catch {
-        break;
-      }
-    }
-    const coinBalances = await ExecuteMultiCallsOfTarget(
-      token,
-      CURVE128_ABI,
-      'balances',
-      Object.keys(underlyingData[key].coins).map((id) => [id]),
-      block,
-      chain,
-      web3,
-    );
-    const balances = coinBalances.map((balance, index) => ({
-      token: underlyingData[key].coins[index],
-      balance: new BigNumber(balance).times(ratio),
-    }));
-    return balances;
-  } catch {}
-  try {
-    const contract = new web3.eth.Contract(CURVE256_ABI as AbiItem[], token);
-    await contract.methods.coins(0).call();
-    const totalSupply = await contract.methods.totalSupply().call(null, block);
-    const ratio = balance.div(BigNumber(totalSupply.toString()));
-    if (!underlyingData[key].coins) {
-      underlyingData[key].coins = {};
-    }
-    for (let id = 0; ; id += 1) {
-      try {
-        if (!underlyingData[key].coins[id]) {
-          underlyingData[key].coins[id] = (
-            await contract.methods.coins(id).call()
+        if (!underlyingData[key].token) {
+          underlyingData[key].token = (
+            await contract.methods.token().call()
           ).toLowerCase();
         }
-      } catch {
-        break;
       }
-    }
-    const coinBalances = await ExecuteMultiCallsOfTarget(
-      token,
-      CURVE256_ABI,
-      'balances',
-      Object.keys(underlyingData[key].coins).map((id) => [id]),
-      block,
-      chain,
-      web3,
-    );
-    const balances = coinBalances.map((balance, index) => ({
-      token: underlyingData[key].coins[index],
-      balance: new BigNumber(balance).times(ratio),
-    }));
-    return balances;
-  } catch {}
-  try {
-    const contract = new web3.eth.Contract(ONEINCH_ABI as AbiItem[], token);
-    const balances = [];
-    await contract.methods.tokens(0).call();
-    const totalSupply = await contract.methods.totalSupply().call(null, block);
-    const ratio = balance.div(BigNumber(totalSupply.toString()));
-    if (!underlyingData[key].tokens) {
-      underlyingData[key].tokens = {};
-    }
-    for (let id = 0; ; id += 1) {
-      try {
-        if (!underlyingData[key].tokens[id]) {
-          underlyingData[key].tokens[id] = (
-            await contract.methods.tokens(id).call()
-          ).toLowerCase();
+      return [
+        {
+          token: underlyingData[key].underlying || underlyingData[key].token,
+          balance: new BigNumber(cash).times(ratio),
+        },
+      ];
+    } catch {}
+
+    try {
+      const contract = new web3.eth.Contract(ATOKEN_ABI as AbiItem[], token);
+      if (!underlyingData[key].underlyingAsset) {
+        underlyingData[key].underlyingAsset = (
+          await contract.methods.UNDERLYING_ASSET_ADDRESS().call()
+        ).toLowerCase();
+      }
+      const underlyingContract = new web3.eth.Contract(
+        ERC20_ABI as AbiItem[],
+        underlyingData[key].underlyingAsset,
+      );
+      const underlyingBalance = await underlyingContract.methods
+        .balanceOf(token)
+        .call(null, block);
+      return [
+        {
+          token: underlyingData[key].underlyingAsset,
+          balance: new BigNumber(underlyingBalance).times(ratio),
+        },
+      ];
+    } catch {}
+
+    try {
+      const contract = new web3.eth.Contract(CURVE256_ABI as AbiItem[], token);
+      const minter = await contract.methods.minter().call(null, block);
+      const minter_contract = new web3.eth.Contract(
+        CURVE256_ABI as AbiItem[],
+        minter,
+      );
+      await minter_contract.methods.coins(0).call();
+      if (!underlyingData[key].coins) {
+        underlyingData[key].coins = {};
+      }
+      for (let id = 0; ; id += 1) {
+        try {
+          if (!underlyingData[key].coins[id]) {
+            underlyingData[key].coins[id] = (
+              await minter_contract.methods.coins(id).call()
+            ).toLowerCase();
+          }
+        } catch {
+          break;
         }
-        let address = underlyingData[key].tokens[id];
-        let tokenBalance;
-        if (
-          address == ZERO_ADDRESS ||
-          address == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-        ) {
-          address = WMAIN_ADDRESS[chain];
-          tokenBalance = await web3.eth.getBalance(token, block);
-        } else {
-          const tokenContract = new web3.eth.Contract(
-            ERC20_ABI as AbiItem[],
-            address,
-          );
-          tokenBalance = await tokenContract.methods
-            .balanceOf(token)
-            .call(null, block);
-        }
-        balances.push({
-          token: address,
-          balance: new BigNumber(tokenBalance).times(ratio),
+      }
+      const coinBalances = await ExecuteMultiCallsOfTarget(
+        minter,
+        CURVE256_ABI,
+        'balances',
+        Object.keys(underlyingData[key].coins).map((id) => [id]),
+        block,
+        chain,
+        web3,
+      );
+      const balances = coinBalances.map((balance, index) => ({
+        token: underlyingData[key].coins[index],
+        balance: new BigNumber(balance).times(ratio),
+      }));
+      return balances;
+    } catch {}
+
+    // Solarbeam stable swap pool farm
+    try {
+      const lpTokenContract = new web3.eth.Contract(
+        BEEFY_VAULT_ABI as AbiItem[],
+        token,
+      );
+      const lpTokenOwner = await lpTokenContract.methods
+        .owner()
+        .call(null, block);
+
+      const ownerContract = new web3.eth.Contract(
+        SOLARBEAM_STABLE_SWAP_POOL_ABI as AbiItem[],
+        lpTokenOwner,
+      );
+
+      if (!underlyingData[key].tokens) {
+        underlyingData[key].tokens = {};
+        const tokens = await ownerContract.methods
+          .getTokens()
+          .call(null, block);
+        tokens.forEach((token, id) => {
+          if (!underlyingData[key].tokens[id]) {
+            underlyingData[key].tokens[id] = token.toLowerCase();
+          }
         });
-      } catch {
-        break;
       }
-    }
-    return balances;
+
+      const tokenBalances = await ownerContract.methods
+        .getTokenBalances()
+        .call(null, block);
+
+      const balances = tokenBalances.map((tokenBalance, index) => ({
+        token: underlyingData[key].tokens[index],
+        balance: new BigNumber(tokenBalance).times(ratio),
+      }));
+
+      return balances;
+    } catch {}
+
+    // Balancer
+    try {
+      if (balancerSubgraph[chain]) {
+        const POOLS_BALANCES_QUERY = gql`
+          query getPools($block: Int!, $address: String!) {
+            pools(block: { number: $block }, where: { address: $address }) {
+              tokens {
+                address
+                balance
+                decimals
+              }
+            }
+          }
+        `;
+        const tokens = await request(
+          balancerSubgraph[chain],
+          POOLS_BALANCES_QUERY,
+          {
+            block: block,
+            address: token,
+          },
+        ).then((data) => data.pools[0].tokens);
+        const balances = tokens.map((token) => ({
+          token: token.address,
+          balance: new BigNumber(token.balance)
+            .shiftedBy(token.decimals)
+            .times(ratio),
+        }));
+        underlyingData[key] = tokens.map((token) => token.address);
+        return balances;
+      }
+    } catch {}
   } catch {}
+
   try {
     const contract = new web3.eth.Contract(CTOKEN_ABI as AbiItem[], token);
     const exchangeRate = await contract.methods
@@ -1212,142 +1389,6 @@ async function GetUnderlyingBalance(
         balance: balance.times(exchangeRate).div(1e18),
       },
     ];
-  } catch {}
-  try {
-    const contract = new web3.eth.Contract(CTOKEN_ABI as AbiItem[], token);
-    let cash;
-    try {
-      cash = await contract.methods.getCash().call(null, block);
-    } catch {
-      try {
-        cash = await contract.methods.balanceStrategy().call(null, block);
-      } catch {
-        cash = await contract.methods.balance().call(null, block);
-      }
-    }
-    try {
-      if (!underlyingData[key].underlying) {
-        underlyingData[key].underlying = (
-          await contract.methods.underlying().call()
-        ).toLowerCase();
-      }
-    } catch {
-      if (!underlyingData[key].token) {
-        underlyingData[key].token = (
-          await contract.methods.token().call()
-        ).toLowerCase();
-      }
-    }
-    const totalSupply = await contract.methods.totalSupply().call(null, block);
-    const ratio = balance.div(BigNumber(totalSupply.toString()));
-    return [
-      {
-        token: underlyingData[key].underlying || underlyingData[key].token,
-        balance: new BigNumber(cash).times(ratio),
-      },
-    ];
-  } catch {}
-  try {
-    const contract = new web3.eth.Contract(ATOKEN_ABI as AbiItem[], token);
-    if (!underlyingData[key].underlyingAsset) {
-      underlyingData[key].underlyingAsset = (
-        await contract.methods.UNDERLYING_ASSET_ADDRESS().call()
-      ).toLowerCase();
-    }
-    const underlyingContract = new web3.eth.Contract(
-      ERC20_ABI as AbiItem[],
-      underlyingData[key].underlyingAsset,
-    );
-    const underlyingBalance = await underlyingContract.methods
-      .balanceOf(token)
-      .call(null, block);
-    const totalSupply = await contract.methods.totalSupply().call(null, block);
-    const ratio = balance.div(BigNumber(totalSupply.toString()));
-    return [
-      {
-        token: underlyingData[key].underlyingAsset,
-        balance: new BigNumber(underlyingBalance).times(ratio),
-      },
-    ];
-  } catch {}
-  try {
-    const contract = new web3.eth.Contract(CURVE256_ABI as AbiItem[], token);
-    const minter = await contract.methods.minter().call(null, block);
-    const minter_contract = new web3.eth.Contract(
-      CURVE256_ABI as AbiItem[],
-      minter,
-    );
-    await minter_contract.methods.coins(0).call();
-    const totalSupply = await contract.methods.totalSupply().call(null, block);
-    const ratio = balance.div(BigNumber(totalSupply.toString()));
-    if (!underlyingData[key].coins) {
-      underlyingData[key].coins = {};
-    }
-    for (let id = 0; ; id += 1) {
-      try {
-        if (!underlyingData[key].coins[id]) {
-          underlyingData[key].coins[id] = (
-            await minter_contract.methods.coins(id).call()
-          ).toLowerCase();
-        }
-      } catch {
-        break;
-      }
-    }
-    const coinBalances = await ExecuteMultiCallsOfTarget(
-      minter,
-      CURVE256_ABI,
-      'balances',
-      Object.keys(underlyingData[key].coins).map((id) => [id]),
-      block,
-      chain,
-      web3,
-    );
-    const balances = coinBalances.map((balance, index) => ({
-      token: underlyingData[key].coins[index],
-      balance: new BigNumber(balance).times(ratio),
-    }));
-    return balances;
-  } catch {}
-  // Solarbeam stable swap pool farm
-  try {
-    const lpTokenContract = new web3.eth.Contract(
-      BEEFY_VAULT_ABI as AbiItem[],
-      token,
-    );
-    const lpTokenOwner = await lpTokenContract.methods
-      .owner()
-      .call(null, block);
-    const lpTokenTotalSupply = await lpTokenContract.methods
-      .totalSupply()
-      .call(null, block);
-    const ratio = balance.div(BigNumber(lpTokenTotalSupply.toString()));
-
-    const ownerContract = new web3.eth.Contract(
-      SOLARBEAM_STABLE_SWAP_POOL_ABI as AbiItem[],
-      lpTokenOwner,
-    );
-
-    if (!underlyingData[key].tokens) {
-      underlyingData[key].tokens = {};
-      const tokens = await ownerContract.methods.getTokens().call(null, block);
-      tokens.forEach((token, id) => {
-        if (!underlyingData[key].tokens[id]) {
-          underlyingData[key].tokens[id] = token.toLowerCase();
-        }
-      });
-    }
-
-    const tokenBalances = await ownerContract.methods
-      .getTokenBalances()
-      .call(null, block);
-
-    const balances = tokenBalances.map((tokenBalance, index) => ({
-      token: underlyingData[key].tokens[index],
-      balance: new BigNumber(tokenBalance).times(ratio),
-    }));
-
-    return balances;
   } catch {}
 
   if (newToken) {
