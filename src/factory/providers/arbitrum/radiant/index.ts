@@ -92,15 +92,15 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   if (block < START_BLOCK) {
     return {};
   }
+  const stakedBalance = {};
+  stakedBalance[RADIANT.toLowerCase()] = (
+    await util.getTokenBalances(STAKING_CONTRACT, [RADIANT], block, chain, web3)
+  )[0].balance;
   const [registeredAddress, registeredAddressV2] = await Promise.all([
     balanceOfRegisteredAddress(REGISTERY, params),
     balanceOfRegisteredAddress(REGISTERY_V2, params),
   ]);
-  const contract = new web3.eth.Contract(ERC20_ABI, RADIANT);
-  const stakedBalance = {};
-  stakedBalance[RADIANT.toLowerCase()] = await contract.methods
-    .balanceOf(STAKING_CONTRACT)
-    .call(null, block);
+
   const balances = formatter.sum([
     stakedBalance,
     registeredAddress,
