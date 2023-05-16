@@ -3,7 +3,7 @@ import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import uniswapV3 from '../../../../util/calculators/uniswapV3';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const START_BLOCK = 78000000;
+const START_BLOCK = 11700000;
 const V2_FACTORY_ADDRESS = '0x6EcCab422D763aC031210895C81787E87B43A652';
 const V3_THEGRAPTH_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/camelotlabs/camelot-amm-v3';
