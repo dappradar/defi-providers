@@ -160,9 +160,9 @@ async function getTvl(
   let poolInfos = _pairs;
   const pairLength = _pairs.length;
 
-  for (let start = pairLength; start < len; start += 3000) {
+  for (let start = pairLength; start < len; start += 100) {
     let pInfos = [];
-    const end = Math.min(start + 3000, len);
+    const end = Math.min(start + 100, len);
     log.info({
       message: `Getting Pairs from ${start} to ${end}`,
       endpoint: 'getTvl',
