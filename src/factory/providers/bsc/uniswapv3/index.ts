@@ -7,7 +7,7 @@ const THEGRAPTH_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/revert-finance/uniswap-v3-bnb';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain } = params;
+  const { block, chain, provider } = params;
   if (block < START_BLOCK) {
     return {};
   }
@@ -16,6 +16,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     THEGRAPTH_ENDPOINT,
     block,
     chain,
+    provider,
   );
   formatter.convertBalancesToFixed(balances);
   return { balances, poolBalances };
