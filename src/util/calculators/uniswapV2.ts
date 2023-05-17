@@ -56,7 +56,10 @@ async function getPoolsReserves(
 ) {
   let poolReserves = [];
   try {
-    if (block < BULK_RESERVES_DEPOLYED[chain]) {
+    if (
+      block < BULK_RESERVES_DEPOLYED[chain] ||
+      BULK_RESERVES_DEPOLYED[chain] === undefined
+    ) {
       poolReserves = await Promise.all(
         pInfos.map((pool) => getReserves(pool, block, web3, chain, provider)),
       );
@@ -212,7 +215,10 @@ async function getTvl(
     });
     const subPools = newPools.slice(start, end);
     try {
-      if (block < BULK_RESERVES_DEPOLYED[chain]) {
+      if (
+        block < BULK_RESERVES_DEPOLYED[chain] ||
+        BULK_RESERVES_DEPOLYED[chain] === undefined
+      ) {
         const tokens0 = await util.executeCallOfMultiTargets(
           subPools,
           PAIR_ABI,
