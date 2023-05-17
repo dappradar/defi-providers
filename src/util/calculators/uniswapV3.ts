@@ -23,17 +23,42 @@ const POOLS_QUERY = gql`
   }
 `;
 
-async function getPools(endpoint, block, skip, chain) {
-  let pools;
+async function getPools(
+  endpoint: string,
+  block: number,
+  skip: number,
+  chain: string,
+  provider: string,
+) {
+  let data;
   try {
-    pools = await request(endpoint, POOLS_QUERY, {
+    data = await request(endpoint, POOLS_QUERY, {
       block: block,
       skip: skip,
-    }).then((data) => data.pools);
-  } catch {
-    pools = getPools(endpoint, block - basicUtil.getDelay(chain), skip, chain);
+    });
+  } catch (e) {
+    try {
+      log.warning({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: tvl of ${chain}/${provider}`,
+        endpoint: 'uniswapV3.getPools',
+      });
+      data = await request(endpoint, POOLS_QUERY, {
+        block: block - basicUtil.getDelay(chain),
+        skip: skip,
+      });
+    } catch (e) {
+      log.error({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: tvl of ${chain}/${provider}`,
+        endpoint: 'tvl',
+      });
+      return [];
+    }
   }
-  return pools;
+  return data.pools;
 }
 
 /**
@@ -49,6 +74,7 @@ async function getTvlFromSubgraph(
   endpoint: string,
   block: number,
   chain: string,
+  provider: string,
 ): Promise<ITvlReturn> {
   const balances = {};
   const poolBalances = {};
@@ -56,7 +82,7 @@ async function getTvlFromSubgraph(
   try {
     let skip = 0;
     while (true) {
-      const pools = await getPools(endpoint, block, skip, chain);
+      const pools = await getPools(endpoint, block, skip, chain, provider);
 
       pools.forEach((pool) => {
         const token0Balance = BigNumber(pool.totalValueLockedToken0).shiftedBy(

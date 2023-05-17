@@ -16,6 +16,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     THEGRAPTH_ENDPOINT,
     block,
     chain,
+    provider,
   );
   formatter.convertBalancesToFixed(balances);
   return { balances, poolBalances };
