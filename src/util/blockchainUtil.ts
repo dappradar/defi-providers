@@ -61,7 +61,10 @@ async function ExecuteCall(
   web3: Web3,
 ): Promise<any> {
   try {
-    if (block < MULTICALL_DEPOLYED[chain]) {
+    if (
+      block < MULTICALL_DEPOLYED[chain] ||
+      MULTICALL_DEPOLYED[chain] === undefined
+    ) {
       const contract = new web3.eth.Contract(ABI, target);
       const result = await contract.methods[method](...params).call(
         null,
@@ -149,7 +152,10 @@ async function ExecuteMultiCallsOfTarget(
   const paramLength = params.length;
 
   try {
-    if (block < MULTICALL_DEPOLYED[chain]) {
+    if (
+      block < MULTICALL_DEPOLYED[chain] ||
+      MULTICALL_DEPOLYED[chain] === undefined
+    ) {
       const contract = new web3.eth.Contract(ABI, target);
       let executeResults = [];
       for (let first = 0; first < paramLength; first += 25) {
@@ -264,7 +270,10 @@ async function ExecuteDifferentCallsOfTarget(
   const paramLength = params.length;
 
   try {
-    if (block && block < MULTICALL_DEPOLYED[chain]) {
+    if (
+      (block && block < MULTICALL_DEPOLYED[chain]) ||
+      MULTICALL_DEPOLYED[chain] === undefined
+    ) {
       let executeResults = [];
       for (let first = 0; first < paramLength; first += 25) {
         const last = Math.min(paramLength, first + 25);
@@ -393,7 +402,10 @@ async function ExecuteMultiCallsOfMultiTargets(
   const targetLength = targets.length;
 
   try {
-    if (block < MULTICALL_DEPOLYED[chain]) {
+    if (
+      block < MULTICALL_DEPOLYED[chain] ||
+      MULTICALL_DEPOLYED[chain] === undefined
+    ) {
       let executeResults = [];
       for (let first = 0; first < targetLength; first += 25) {
         const last = Math.min(targetLength, first + 25);
@@ -513,7 +525,10 @@ async function ExecuteDifferentCallsOfMultiTargets(
   const targetLength = targets.length;
 
   try {
-    if (block && block < MULTICALL_DEPOLYED[chain]) {
+    if (
+      (block && block < MULTICALL_DEPOLYED[chain]) ||
+      MULTICALL_DEPOLYED[chain] === undefined
+    ) {
       let executeResults = [];
       for (let first = 0; first < targetLength; first += 25) {
         const last = Math.min(targetLength, first + 25);
@@ -640,7 +655,10 @@ async function ExecuteCallOfMultiTargets(
   const targetLength = targets.length;
 
   try {
-    if (block < MULTICALL_DEPOLYED[chain]) {
+    if (
+      block < MULTICALL_DEPOLYED[chain] ||
+      MULTICALL_DEPOLYED[chain] === undefined
+    ) {
       let executeResults = [];
       for (let first = 0; first < targetLength; first += 25) {
         const last = Math.min(targetLength, first + 25);
@@ -790,7 +808,10 @@ async function GetTokenBalancesOfHolders(
   const tokenLength = tokens.length;
 
   try {
-    if (block < BULK_BALANCE_DEPOLYED[chain]) {
+    if (
+      block < BULK_BALANCE_DEPOLYED[chain] ||
+      BULK_BALANCE_DEPOLYED[chain] === undefined
+    ) {
       for (let first = 0; first < tokenLength; first += 25) {
         const last = Math.min(tokenLength, first + 25);
         try {
@@ -869,7 +890,10 @@ async function GetTokenBalances(
   const tokenLength = tokens.length;
 
   try {
-    if (block < MULTIBALANCES_DEPOLYED[chain]) {
+    if (
+      block < MULTIBALANCES_DEPOLYED[chain] ||
+      MULTIBALANCES_DEPOLYED[chain] === undefined
+    ) {
       for (let first = 0; first < tokenLength; first += 25) {
         const last = Math.min(tokenLength, first + 25);
         try {
@@ -941,7 +965,10 @@ async function GetBalancesOfHolders(
   const addressLength = holders.length;
 
   try {
-    if (block < BULK_BALANCE_DEPOLYED[chain]) {
+    if (
+      block < BULK_BALANCE_DEPOLYED[chain] ||
+      BULK_BALANCE_DEPOLYED[chain] === undefined
+    ) {
       for (let first = 0; first < addressLength; first += 25) {
         const last = Math.min(addressLength, first + 25);
         try {
@@ -1524,7 +1551,10 @@ async function GetTokenTotalSupplies(
   const tokenLength = tokens.length;
 
   try {
-    if (block < BULK_METADATA_DEPOLYED[chain]) {
+    if (
+      block < BULK_METADATA_DEPOLYED[chain] ||
+      BULK_METADATA_DEPOLYED[chain] === undefined
+    ) {
       for (let first = 0; first < tokenLength; first += 25) {
         const last = Math.min(tokenLength, first + 25);
         try {
