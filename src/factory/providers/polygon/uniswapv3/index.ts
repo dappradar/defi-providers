@@ -26,7 +26,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const balances = {};
   let skip = 0;
   while (skip <= 5000) {
-    console.log(skip);
     try {
       const tokens = await request(THEGRAPTH_ENDPOINT, TOKENS_QUERY, {
         block: block,
