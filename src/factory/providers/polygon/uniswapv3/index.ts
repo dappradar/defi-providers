@@ -7,7 +7,7 @@ import { log } from '../../../../util/logger/logger';
 const START_BLOCK = 22757547;
 const THEGRAPTH_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-polygon';
-const QUERY_SIZE = 400;
+const QUERY_SIZE = 500;
 const TOKENS_QUERY = gql`
   query getTokens($block: Int!, $skip: Int!) {
     tokens(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}) {
@@ -25,7 +25,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
   const balances = {};
   let skip = 0;
-  while (true) {
+  while (skip <= 5000) {
+    console.log(skip);
     try {
       const tokens = await request(THEGRAPTH_ENDPOINT, TOKENS_QUERY, {
         block: block,
