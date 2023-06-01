@@ -12,7 +12,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   const result = await fetch(
-    `https://api.thegraph.com/subgraphs/name/sablierhq/sablier`,
+    `https://api.thegraph.com/subgraphs/name/sablier-labs/sablier`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
