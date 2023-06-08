@@ -3,7 +3,7 @@ import { WMAIN_ADDRESS } from '../constants/contracts.json';
 import data from './data';
 import { log } from './logger/logger';
 import { config } from '../app.config';
-const DEFAULT_DELAY = 5;
+const DEFAULT_DELAY = 20;
 
 function getPath(chain, provider) {
   return `${config.BASE_URL}${chain}/${provider}`;
