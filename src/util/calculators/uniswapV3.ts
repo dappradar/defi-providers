@@ -7,7 +7,7 @@ import { log } from '../logger/logger';
 const QUERY_SIZE = 400;
 const POOLS_QUERY = gql`
   query getPools($block: Int!, $skip: Int!) {
-    pools(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}) {
+    pools(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}, orderBy: totalValueLockedUSD, orderDirection: desc) {
       id
       token0 {
         id
@@ -81,7 +81,7 @@ async function getTvlFromSubgraph(
 
   try {
     let skip = 0;
-    while (true) {
+    while (skip <= 5000) {
       const pools = await getPools(endpoint, block, skip, chain, provider);
 
       pools.forEach((pool) => {
