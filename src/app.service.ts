@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import {
-  GetTvlRequest,
-  GetTvlReply,
-  GetPoolAndTokenVolumesRequest,
   GetPoolAndTokenVolumesReply,
-  GetTokenDetailsRequest,
+  GetPoolAndTokenVolumesRequest,
   GetTokenDetailsReply,
-} from './generated/proto/defi-providers';
+  GetTokenDetailsRequest,
+  GetTvlReply,
+  GetTvlRequest,
+} from './interfaces/IController';
+
 import { FactoryService } from './factory/factory.service';
 
 @Injectable()

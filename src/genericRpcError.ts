@@ -3,30 +3,27 @@ import { Observable, throwError } from 'rxjs';
 import {
   ArgumentsHost,
   Catch,
+  ExceptionFilter,
   HttpStatus,
-  RpcExceptionFilter,
 } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 @Catch()
-export class GenericRpcErrorFilter implements RpcExceptionFilter<RpcException> {
+export class GenericErrorFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost): Observable<any> {
-    const ctx = host.switchToRpc();
+    const ctx = host.switchToHttp();
 
     const errorResponse: any = {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       timestamp: new Date().toISOString(),
       errorName: exception?.name,
       message: exception?.message,
-      requestData: ctx.getData(),
+      requestData: JSON.stringify(ctx.getRequest().query),
     };
 
     log.error({
       message: errorResponse?.message,
       stack: exception?.stack || '',
       detail: errorResponse?.errorResponsestatusCode,
-      endpoint: `path: ${host.getArgs()[2]?.call?.handler?.path} chain: ${
-        ctx.getData()?.chain
-      } provider: ${ctx.getData()?.provider}`,
+      endpoint: ctx.getRequest().url,
     });
     return throwError(() => errorResponse);
   }

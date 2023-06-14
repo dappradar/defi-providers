@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
 import {
-  GetTvlRequest,
-  GetTvlReply,
-  GetPoolAndTokenVolumesRequest,
   GetPoolAndTokenVolumesReply,
+  GetPoolAndTokenVolumesRequest,
+  GetTokenDetailsReply,
+  GetTokenDetailsRequest,
+  GetTvlReply,
+  GetTvlRequest,
   PoolVolume,
   TokenVolume,
-  GetTokenDetailsRequest,
-  GetTokenDetailsReply,
-} from '../generated/proto/defi-providers';
+} from '../interfaces/IController';
+
 import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 import { log } from '../util/logger/logger';
@@ -32,7 +33,7 @@ export class FactoryService {
     req: GetTvlRequest,
     timeoutErrorCount = 0,
   ): Promise<GetTvlReply> {
-    if (req.query.block === undefined) {
+    if (req.block === undefined) {
       throw new RpcException('Block is undefined');
     }
     if (this.web3ProviderService.checkNodeUrl(req?.chain)) {
@@ -41,36 +42,16 @@ export class FactoryService {
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider, 'index')
     );
-    try {
-      const tvlData = await providerService.tvl({
-        web3: await this.web3ProviderService.getWeb3(req?.chain),
-        chain: req?.chain,
-        provider: req?.provider,
-        block: parseInt(req.query?.block),
-        date: req.query?.date,
-      });
+    const tvlData = await providerService.tvl({
+      web3: await this.web3ProviderService.getWeb3(req?.chain),
+      chain: req?.chain,
+      provider: req?.provider,
+      block: parseInt(req?.block),
+      date: req?.date,
+    });
 
-      const balances = basicUtil.checkZeroBalance(tvlData.balances);
-      return { balances, poolBalances: tvlData.poolBalances };
-    } catch (err) {
-      log.error({
-        message: err?.message || '',
-        stack: err?.stack || '',
-        detail: `Error: chain: ${req.chain}, provider: ${req?.provider}, blocknumber: ${req.query?.block}, `,
-        endpoint: 'getTvl',
-      });
-      if (err?.message?.toLowerCase() == 'timeout' && timeoutErrorCount < 3) {
-        log.error({
-          message: err?.message || '',
-          stack: err?.stack || '',
-          detail: `Error: web3Instance changed for chain: ${req.chain}, provider: ${req?.provider}, blocknumber: ${req.query?.block} `,
-          endpoint: 'getTvl',
-        });
-        timeoutErrorCount++;
-        await this.web3ProviderService.changeInstance(req?.chain);
-        return this.getTvl(req, timeoutErrorCount);
-      }
-    }
+    const balances = basicUtil.checkZeroBalance(tvlData.balances);
+    return { balances, poolBalances: tvlData.poolBalances };
   }
 
   async getPoolAndTokenVolumes(
