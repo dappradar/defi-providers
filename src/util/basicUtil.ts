@@ -46,11 +46,13 @@ function readDataFromFile(fileName, chain, provider) {
 }
 
 function checkZeroBalance(balances: { [key: string]: string }) {
-  Object.entries(balances).forEach(([key, value]) => {
-    if (Number(value) == 0) {
-      delete balances[key];
-    }
-  });
+  if (balances) {
+    Object.entries(balances).forEach(([key, value]) => {
+      if (Number(value) == 0) {
+        delete balances[key];
+      }
+    });
+  }
   return balances;
 }
 

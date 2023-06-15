@@ -79,6 +79,10 @@ const data = {
       prefix: 'arb_',
       delay: 400,
     },
+    zksync: {
+      prefix: 'zke_',
+      delay: 200,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
