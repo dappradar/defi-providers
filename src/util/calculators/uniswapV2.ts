@@ -185,7 +185,7 @@ async function getTvl(
       console.log('start promiseAll');
       pInfos = await Promise.all(pInfos);
       console.log('finish promiseAll');
-      pInfos.forEach((info) => poolInfos.push(info));
+      pInfos.forEach((info) => poolInfos.push(info.toLowerCase()));
     } catch (e) {
       log.error({
         message: e?.message || '',
@@ -243,8 +243,8 @@ async function getTvl(
         );
         subPools.forEach((subPool, index) => {
           token01Infos[subPool] = {};
-          token01Infos[subPool].token0 = tokens0[index];
-          token01Infos[subPool].token1 = tokens1[index];
+          token01Infos[subPool].token0 = tokens0[index].toLowerCase();
+          token01Infos[subPool].token1 = tokens1[index].toLowerCase();
         });
       } else {
         const tokens01 = await bulk_reserves_contract.methods

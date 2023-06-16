@@ -88,14 +88,16 @@ function basicUtil() {
     );
   }
 
-  function checkZeroBalance(balances: { [key: string]: string }) {
+function checkZeroBalance(balances: { [key: string]: string }) {
+  if (balances) {
     Object.entries(balances).forEach(([key, value]) => {
       if (Number(value) == 0) {
         delete balances[key];
       }
     });
-    return balances;
   }
+  return balances;
+}
 
   return {
     getWmainAddress: getWmainAddress,
