@@ -79,7 +79,7 @@ const data = {
       prefix: 'arb_',
       delay: 400,
     },
-    zksync: {
+    'zksync-era': {
       prefix: 'zke_',
       delay: 200,
     },
