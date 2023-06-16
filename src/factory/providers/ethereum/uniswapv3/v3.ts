@@ -88,7 +88,7 @@ export async function tvl(block, chain, provider, web3) {
 
   let v3Pairs = { block: START_BLOCK, pairs: [], token01: [] };
   try {
-    v3Pairs = await basicUtil.readDataFromFile(
+    v3Pairs = await basicUtil.readFromCache(
       'cache/v3Pairs.json',
       chain,
       provider,
@@ -166,7 +166,7 @@ export async function tvl(block, chain, provider, web3) {
       .filter((address) => !pairExist[address]),
   );
 
-  basicUtil.writeDataToFile(
+  basicUtil.savedIntoCache(
     {
       block,
       pairs: pairAddresses,

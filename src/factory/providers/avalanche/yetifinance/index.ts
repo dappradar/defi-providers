@@ -31,11 +31,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let store = { underlyings: {} };
   try {
-    store = await basicUtil.readDataFromFile(
-      'cache/store.json',
-      chain,
-      provider,
-    );
+    store = await basicUtil.readFromCache('cache/store.json', chain, provider);
   } catch {}
 
   const results = await util.executeCallOfMultiTargets(
@@ -89,7 +85,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.writeDataToFile(store, 'cache/store.json', chain, provider);
+    basicUtil.savedIntoCache(store, 'cache/store.json', chain, provider);
   }
 
   const farmTotalSupplies = await util.getTokenTotalSupplies(

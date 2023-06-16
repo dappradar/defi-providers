@@ -123,14 +123,10 @@ async function getTvl(
   let _pairs = [];
   let _token01 = {};
   try {
-    _pairs = await basicUtil.readDataFromFile(
-      'cache/pairs.json',
-      chain,
-      provider,
-    );
+    _pairs = await basicUtil.readFromCache('cache/pairs.json', chain, provider);
   } catch {}
   try {
-    _token01 = await basicUtil.readDataFromFile(
+    _token01 = await basicUtil.readFromCache(
       'cache/token01.json',
       chain,
       provider,
@@ -198,7 +194,7 @@ async function getTvl(
   }
 
   if (pairLength < len) {
-    await basicUtil.writeDataToFile(
+    await basicUtil.savedIntoCache(
       poolInfos,
       'cache/pairs.json',
       chain,
@@ -268,7 +264,7 @@ async function getTvl(
     }
   }
 
-  await basicUtil.writeDataToFile(
+  await basicUtil.savedIntoCache(
     token01Infos,
     'cache/token01.json',
     chain,

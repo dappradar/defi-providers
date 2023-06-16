@@ -51,11 +51,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   });
 
   try {
-    pools = await basicUtil.readDataFromFile(
-      'cache/pools.json',
-      chain,
-      provider,
-    );
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   const farmContract = new web3.eth.Contract(null, FARM_ADDRESS);
@@ -79,7 +75,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     formatter.sumMultiBalanceOf(balances, results, chain, provider);
     console.log(`Got staked balance from ${first} to ${last}`);
   }
-  await basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+  await basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
   formatter.convertBalancesToFixed(balances);
 
   return { balances };

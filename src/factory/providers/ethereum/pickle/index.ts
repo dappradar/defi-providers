@@ -84,7 +84,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    tokens = await basicUtil.readDataFromFile('pools.json', chain, provider);
+    tokens = await basicUtil.readFromCache('pools.json', chain, provider);
   } catch (e) {
     log.error({
       message: e?.message || '',
@@ -98,7 +98,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     Promise.all(POOL_ADDRESSES.map((pool) => getTokens(pool, block, web3))),
     Promise.all(PTOKENS.map((token) => getTokens(token, block, web3))),
   ]);
-  await basicUtil.writeDataToFile(tokens, 'pools.json', chain, provider);
+  await basicUtil.savedIntoCache(tokens, 'pools.json', chain, provider);
 
   let balanceResults = [];
   if (block >= 11439603) {

@@ -68,11 +68,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   try {
-    _pools = await basicUtil.readDataFromFile(
-      'cache/pools.json',
-      chain,
-      provider,
-    );
+    _pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {
     _pools = {
       start: START_BLOCK,
@@ -151,7 +147,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log(`done ${end} out of ${poolLength}`);
   }
 
-  basicUtil.writeDataToFile(
+  basicUtil.savedIntoCache(
     {
       start: Math.max(_pools.start, block),
       pools,

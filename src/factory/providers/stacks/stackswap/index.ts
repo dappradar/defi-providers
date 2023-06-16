@@ -12,11 +12,7 @@ async function getPools(chain, provider) {
   let apiPools = [];
 
   try {
-    pools = await basicUtil.readDataFromFile(
-      'cache/pools.json',
-      chain,
-      provider,
-    );
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   log.info({
@@ -49,7 +45,7 @@ async function getPools(chain, provider) {
   }
 
   if (poolsLength < pools.length) {
-    await basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+    await basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
   }
 
   log.info({

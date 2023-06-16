@@ -57,7 +57,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    ctokens = await basicUtil.readDataFromFile(
+    ctokens = await basicUtil.readFromCache(
       'cache/pools.json',
       chain,
       provider,
@@ -122,7 +122,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     } catch {}
   });
 
-  basicUtil.writeDataToFile(ctokens, 'cache/pools.json', chain, provider);
+  basicUtil.savedIntoCache(ctokens, 'cache/pools.json', chain, provider);
 
   const balances = {};
   if (block < 12949381) {

@@ -49,11 +49,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools = { coins: {} };
   try {
-    pools = await basicUtil.readDataFromFile(
-      'cache/pools.json',
-      chain,
-      provider,
-    );
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   const poolCounts = await util.executeCallOfMultiTargets(
@@ -96,7 +92,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+    basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
   }
 
   if (!pools.coins) {
@@ -144,7 +140,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+    basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
   }
 
   const coinBalanceCalls = [];

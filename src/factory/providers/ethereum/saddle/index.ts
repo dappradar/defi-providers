@@ -39,11 +39,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    tokens = await basicUtil.readDataFromFile('pairs.json', chain, provider);
+    tokens = await basicUtil.readFromCache('pairs.json', chain, provider);
   } catch {}
 
   await Promise.all(POOL_ADDRESSES.map((pool) => getTokens(pool, block, web3)));
-  await basicUtil.writeDataToFile(tokens, 'pools.json', chain, provider);
+  await basicUtil.savedIntoCache(tokens, 'pools.json', chain, provider);
 
   let poolList = [];
   let idList = [];

@@ -3,19 +3,8 @@ import { WMAIN_ADDRESS } from '../constants/contracts.json';
 import data from './data';
 import { log } from './logger/logger';
 import { config } from '../app.config';
-import { createClient } from 'redis';
+import Redis from './redis';
 const DEFAULT_DELAY = 20;
-let client;
-
-async function redisInit() {
-  if (!client) {
-    console.log('init redis');
-    client = createClient({
-      url: 'redis://defi-providers-redis-01.qa.aws.dappradar.ns:6379',
-    });
-    await client.connect();
-  }
-}
 
 function basicUtil() {
   function getPath(chain, provider) {
@@ -30,8 +19,7 @@ function basicUtil() {
     return data.CHAINS[chain].delay || DEFAULT_DELAY;
   }
 
-  async function writeDataToFile(data, fileName, chain, provider) {
-    await redisInit();
+  async function savedIntoCache(data, fileName, chain, provider) {
     await new Promise<void>(function (resolve) {
       fse.outputFile(
         `${getPath(chain, provider)}/${fileName}`,
@@ -42,44 +30,22 @@ function basicUtil() {
             log.error({
               message: err?.message || '',
               stack: err?.stack || '',
-              detail: `Error: writeDataToFile`,
-              endpoint: 'writeDataToFile',
+              detail: `Error: savedIntoCache`,
+              endpoint: 'savedIntoCache',
             });
           }
           resolve();
         },
       );
     });
-    try {
-      await client.set(
-        `${chain}_${provider}_${fileName}`,
-        JSON.stringify(data),
-      );
-    } catch (e) {
-      log.error({
-        message: e?.message || '',
-        stack: e?.stack || '',
-        detail: `Error: writeDataToFile`,
-        endpoint: 'writeDataToFile',
-      });
-    }
+    await Redis.setCache(
+      `${chain}_${provider}_${fileName}`,
+      JSON.stringify(data),
+    );
   }
 
-  async function readDataFromFile(fileName, chain, provider) {
-    let cachedDate;
-    try {
-      cachedDate = await client.set(
-        `${chain}_${provider}_${fileName}`,
-        JSON.stringify(data),
-      );
-    } catch (e) {
-      log.error({
-        message: e?.message || '',
-        stack: e?.stack || '',
-        detail: `Error: readDataFromFile`,
-        endpoint: 'readDataFromFile',
-      });
-    }
+  async function readFromCache(fileName, chain, provider) {
+    const cachedDate = await Redis.getCache(`${chain}_${provider}_${fileName}`);
     if (cachedDate) {
       return JSON.parse(cachedDate);
     }
@@ -102,8 +68,8 @@ function basicUtil() {
   return {
     getWmainAddress: getWmainAddress,
     getDelay: getDelay,
-    writeDataToFile: writeDataToFile,
-    readDataFromFile: readDataFromFile,
+    savedIntoCache: savedIntoCache,
+    readFromCache: readFromCache,
     checkZeroBalance: checkZeroBalance,
   };
 }

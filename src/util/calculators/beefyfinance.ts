@@ -61,11 +61,7 @@ async function getTvl(
   web3: Web3,
 ): Promise<IBalances> {
   try {
-    wants = await basicUtil.readDataFromFile(
-      'cache/wants.json',
-      chain,
-      provider,
-    );
+    wants = await basicUtil.readFromCache('cache/wants.json', chain, provider);
   } catch {}
 
   const vaults = await getVaults(chain);
@@ -75,7 +71,7 @@ async function getTvl(
       .map((vault) => getWants(vault, web3)),
   );
 
-  basicUtil.writeDataToFile(wants, 'cache/wants.json', chain, provider);
+  basicUtil.savedIntoCache(wants, 'cache/wants.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     vaults,

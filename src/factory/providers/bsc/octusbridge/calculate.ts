@@ -9,7 +9,7 @@ async function tvl(block, chain, provider, web3) {
 
   // get contracts relevant for TVL filtered by chain ID
   const contracts = (
-    await basicUtil.readDataFromFile('contracts.json', chain, provider)
+    await basicUtil.readFromCache('contracts.json', chain, provider)
   ).find((obj) => {
     return obj.chain === chain.toUpperCase();
   });

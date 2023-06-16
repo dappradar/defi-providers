@@ -32,7 +32,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    ptokens = await basicUtil.readDataFromFile(
+    ptokens = await basicUtil.readFromCache(
       'cache/pools.json',
       chain,
       provider,
@@ -44,7 +44,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   await Promise.all(
     markets.map((market) => getUnderlyings(market, block, web3)),
   );
-  await basicUtil.writeDataToFile(ptokens, 'cache/pools.json', chain, provider);
+  await basicUtil.savedIntoCache(ptokens, 'cache/pools.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     markets,

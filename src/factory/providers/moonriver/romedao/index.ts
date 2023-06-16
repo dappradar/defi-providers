@@ -22,7 +22,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let tokens = [];
   try {
-    tokens = await basicUtil.readDataFromFile('token01.json', chain, provider);
+    tokens = await basicUtil.readFromCache('token01.json', chain, provider);
   } catch {}
 
   for (let i = tokens.length; ; i++) {
@@ -41,7 +41,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   }
-  basicUtil.writeDataToFile(tokens, 'token01.json', chain, provider);
+  basicUtil.savedIntoCache(tokens, 'token01.json', chain, provider);
 
   const [reserves, stakedAmount, depositoryBalances] = await Promise.all([
     util.getTokenBalances(TREASURY, tokens, block, chain, web3),

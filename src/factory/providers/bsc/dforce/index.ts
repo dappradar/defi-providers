@@ -56,7 +56,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    tokens = await basicUtil.readDataFromFile(
+    tokens = await basicUtil.readFromCache(
       'cache/tokens.json',
       chain,
       provider,
@@ -79,7 +79,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     ),
   ]);
 
-  basicUtil.writeDataToFile(tokens, 'cache/tokens.json', chain, provider);
+  basicUtil.savedIntoCache(tokens, 'cache/tokens.json', chain, provider);
 
   const results = await Promise.all([
     util.executeCallOfMultiTargets(

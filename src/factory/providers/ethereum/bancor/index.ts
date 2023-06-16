@@ -58,7 +58,7 @@ async function generateCallsByBlockchain(block, chain, provider, web3) {
 
     let token01Infos = {};
     try {
-      token01Infos = await basicUtil.readDataFromFile(
+      token01Infos = await basicUtil.readFromCache(
         'cache/token01.json',
         chain,
         provider,
@@ -95,7 +95,7 @@ async function generateCallsByBlockchain(block, chain, provider, web3) {
       ] = result[i];
     }
 
-    basicUtil.writeDataToFile(
+    basicUtil.savedIntoCache(
       token01Infos,
       'cache/token01.json',
       chain,

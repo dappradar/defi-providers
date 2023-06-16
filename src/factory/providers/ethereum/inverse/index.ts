@@ -38,7 +38,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   try {
-    antokens = await basicUtil.readDataFromFile(
+    antokens = await basicUtil.readFromCache(
       'cache/pools.json',
       chain,
       provider,
@@ -76,7 +76,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   newMarkets.forEach((market, index) => {
     antokens[market] = underlyings[index] || WETH_ADDRESS;
   });
-  basicUtil.writeDataToFile(antokens, 'cache/pools.json', chain, provider);
+  basicUtil.savedIntoCache(antokens, 'cache/pools.json', chain, provider);
 
   const marketLength = allMarkets.length;
   const balanceResults = allMarkets.map((market, index) => ({

@@ -119,19 +119,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   let wants = {};
 
   try {
-    wants = await basicUtil.readDataFromFile(
-      'cache/wants.json',
-      chain,
-      provider,
-    );
+    wants = await basicUtil.readFromCache('cache/wants.json', chain, provider);
   } catch {}
 
   try {
-    coins = await basicUtil.readDataFromFile(
-      'cache/pools.json',
-      chain,
-      provider,
-    );
+    coins = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   const newStrategies = strategyAddresses.filter((address) => !wants[address]);
@@ -158,8 +150,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   });
 
-  basicUtil.writeDataToFile(wants, 'cache/wants.json', chain, provider);
-  basicUtil.writeDataToFile(coins, 'cache/pools.json', chain, provider);
+  basicUtil.savedIntoCache(wants, 'cache/wants.json', chain, provider);
+  basicUtil.savedIntoCache(coins, 'cache/pools.json', chain, provider);
 
   let poolList = [];
   let idList = [];

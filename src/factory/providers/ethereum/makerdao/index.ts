@@ -14,7 +14,7 @@ async function getJoins(block, chain, provider, web3) {
 
   // get list of auths
   let offset = 100000;
-  const stored_log = await basicUtil.readDataFromFile(
+  const stored_log = await basicUtil.readFromCache(
     'makerdao_log.json',
     chain,
     provider,
@@ -90,7 +90,7 @@ async function getJoins(block, chain, provider, web3) {
     }
   });
 
-  basicUtil.writeDataToFile(log_data, 'makerdao_log.json', chain, provider);
+  basicUtil.savedIntoCache(log_data, 'makerdao_log.json', chain, provider);
   return log_data.data;
 }
 

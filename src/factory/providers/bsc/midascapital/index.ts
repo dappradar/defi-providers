@@ -27,7 +27,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let markets = {};
   try {
-    markets = await basicUtil.readDataFromFile(
+    markets = await basicUtil.readFromCache(
       'cache/markets.json',
       chain,
       provider,
@@ -69,7 +69,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     });
   } catch {}
 
-  basicUtil.writeDataToFile(markets, 'cache/markets.json', chain, provider);
+  basicUtil.savedIntoCache(markets, 'cache/markets.json', chain, provider);
 
   const marketList = Object.keys(markets);
   // Get V1 tokens locked

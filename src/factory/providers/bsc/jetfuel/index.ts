@@ -44,11 +44,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools = [];
   try {
-    pools = await basicUtil.readDataFromFile(
-      'cache/pools.json',
-      chain,
-      provider,
-    );
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   for (let first = pools.length; first < poolLength; first += 300) {
@@ -67,7 +63,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   }
 
-  basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+  basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
 
   const tokenBalances = {};
   poolLength = pools.length;
@@ -86,7 +82,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   try {
     try {
-      ftokens = await basicUtil.readDataFromFile(
+      ftokens = await basicUtil.readFromCache(
         'cache/markets.json',
         chain,
         provider,
@@ -126,7 +122,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
     formatter.sumMultiBalanceOf(tokenBalances, balanceResults, chain, provider);
 
-    basicUtil.writeDataToFile(ftokens, 'cache/markets.json', chain, provider);
+    basicUtil.savedIntoCache(ftokens, 'cache/markets.json', chain, provider);
   } catch {}
 
   try {

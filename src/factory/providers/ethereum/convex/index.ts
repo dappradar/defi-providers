@@ -77,7 +77,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools = {};
   try {
-    pools = await basicUtil.readDataFromFile('pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('pools.json', chain, provider);
   } catch {}
 
   const newPoolIndexes = [...Array(Number(poolLength)).keys()].filter(
@@ -239,7 +239,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }),
   );
 
-  basicUtil.writeDataToFile(pools, 'pools.json', chain, provider);
+  basicUtil.savedIntoCache(pools, 'pools.json', chain, provider);
 
   if (!balances[CRV_ADDRESS]) {
     balances[CRV_ADDRESS] = BigNumber(0);

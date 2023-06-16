@@ -67,7 +67,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let aTokens = {};
   try {
-    aTokens = await basicUtil.readDataFromFile(
+    aTokens = await basicUtil.readFromCache(
       'cache/aTokens.json',
       chain,
       provider,
@@ -110,7 +110,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.writeDataToFile(aTokens, 'cache/aTokens.json', chain, provider);
+    basicUtil.savedIntoCache(aTokens, 'cache/aTokens.json', chain, provider);
   }
 
   const tokenBalances = await util.getTokenBalancesOfHolders(
