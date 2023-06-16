@@ -36,7 +36,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pairs = {};
   try {
-    pairs = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pairs = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const results = await contract.methods.getBigmap('pairs').call(null, block);

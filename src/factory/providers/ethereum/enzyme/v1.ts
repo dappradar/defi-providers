@@ -93,7 +93,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
 
   ACCOUNTING_INFO = {};
   try {
-    ACCOUNTING_INFO = basicUtil.readDataFromFile(
+    ACCOUNTING_INFO = await basicUtil.readDataFromFile(
       'accountingInfo.json',
       chain,
       provider,

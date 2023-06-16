@@ -26,7 +26,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    banks = basicUtil.readDataFromFile('pools.json', chain, provider);
+    banks = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   await Promise.all(BANKS.map((bank) => getUnderlying(bank, web3)));

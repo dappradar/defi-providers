@@ -1451,7 +1451,7 @@ async function ConvertToUnderlyings(
   web3: Web3,
 ): Promise<{ [key: string]: string }> {
   try {
-    underlyingData = basicUtil.readDataFromFile(
+    underlyingData = await basicUtil.readDataFromFile(
       'underlyingList.json',
       chain,
       provider,

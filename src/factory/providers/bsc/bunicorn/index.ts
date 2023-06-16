@@ -68,7 +68,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   try {
-    _pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    _pools = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {
     _pools = {
       start: START_BLOCK,

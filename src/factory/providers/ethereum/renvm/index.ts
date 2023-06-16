@@ -20,7 +20,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     lastDarknode: util.ZERO_ADDRESS,
   };
   try {
-    nodes = basicUtil.readDataFromFile('pools.json', chain, provider);
+    nodes = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   const allDarknodes = nodes.allNodes;

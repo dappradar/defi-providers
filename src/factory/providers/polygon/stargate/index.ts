@@ -17,7 +17,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     tokens: {},
   };
   try {
-    store = basicUtil.readDataFromFile('store.json', chain, provider);
+    store = await basicUtil.readDataFromFile('store.json', chain, provider);
   } catch {}
 
   const factory = await util.executeCall(

@@ -14,7 +14,7 @@ async function getJoins(block, chain, provider, web3) {
 
   // get list of auths
   let offset = 100000;
-  const stored_log = basicUtil.readDataFromFile(
+  const stored_log = await basicUtil.readDataFromFile(
     'makerdao_log.json',
     chain,
     provider,

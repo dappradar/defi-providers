@@ -17,7 +17,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let qiTokens = {};
   try {
-    qiTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    qiTokens = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const allMarkets = await util.executeCall(

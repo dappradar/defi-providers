@@ -35,7 +35,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    tokens = basicUtil.readDataFromFile('pairs.json', chain, provider);
+    tokens = await basicUtil.readDataFromFile('pairs.json', chain, provider);
   } catch {}
 
   if (!tokens.iTokens) {

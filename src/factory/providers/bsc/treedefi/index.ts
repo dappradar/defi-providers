@@ -16,7 +16,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
 
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   let poolLength = 0;

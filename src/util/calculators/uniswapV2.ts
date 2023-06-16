@@ -123,10 +123,14 @@ async function getTvl(
   let _pairs = [];
   let _token01 = {};
   try {
-    _pairs = basicUtil.readDataFromFile('cache/pairs.json', chain, provider);
+    _pairs = await basicUtil.readDataFromFile(
+      'cache/pairs.json',
+      chain,
+      provider,
+    );
   } catch {}
   try {
-    _token01 = basicUtil.readDataFromFile(
+    _token01 = await basicUtil.readDataFromFile(
       'cache/token01.json',
       chain,
       provider,

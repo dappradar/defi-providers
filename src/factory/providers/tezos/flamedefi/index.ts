@@ -25,7 +25,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools = {};
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const result = await fetch('https://api2.spacefarm.xyz/api', {

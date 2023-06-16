@@ -24,7 +24,11 @@ async function unitroller(block, chain, provider, web3) {
 
   let olaTokens = {};
   try {
-    olaTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    olaTokens = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const allMarkets = await util.executeCall(

@@ -29,7 +29,11 @@ async function getTvl(
 ): Promise<IBalances> {
   let qiTokens = {};
   try {
-    qiTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    qiTokens = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const marketResults = await util.executeCallOfMultiTargets(

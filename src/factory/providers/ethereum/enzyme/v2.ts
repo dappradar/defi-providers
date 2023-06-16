@@ -15,7 +15,11 @@ async function tvl(params: ITvlParams): Promise<any[]> {
 
   let _v2Vaults;
   try {
-    _v2Vaults = basicUtil.readDataFromFile('v2Vaults.json', chain, provider);
+    _v2Vaults = await basicUtil.readDataFromFile(
+      'v2Vaults.json',
+      chain,
+      provider,
+    );
   } catch {
     _v2Vaults = {
       start: START_BLOCK,

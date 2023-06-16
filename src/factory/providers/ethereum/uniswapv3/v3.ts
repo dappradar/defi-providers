@@ -88,7 +88,11 @@ export async function tvl(block, chain, provider, web3) {
 
   let v3Pairs = { block: START_BLOCK, pairs: [], token01: [] };
   try {
-    v3Pairs = basicUtil.readDataFromFile('cache/v3Pairs.json', chain, provider);
+    v3Pairs = await basicUtil.readDataFromFile(
+      'cache/v3Pairs.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   let logs = [];

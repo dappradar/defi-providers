@@ -58,7 +58,7 @@ async function getMarkets(block, chain, web3) {
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   try {
-    ctokens = basicUtil.readDataFromFile('pools.json', chain, provider);
+    ctokens = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   await getMarkets(block, chain, web3);

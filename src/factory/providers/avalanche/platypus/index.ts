@@ -33,7 +33,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let lpTokens = {};
   try {
-    lpTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    lpTokens = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const newLPTokens = LP_TOKENS.filter((address) => !lpTokens[address]);

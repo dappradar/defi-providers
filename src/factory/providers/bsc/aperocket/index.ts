@@ -30,7 +30,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    data = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    data = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   await Promise.all(vaults.map((vault) => getStakingTokens(vault, web3)));

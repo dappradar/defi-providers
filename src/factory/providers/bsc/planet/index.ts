@@ -150,7 +150,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const tokenBalances = {};
 
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const results = await Promise.all(

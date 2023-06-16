@@ -34,7 +34,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools = [];
   try {
-    pools = basicUtil.readDataFromFile('pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   for (let first = pools.length; first < poolLength; first += 300) {
@@ -79,7 +79,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let wants = [];
   try {
-    wants = basicUtil.readDataFromFile('wants.json', chain, provider);
+    wants = await basicUtil.readDataFromFile('wants.json', chain, provider);
   } catch {}
 
   for (let first = wants.length; first < wantLength; first += 300) {

@@ -61,7 +61,11 @@ async function getTvl(
   web3: Web3,
 ): Promise<IBalances> {
   try {
-    wants = basicUtil.readDataFromFile('cache/wants.json', chain, provider);
+    wants = await basicUtil.readDataFromFile(
+      'cache/wants.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const vaults = await getVaults(chain);

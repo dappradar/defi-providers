@@ -18,7 +18,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const balances = {};
   let poolsAndTokens = { start: START_BLOCK, tokens: [], pools: [] };
   try {
-    poolsAndTokens = basicUtil.readDataFromFile(
+    poolsAndTokens = await basicUtil.readDataFromFile(
       'cache/pools.json',
       chain,
       provider,

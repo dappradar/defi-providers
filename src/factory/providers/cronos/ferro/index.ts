@@ -26,7 +26,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     pools: [],
   };
   try {
-    cache = basicUtil.readDataFromFile('cache/cache.json', chain, provider);
+    cache = await basicUtil.readDataFromFile(
+      'cache/cache.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const typesArray = [

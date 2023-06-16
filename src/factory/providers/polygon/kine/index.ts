@@ -17,7 +17,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let markets = {};
   try {
-    markets = basicUtil.readDataFromFile('pools.json', chain, provider);
+    markets = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   const allMarkets = await util.executeCall(

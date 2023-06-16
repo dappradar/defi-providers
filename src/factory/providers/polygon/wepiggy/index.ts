@@ -32,7 +32,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    ptokens = basicUtil.readDataFromFile('ptokens.json', chain, provider);
+    ptokens = await basicUtil.readDataFromFile('ptokens.json', chain, provider);
   } catch {}
 
   const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);

@@ -12,7 +12,11 @@ async function getPools(chain, provider) {
   let apiPools = [];
 
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   log.info({

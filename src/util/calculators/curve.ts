@@ -118,10 +118,14 @@ async function getPools(curveFactory, block, chain, provider, web3) {
   let pools = {};
   let basePools = {};
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
   try {
-    basePools = basicUtil.readDataFromFile(
+    basePools = await basicUtil.readDataFromFile(
       'cache/basePools.json',
       chain,
       provider,

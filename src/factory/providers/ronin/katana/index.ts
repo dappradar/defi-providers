@@ -71,7 +71,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   ];
   let _token01 = {};
   try {
-    _token01 = basicUtil.readDataFromFile(
+    _token01 = await basicUtil.readDataFromFile(
       'cache/token01.json',
       chain,
       provider,

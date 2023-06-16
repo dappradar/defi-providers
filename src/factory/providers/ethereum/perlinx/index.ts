@@ -73,10 +73,14 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   let _pairs = [];
   let _token01 = {};
   try {
-    _pairs = basicUtil.readDataFromFile('pairs.json', chain, provider);
+    _pairs = await basicUtil.readDataFromFile('pairs.json', chain, provider);
   } catch {}
   try {
-    _token01 = basicUtil.readDataFromFile('token01.json', chain, provider);
+    _token01 = await basicUtil.readDataFromFile(
+      'token01.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);

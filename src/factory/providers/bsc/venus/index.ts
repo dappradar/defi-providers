@@ -39,7 +39,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const markets = await contract.methods.getAllMarkets().call(null, block);
 
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   await Promise.all(markets.map((market) => getUnderlyings(market, web3)));

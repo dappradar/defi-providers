@@ -38,7 +38,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const poolIDs = Array.from({ length: poolLength }, (v, i) => i);
 
   try {
-    pools = basicUtil.readDataFromFile('pools.json', chain, provider);
+    pools = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   await Promise.all(poolIDs.map((id) => getWants(contract, id)));

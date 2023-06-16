@@ -84,7 +84,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    tokens = basicUtil.readDataFromFile('pools.json', chain, provider);
+    tokens = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch (e) {
     log.error({
       message: e?.message || '',

@@ -12,7 +12,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let tokens = {};
   try {
-    tokens = basicUtil.readDataFromFile('store.json', chain, provider);
+    tokens = await basicUtil.readDataFromFile('store.json', chain, provider);
   } catch {}
 
   const [tokenBalances, stakeBalances] = await Promise.all([

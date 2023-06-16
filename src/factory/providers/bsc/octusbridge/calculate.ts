@@ -8,11 +8,11 @@ async function tvl(block, chain, provider, web3) {
   console.time('Getting TVL');
 
   // get contracts relevant for TVL filtered by chain ID
-  const contracts = basicUtil
-    .readDataFromFile('contracts.json', chain, provider)
-    .find((obj) => {
-      return obj.chain === chain.toUpperCase();
-    });
+  const contracts = (
+    await basicUtil.readDataFromFile('contracts.json', chain, provider)
+  ).find((obj) => {
+    return obj.chain === chain.toUpperCase();
+  });
 
   // get TVL in vault contracts
   let tokenBalances;

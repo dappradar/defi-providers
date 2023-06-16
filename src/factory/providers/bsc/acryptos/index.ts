@@ -119,11 +119,19 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   let wants = {};
 
   try {
-    wants = basicUtil.readDataFromFile('cache/wants.json', chain, provider);
+    wants = await basicUtil.readDataFromFile(
+      'cache/wants.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   try {
-    coins = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    coins = await basicUtil.readDataFromFile(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const newStrategies = strategyAddresses.filter((address) => !wants[address]);

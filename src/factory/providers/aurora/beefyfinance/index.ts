@@ -45,7 +45,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    wants = basicUtil.readDataFromFile('cache/wants.json', chain, provider);
+    wants = await basicUtil.readDataFromFile(
+      'cache/wants.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const vaults = await getVaults();

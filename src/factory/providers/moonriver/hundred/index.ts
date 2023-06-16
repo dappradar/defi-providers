@@ -41,7 +41,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    ctokens = basicUtil.readDataFromFile('pools.json', chain, provider);
+    ctokens = await basicUtil.readDataFromFile('pools.json', chain, provider);
   } catch {}
 
   await getMarkets(block, chain, web3);

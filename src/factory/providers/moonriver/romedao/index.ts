@@ -22,7 +22,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let tokens = [];
   try {
-    tokens = basicUtil.readDataFromFile('token01.json', chain, provider);
+    tokens = await basicUtil.readDataFromFile('token01.json', chain, provider);
   } catch {}
 
   for (let i = tokens.length; ; i++) {

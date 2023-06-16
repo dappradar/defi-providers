@@ -16,7 +16,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let tokens = [];
   try {
-    tokens = basicUtil.readDataFromFile('cache/tokens.json', chain, provider);
+    tokens = await basicUtil.readDataFromFile(
+      'cache/tokens.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const whitelistedTokenCount = await util.executeCall(
