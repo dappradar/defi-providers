@@ -38,10 +38,7 @@ function basicUtil() {
         },
       );
     });
-    await Redis.setCache(
-      `${chain}_${provider}_${fileName}`,
-      JSON.stringify(data),
-    );
+    await Redis.setCache(`${chain}_${provider}_${fileName}`, data);
   }
 
   async function readFromCache(fileName, chain, provider) {
