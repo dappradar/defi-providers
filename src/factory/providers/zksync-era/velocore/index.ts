@@ -11,7 +11,7 @@ const VELOCORE_TOKEN = '0x85d84c774cf8e9ff85342684b0e795df72a24908';
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
-    return {};
+    return { balances: {} };
   }
 
   const { balances, poolBalances } = await uniswapV2.getTvl(
