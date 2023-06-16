@@ -73,10 +73,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   let _pairs = [];
   let _token01 = {};
   try {
-    _pairs = basicUtil.readDataFromFile('pairs.json', chain, provider);
+    _pairs = await basicUtil.readFromCache('pairs.json', chain, provider);
   } catch {}
   try {
-    _token01 = basicUtil.readDataFromFile('token01.json', chain, provider);
+    _token01 = await basicUtil.readFromCache('token01.json', chain, provider);
   } catch {}
 
   const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
@@ -114,7 +114,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   if (pairLength < len) {
-    await basicUtil.writeDataToFile(poolInfos, 'pairs.json', chain, provider);
+    await basicUtil.savedIntoCache(poolInfos, 'pairs.json', chain, provider);
   }
 
   poolInfos = poolInfos.slice(0, len);
@@ -141,12 +141,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       console.log(`Getting Token01 got issue at ${start}`);
     }
   }
-  await basicUtil.writeDataToFile(
-    token01Infos,
-    'token01.json',
-    chain,
-    provider,
-  );
+  await basicUtil.savedIntoCache(token01Infos, 'token01.json', chain, provider);
 
   console.time('Getting PairInfo');
 

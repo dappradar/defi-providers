@@ -35,7 +35,7 @@ async function getLPTokens(address, block, web3) {
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   const treasuryContract = new web3.eth.Contract(
@@ -86,7 +86,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     CHEF_ADDRESSES.map((address) => getLPTokens(address, block, web3)),
   );
 
-  basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+  basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
 
   let chefList = [];
   let lpTokens = [];

@@ -35,7 +35,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    tokens = basicUtil.readDataFromFile('pairs.json', chain, provider);
+    tokens = await basicUtil.readFromCache('pairs.json', chain, provider);
   } catch {}
 
   if (!tokens.iTokens) {
@@ -87,7 +87,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   });
 
-  basicUtil.writeDataToFile(tokens, 'pools.json', chain, provider);
+  basicUtil.savedIntoCache(tokens, 'pools.json', chain, provider);
 
   const [lendingBalances, yieldBalances] = await Promise.all([
     await util.executeCallOfMultiTargets(

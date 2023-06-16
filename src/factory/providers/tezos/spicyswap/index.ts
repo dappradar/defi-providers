@@ -36,7 +36,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pairs = {};
   try {
-    pairs = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pairs = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   const results = await contract.methods.getBigmap('pairs').call(null, block);
@@ -82,7 +82,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     });
     console.log(`Got reserves from ${first} to ${last}`);
   }
-  await basicUtil.writeDataToFile(pairs, 'cache/pairs.json', chain, provider);
+  await basicUtil.savedIntoCache(pairs, 'cache/pairs.json', chain, provider);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }

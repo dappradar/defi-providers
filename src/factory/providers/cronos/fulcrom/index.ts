@@ -16,7 +16,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let tokens = [];
   try {
-    tokens = basicUtil.readDataFromFile('cache/tokens.json', chain, provider);
+    tokens = await basicUtil.readFromCache(
+      'cache/tokens.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const whitelistedTokenCount = await util.executeCall(
@@ -43,7 +47,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     );
 
     tokens = [...tokens, ...newTokens];
-    basicUtil.writeDataToFile(tokens, 'cache/tokens.json', chain, provider);
+    basicUtil.savedIntoCache(tokens, 'cache/tokens.json', chain, provider);
   }
 
   const tokenBalances = await util.getTokenBalances(
