@@ -181,7 +181,7 @@ async function getTvl(
       console.log('start promiseAll');
       pInfos = await Promise.all(pInfos);
       console.log('finish promiseAll');
-      pInfos.forEach((info) => poolInfos.push(info.toLowerCase()));
+      pInfos.forEach((info) => poolInfos.push(info));
     } catch (e) {
       log.error({
         message: e?.message || '',
