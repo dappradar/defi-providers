@@ -302,8 +302,8 @@ async function getTvl(
       reserves.forEach((reserve) => {
         poolBalances[reserve.pool_address.toLowerCase()] = {
           tokens: [
-            token01Infos[reserve.pool_address].token0,
-            token01Infos[reserve.pool_address].token1,
+            token01Infos[reserve.pool_address.toLowerCase()].token0,
+            token01Infos[reserve.pool_address.toLowerCase()].token1,
           ],
           balances: [reserve.reserve0, reserve.reserve1],
         };
