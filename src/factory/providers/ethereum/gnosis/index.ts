@@ -14,7 +14,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let tokens = [];
   try {
-    tokens = basicUtil.readDataFromFile('pools.json', chain, provider);
+    tokens = await basicUtil.readFromCache('pools.json', chain, provider);
   } catch {}
 
   const contract = new web3.eth.Contract(POOL_ABI, POOL_ADDRESS);
@@ -46,7 +46,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   }
-  basicUtil.writeDataToFile(tokens, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'pools.json', chain, provider);
 
   const balanceResults = await util.getTokenBalances(
     POOL_ADDRESS,

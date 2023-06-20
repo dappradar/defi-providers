@@ -13,11 +13,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   console.time('Getting TVL');
 
   // get contracts relevant for TVL filtered by chain ID
-  const contracts = basicUtil
-    .readDataFromFile('contracts.json', chain, provider)
-    .find((obj) => {
-      return obj.chain === chain.toUpperCase();
-    });
+  const contracts = (
+    await basicUtil.readFromCache('contracts.json', chain, provider)
+  ).find((obj) => {
+    return obj.chain === chain.toUpperCase();
+  });
 
   // get TVL in vault contracts
   let tokenBalances;

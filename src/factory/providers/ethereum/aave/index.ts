@@ -112,7 +112,7 @@ async function getV2Data(block, chain, provider, web3) {
     aTokenAddresses[i] = aTokensData.split(',')[1];
   });
 
-  basicUtil.writeDataToFile(
+  await basicUtil.saveIntoCache(
     aTokenAddresses,
     'cache/aTokens.json',
     chain,

@@ -150,7 +150,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const tokenBalances = {};
 
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   const results = await Promise.all(
@@ -168,7 +168,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     ),
   );
 
-  basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
   //Green planet
   let totalSupplies = await util.executeCallOfMultiTargets(

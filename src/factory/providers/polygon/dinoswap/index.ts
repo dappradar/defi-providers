@@ -16,7 +16,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools = [];
   try {
-    pools = basicUtil.readDataFromFile('pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('pools.json', chain, provider);
   } catch {}
 
   let poolLength = 0;
@@ -43,7 +43,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   }
-  await basicUtil.writeDataToFile(pools, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'pools.json', chain, provider);
   const tokenBalances = {};
 
   const balanceResults = await util.getTokenBalances(

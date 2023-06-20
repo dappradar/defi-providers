@@ -93,7 +93,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
 
   ACCOUNTING_INFO = {};
   try {
-    ACCOUNTING_INFO = basicUtil.readDataFromFile(
+    ACCOUNTING_INFO = await basicUtil.readFromCache(
       'accountingInfo.json',
       chain,
       provider,
@@ -104,7 +104,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     VERSIONS.map((token) => getTokenBalance(token, block, chain, web3)),
   );
 
-  basicUtil.writeDataToFile(
+  await basicUtil.saveIntoCache(
     ACCOUNTING_INFO,
     'accountingInfo.json',
     chain,

@@ -34,7 +34,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools = [];
   try {
-    pools = basicUtil.readDataFromFile('pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('pools.json', chain, provider);
   } catch {}
 
   for (let first = pools.length; first < poolLength; first += 300) {
@@ -52,7 +52,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   }
-  await basicUtil.writeDataToFile(pools, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'pools.json', chain, provider);
 
   const tokenBalances = {};
 
@@ -79,7 +79,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let wants = [];
   try {
-    wants = basicUtil.readDataFromFile('wants.json', chain, provider);
+    wants = await basicUtil.readFromCache('wants.json', chain, provider);
   } catch {}
 
   for (let first = wants.length; first < wantLength; first += 300) {
@@ -101,7 +101,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   }
 
-  await basicUtil.writeDataToFile(wants, 'wants.json', chain, provider);
+  await basicUtil.saveIntoCache(wants, 'wants.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     wants.map((want) => want.strat),
