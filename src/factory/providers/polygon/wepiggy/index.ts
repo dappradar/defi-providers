@@ -32,7 +32,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    ptokens = basicUtil.readDataFromFile('ptokens.json', chain, provider);
+    ptokens = await basicUtil.readFromCache('ptokens.json', chain, provider);
   } catch {}
 
   const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
@@ -41,7 +41,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     markets.map((market) => getUnderlyings(market, block, web3)),
   );
 
-  await basicUtil.writeDataToFile(ptokens, 'ptokens.json', chain, provider);
+  await basicUtil.saveIntoCache(ptokens, 'ptokens.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     markets,

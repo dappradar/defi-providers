@@ -15,7 +15,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    tokens = basicUtil.readDataFromFile('cache/tokens.json', chain, provider);
+    tokens = await basicUtil.readFromCache(
+      'cache/tokens.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const contract = new web3.eth.Contract(POOL_ABI, POOL_ADDRESSES);
@@ -32,7 +36,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   } catch {}
 
-  basicUtil.writeDataToFile(tokens, 'cache/tokens.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'cache/tokens.json', chain, provider);
 
   const tokenIDs = Object.keys(tokens);
 

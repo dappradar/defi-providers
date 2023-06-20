@@ -13,6 +13,7 @@ const {
   LOGSTASH_HOST,
   LOGSTASH_INDEX,
   BASE_URL = './blockchainCache/',
+  REDIS_URL,
 } = process.env;
 
 const config = {
@@ -32,6 +33,7 @@ const config = {
   SLACK_WEBHOOK_URL,
   SLACK_LOGGING,
   BASE_URL,
+  REDIS_URL,
 };
 
 const nodeUrls: { [key: string]: string } = {};

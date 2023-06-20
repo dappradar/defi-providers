@@ -18,7 +18,7 @@ const MESHSWAP_TOKEN_ADDRESS = '0x82362ec182db3cf7829014bc61e9be8a2e82868a';
 async function getSinglePoolBalances(block, chain, provider, web3) {
   let pools = {};
   try {
-    pools = basicUtil.readDataFromFile('pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('pools.json', chain, provider);
   } catch {}
 
   const poolCount = await util.executeCall(
@@ -53,7 +53,7 @@ async function getSinglePoolBalances(block, chain, provider, web3) {
   });
 
   if (newPools.length > 0) {
-    await basicUtil.writeDataToFile(pools, 'pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'pools.json', chain, provider);
   }
 
   const tokens = await util.executeCallOfMultiTargets(

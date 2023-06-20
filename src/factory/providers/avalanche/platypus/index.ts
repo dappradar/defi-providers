@@ -33,7 +33,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let lpTokens = {};
   try {
-    lpTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    lpTokens = await basicUtil.readFromCache(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const newLPTokens = LP_TOKENS.filter((address) => !lpTokens[address]);
@@ -55,7 +59,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.writeDataToFile(lpTokens, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(
+      lpTokens,
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   }
 
   const tokenBalances = await util.getTokenBalancesOfHolders(
