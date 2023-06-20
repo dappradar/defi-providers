@@ -45,12 +45,14 @@ function convertBalancesToFixed(balances) {
       balances[token] = balances[token].toFixed();
     } catch {}
   }
+  return balances;
 }
 
 function convertBalancesToBigNumber(balances) {
   for (const token in balances) {
     balances[token] = new BigNumber(balances[token]);
   }
+  return balances;
 }
 
 function sum(balanceArray) {
@@ -111,6 +113,33 @@ function sumMultiBalanceOf(balances, results, chain = '', provider = '') {
   }
 }
 
+function swapTokenAddresses(
+  tokens: { [key: string]: any },
+  rule: {
+    [key: string]: {
+      address: string;
+      decimals: number;
+    };
+  },
+) {
+  Object.keys(tokens).forEach((address) => {
+    if (rule[address]) {
+      if (tokens[rule[address].address]) {
+        tokens[rule[address].address] = BigNumber(tokens[rule[address].address])
+          .plus(
+            BigNumber(tokens[address]).shiftedBy(rule[address].decimals - 18),
+          )
+          .toFixed();
+      } else {
+        tokens[rule[address].address] = BigNumber(tokens[address])
+          .shiftedBy(rule[address].decimals - 18)
+          .toFixed();
+      }
+      delete tokens[address];
+    }
+  });
+}
+
 export default {
   encodeParameters,
   decodeParameters,
@@ -119,4 +148,5 @@ export default {
   convertBalancesToBigNumber,
   sum,
   sumMultiBalanceOf,
+  swapTokenAddresses,
 };
