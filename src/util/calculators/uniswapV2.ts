@@ -239,8 +239,8 @@ async function getTvl(
         );
         subPools.forEach((subPool, index) => {
           token01Infos[subPool] = {};
-          token01Infos[subPool].token0 = tokens0[index];
-          token01Infos[subPool].token1 = tokens1[index];
+          token01Infos[subPool].token0 = tokens0[index].toLowerCase();
+          token01Infos[subPool].token1 = tokens1[index].toLowerCase();
         });
       } else {
         const tokens01 = await bulk_reserves_contract.methods

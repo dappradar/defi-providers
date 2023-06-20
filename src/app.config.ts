@@ -12,25 +12,6 @@ const {
   LOGSTASH_PORT,
   LOGSTASH_HOST,
   LOGSTASH_INDEX,
-  OPTIMISM_NODE_URL,
-  ETHEREUM_NODE_URL,
-  BSC_NODE_URL,
-  AURORA_NODE_URL,
-  AVALANCHE_NODE_URL,
-  CELO_NODE_URL,
-  EVERSCALE_NODE_URL,
-  FANTOM_NODE_URL,
-  HEDERA_NODE_URL,
-  MOONBEAM_NODE_URL,
-  MOONRIVER_NODE_URL,
-  NEAR_NODE_URL,
-  POLYGON_NODE_URL,
-  RONIN_NODE_URL,
-  SOLANA_NODE_URL,
-  STACKS_NODE_URL,
-  TEZOS_NODE_URL,
-  CRONOS_NODE_URL,
-  ARBITRUM_NODE_URL,
   BASE_URL = './blockchainCache/',
   REDIS_URL,
 } = process.env;
@@ -55,26 +36,27 @@ const config = {
   REDIS_URL,
 };
 
-const nodeUrls = {
-  OPTIMISM_NODE_URL,
-  ETHEREUM_NODE_URL,
-  BSC_NODE_URL,
-  AURORA_NODE_URL,
-  AVALANCHE_NODE_URL,
-  CELO_NODE_URL,
-  EVERSCALE_NODE_URL,
-  FANTOM_NODE_URL,
-  HEDERA_NODE_URL,
-  MOONBEAM_NODE_URL,
-  MOONRIVER_NODE_URL,
-  NEAR_NODE_URL,
-  POLYGON_NODE_URL,
-  RONIN_NODE_URL,
-  SOLANA_NODE_URL,
-  STACKS_NODE_URL,
-  TEZOS_NODE_URL,
-  CRONOS_NODE_URL,
-  ARBITRUM_NODE_URL,
-};
+const nodeUrls: { [key: string]: string } = {};
+
+nodeUrls['OPTIMISM_NODE_URL'] = process.env['OPTIMISM_NODE_URL'];
+nodeUrls['ETHEREUM_NODE_URL'] = process.env['ETHEREUM_NODE_URL'];
+nodeUrls['BSC_NODE_URL'] = process.env['BSC_NODE_URL'];
+nodeUrls['AURORA_NODE_URL'] = process.env['AURORA_NODE_URL'];
+nodeUrls['AVALANCHE_NODE_URL'] = process.env['AVALANCHE_NODE_URL'];
+nodeUrls['CELO_NODE_URL'] = process.env['CELO_NODE_URL'];
+nodeUrls['EVERSCALE_NODE_URL'] = process.env['EVERSCALE_NODE_URL'];
+nodeUrls['FANTOM_NODE_URL'] = process.env['FANTOM_NODE_URL'];
+nodeUrls['HEDERA_NODE_URL'] = process.env['HEDERA_NODE_URL'];
+nodeUrls['MOONBEAM_NODE_URL'] = process.env['MOONBEAM_NODE_URL'];
+nodeUrls['MOONRIVER_NODE_URL'] = process.env['MOONRIVER_NODE_URL'];
+nodeUrls['NEAR_NODE_URL'] = process.env['NEAR_NODE_URL'];
+nodeUrls['POLYGON_NODE_URL'] = process.env['POLYGON_NODE_URL'];
+nodeUrls['RONIN_NODE_URL'] = process.env['RONIN_NODE_URL'];
+nodeUrls['SOLANA_NODE_URL'] = process.env['SOLANA_NODE_URL'];
+nodeUrls['STACKS_NODE_URL'] = process.env['STACKS_NODE_URL'];
+nodeUrls['TEZOS_NODE_URL'] = process.env['TEZOS_NODE_URL'];
+nodeUrls['CRONOS_NODE_URL'] = process.env['CRONOS_NODE_URL'];
+nodeUrls['ARBITRUM_NODE_URL'] = process.env['ARBITRUM_NODE_URL'];
+nodeUrls['ZKSYNC-ERA_NODE_URL'] = process.env['ZKSYNC-ERA_NODE_URL'];
 
 export { config, nodeUrls };
