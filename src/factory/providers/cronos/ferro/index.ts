@@ -52,7 +52,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       });
     });
     cache.start = block + 1;
-    basicUtil.savedIntoCache(cache, 'cache/cache.json', chain, provider);
+    await basicUtil.saveIntoCache(cache, 'cache/cache.json', chain, provider);
   } catch (e) {
     log.error({
       message: e?.message || '',

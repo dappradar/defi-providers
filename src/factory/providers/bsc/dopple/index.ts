@@ -36,7 +36,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   } catch {}
 
-  basicUtil.savedIntoCache(tokens, 'cache/tokens.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'cache/tokens.json', chain, provider);
 
   const tokenIDs = Object.keys(tokens);
 

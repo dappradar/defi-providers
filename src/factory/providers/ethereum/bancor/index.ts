@@ -95,7 +95,7 @@ async function generateCallsByBlockchain(block, chain, provider, web3) {
       ] = result[i];
     }
 
-    basicUtil.savedIntoCache(
+    await basicUtil.saveIntoCache(
       token01Infos,
       'cache/token01.json',
       chain,

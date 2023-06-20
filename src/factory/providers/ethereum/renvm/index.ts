@@ -46,7 +46,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   } while (lastDarknode !== util.ZERO_ADDRESS);
-  await basicUtil.savedIntoCache(nodes, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(nodes, 'pools.json', chain, provider);
 
   const balances = {};
 

@@ -85,7 +85,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.savedIntoCache(store, 'cache/store.json', chain, provider);
+    await basicUtil.saveIntoCache(store, 'cache/store.json', chain, provider);
   }
 
   const farmTotalSupplies = await util.getTokenTotalSupplies(

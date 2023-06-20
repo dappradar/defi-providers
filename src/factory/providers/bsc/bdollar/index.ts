@@ -86,7 +86,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     CHEF_ADDRESSES.map((address) => getLPTokens(address, block, web3)),
   );
 
-  basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
   let chefList = [];
   let lpTokens = [];

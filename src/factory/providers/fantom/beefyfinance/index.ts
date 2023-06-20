@@ -55,7 +55,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       .map((vault) => getWants(vault, web3)),
   );
 
-  basicUtil.savedIntoCache(wants, 'cache/wants.json', chain, provider);
+  await basicUtil.saveIntoCache(wants, 'cache/wants.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     vaults,

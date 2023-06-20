@@ -82,7 +82,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     });
     console.log(`Got reserves from ${first} to ${last}`);
   }
-  await basicUtil.savedIntoCache(pairs, 'cache/pairs.json', chain, provider);
+  await basicUtil.saveIntoCache(pairs, 'cache/pairs.json', chain, provider);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }

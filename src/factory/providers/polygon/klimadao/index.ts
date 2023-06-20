@@ -107,7 +107,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         };
       }
     });
-    await basicUtil.savedIntoCache(pools, 'pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'pools.json', chain, provider);
   }
 
   const reserves = await getPoolsReserves(

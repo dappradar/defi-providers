@@ -76,7 +76,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   newMarkets.forEach((market, index) => {
     antokens[market] = underlyings[index] || WETH_ADDRESS;
   });
-  basicUtil.savedIntoCache(antokens, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(antokens, 'cache/pools.json', chain, provider);
 
   const marketLength = allMarkets.length;
   const balanceResults = allMarkets.map((market, index) => ({

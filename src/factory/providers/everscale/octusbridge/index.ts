@@ -40,7 +40,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.savedIntoCache(tokens, 'store.json', chain, provider);
+    await basicUtil.saveIntoCache(tokens, 'store.json', chain, provider);
   }
 
   tokenBalances.forEach((data) => {

@@ -30,7 +30,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   await Promise.all(BANKS.map((bank) => getUnderlying(bank, web3)));
-  basicUtil.savedIntoCache(banks, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(banks, 'pools.json', chain, provider);
   // Get V1 tokens locked
   const results = await util.executeCallOfMultiTargets(
     BANKS,

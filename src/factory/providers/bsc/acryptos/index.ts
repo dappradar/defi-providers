@@ -150,8 +150,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   });
 
-  basicUtil.savedIntoCache(wants, 'cache/wants.json', chain, provider);
-  basicUtil.savedIntoCache(coins, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(wants, 'cache/wants.json', chain, provider);
+  await basicUtil.saveIntoCache(coins, 'cache/pools.json', chain, provider);
 
   let poolList = [];
   let idList = [];

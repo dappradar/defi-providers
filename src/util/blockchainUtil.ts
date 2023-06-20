@@ -1468,7 +1468,7 @@ async function ConvertToUnderlyings(
   }
 
   const balanceResults = await Promise.all(getUnderlyings);
-  basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     underlyingData,
     'underlyingList.json',
     chain,

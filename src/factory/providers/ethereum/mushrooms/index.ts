@@ -40,7 +40,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   await Promise.all(VAULTS.map((vault) => getTokens(vault, web3)));
-  basicUtil.savedIntoCache(data, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(data, 'pools.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     VAULTS,

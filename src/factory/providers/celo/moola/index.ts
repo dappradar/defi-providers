@@ -71,7 +71,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
     await Promise.all(atokens.map((address) => getUnderlyings(address, web3)));
 
-    basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
     const results = await util.executeMultiCallsOfMultiTargets(
       atokens.map((address) => pools[address]),

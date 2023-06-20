@@ -54,7 +54,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   await getMarkets(block, chain, web3);
-  basicUtil.savedIntoCache(mtokens, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(mtokens, 'pools.json', chain, provider);
 
   const mtokenList = Object.keys(mtokens);
   // Get V1 tokens locked

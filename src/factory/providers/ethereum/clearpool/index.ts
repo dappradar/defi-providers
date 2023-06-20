@@ -52,7 +52,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     {
       start: block,
       tokens: poolsAndTokens.tokens,

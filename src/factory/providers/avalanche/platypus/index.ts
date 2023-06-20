@@ -59,7 +59,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.savedIntoCache(lpTokens, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(
+      lpTokens,
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   }
 
   const tokenBalances = await util.getTokenBalancesOfHolders(

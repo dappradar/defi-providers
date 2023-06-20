@@ -47,7 +47,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const tokenResults = await Promise.all(tokenCalls);
 
-  basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
   const tokens = [];
   tokenResults.forEach((results) => {

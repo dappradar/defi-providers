@@ -239,7 +239,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }),
   );
 
-  basicUtil.savedIntoCache(pools, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'pools.json', chain, provider);
 
   if (!balances[CRV_ADDRESS]) {
     balances[CRV_ADDRESS] = BigNumber(0);

@@ -49,7 +49,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       ).toLowerCase();
     });
 
-    await basicUtil.savedIntoCache(markets, 'pools.json', chain, provider);
+    await basicUtil.saveIntoCache(markets, 'pools.json', chain, provider);
   }
 
   const results = await util.executeDifferentCallsOfMultiTargets(

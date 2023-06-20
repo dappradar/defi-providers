@@ -57,7 +57,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       .filter((result) => result.currency),
   );
 
-  await basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     {
       start: block,
       pools: CollateralResults,

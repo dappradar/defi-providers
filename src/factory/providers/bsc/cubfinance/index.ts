@@ -96,7 +96,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
     await Promise.all(poolIDs.map((id) => getWants(kingdomContract, id)));
 
-    basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
     const results = await util.executeCallOfMultiTargets(
       poolIDs.map((id) => pools.kingdom[id].strat),

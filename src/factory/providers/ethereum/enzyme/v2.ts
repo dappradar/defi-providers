@@ -58,7 +58,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     }
   });
 
-  basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     {
       start: block,
       proxies: proxyResults,

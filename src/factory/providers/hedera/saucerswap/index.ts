@@ -52,7 +52,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     pools[poolAddress] = {};
   });
 
-  basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
   const poolBalances = await Promise.all(
     Object.keys(pools).map((address) => web3.eth.getBalances(address, block)),

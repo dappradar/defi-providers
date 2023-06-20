@@ -19,7 +19,7 @@ function basicUtil() {
     return data.CHAINS[chain].delay || DEFAULT_DELAY;
   }
 
-  async function savedIntoCache(data, fileName, chain, provider) {
+  async function saveIntoCache(data, fileName, chain, provider) {
     await new Promise<void>(function (resolve) {
       fse.outputFile(
         `${getPath(chain, provider)}/${fileName}`,
@@ -30,8 +30,8 @@ function basicUtil() {
             log.error({
               message: err?.message || '',
               stack: err?.stack || '',
-              detail: `Error: savedIntoCache`,
-              endpoint: 'savedIntoCache',
+              detail: `Error: saveIntoCache`,
+              endpoint: 'saveIntoCache',
             });
           }
           resolve();
@@ -65,7 +65,7 @@ function basicUtil() {
   return {
     getWmainAddress: getWmainAddress,
     getDelay: getDelay,
-    savedIntoCache: savedIntoCache,
+    saveIntoCache: saveIntoCache,
     readFromCache: readFromCache,
     checkZeroBalance: checkZeroBalance,
   };

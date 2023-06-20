@@ -61,7 +61,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   await Promise.all(POOL_ADDRESSES.map((pool) => getTokens(pool, block, web3)));
 
-  basicUtil.savedIntoCache(tokens, 'cache/tokens.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'cache/tokens.json', chain, provider);
 
   let poolList = [];
   let idList = [];

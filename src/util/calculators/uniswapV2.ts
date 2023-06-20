@@ -194,7 +194,7 @@ async function getTvl(
   }
 
   if (pairLength < len) {
-    await basicUtil.savedIntoCache(
+    await basicUtil.saveIntoCache(
       poolInfos,
       'cache/pairs.json',
       chain,
@@ -264,7 +264,7 @@ async function getTvl(
     }
   }
 
-  await basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     token01Infos,
     'cache/token01.json',
     chain,

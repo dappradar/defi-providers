@@ -52,7 +52,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   }
-  await basicUtil.savedIntoCache(pools, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'pools.json', chain, provider);
 
   const tokenBalances = {};
 
@@ -101,7 +101,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   }
 
-  await basicUtil.savedIntoCache(wants, 'wants.json', chain, provider);
+  await basicUtil.saveIntoCache(wants, 'wants.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     wants.map((want) => want.strat),

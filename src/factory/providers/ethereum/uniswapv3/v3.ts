@@ -166,7 +166,7 @@ export async function tvl(block, chain, provider, web3) {
       .filter((address) => !pairExist[address]),
   );
 
-  basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     {
       block,
       pairs: pairAddresses,

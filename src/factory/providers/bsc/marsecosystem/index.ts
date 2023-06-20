@@ -50,7 +50,7 @@ async function stakedBalance(block, chain, provider, web3) {
 
   await Promise.all(poolIDs.map((id) => getWants(contract, id)));
 
-  basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     poolIDs.map((id) => pools[id].strat),

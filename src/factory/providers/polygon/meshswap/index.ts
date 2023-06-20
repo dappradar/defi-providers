@@ -53,7 +53,7 @@ async function getSinglePoolBalances(block, chain, provider, web3) {
   });
 
   if (newPools.length > 0) {
-    await basicUtil.savedIntoCache(pools, 'pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'pools.json', chain, provider);
   }
 
   const tokens = await util.executeCallOfMultiTargets(

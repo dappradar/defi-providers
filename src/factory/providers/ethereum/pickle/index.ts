@@ -98,7 +98,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     Promise.all(POOL_ADDRESSES.map((pool) => getTokens(pool, block, web3))),
     Promise.all(PTOKENS.map((token) => getTokens(token, block, web3))),
   ]);
-  await basicUtil.savedIntoCache(tokens, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'pools.json', chain, provider);
 
   let balanceResults = [];
   if (block >= 11439603) {

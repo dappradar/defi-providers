@@ -102,7 +102,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     ).toLowerCase();
   }
 
-  basicUtil.savedIntoCache(token01Infos, 'cache/token01.json', chain, provider);
+  await basicUtil.saveIntoCache(
+    token01Infos,
+    'cache/token01.json',
+    chain,
+    provider,
+  );
 
   console.time('Getting PairInfo');
   log.info({

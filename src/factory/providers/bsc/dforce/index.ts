@@ -79,7 +79,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     ),
   ]);
 
-  basicUtil.savedIntoCache(tokens, 'cache/tokens.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'cache/tokens.json', chain, provider);
 
   const results = await Promise.all([
     util.executeCallOfMultiTargets(

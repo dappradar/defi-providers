@@ -153,7 +153,7 @@ async function getPools(curveFactory, block, chain, provider, web3) {
         ),
       ),
     };
-    basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
   }
   if (Object.keys(basePools).length < basePoolCount) {
     basePools = {
@@ -170,7 +170,7 @@ async function getPools(curveFactory, block, chain, provider, web3) {
         ),
       ),
     };
-    basicUtil.savedIntoCache(
+    await basicUtil.saveIntoCache(
       basePools,
       'cache/basePools.json',
       chain,

@@ -147,7 +147,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log(`done ${end} out of ${poolLength}`);
   }
 
-  basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     {
       start: Math.max(_pools.start, block),
       pools,

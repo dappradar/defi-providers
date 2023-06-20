@@ -87,7 +87,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   });
 
-  basicUtil.savedIntoCache(tokens, 'pools.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'pools.json', chain, provider);
 
   const [lendingBalances, yieldBalances] = await Promise.all([
     await util.executeCallOfMultiTargets(

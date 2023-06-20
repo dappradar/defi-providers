@@ -111,7 +111,7 @@ async function v1Tvl(balances, block, chain, provider, web3) {
     }
   });
 
-  basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     {
       start: block,
       pools,

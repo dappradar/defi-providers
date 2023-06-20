@@ -122,7 +122,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     } catch {}
   });
 
-  basicUtil.savedIntoCache(ctokens, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(ctokens, 'cache/pools.json', chain, provider);
 
   const balances = {};
   if (block < 12949381) {

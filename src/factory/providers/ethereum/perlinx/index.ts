@@ -114,7 +114,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   if (pairLength < len) {
-    await basicUtil.savedIntoCache(poolInfos, 'pairs.json', chain, provider);
+    await basicUtil.saveIntoCache(poolInfos, 'pairs.json', chain, provider);
   }
 
   poolInfos = poolInfos.slice(0, len);
@@ -141,7 +141,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       console.log(`Getting Token01 got issue at ${start}`);
     }
   }
-  await basicUtil.savedIntoCache(token01Infos, 'token01.json', chain, provider);
+  await basicUtil.saveIntoCache(token01Infos, 'token01.json', chain, provider);
 
   console.time('Getting PairInfo');
 

@@ -41,7 +41,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   }
-  basicUtil.savedIntoCache(tokens, 'token01.json', chain, provider);
+  await basicUtil.saveIntoCache(tokens, 'token01.json', chain, provider);
 
   const [reserves, stakedAmount, depositoryBalances] = await Promise.all([
     util.getTokenBalances(TREASURY, tokens, block, chain, web3),

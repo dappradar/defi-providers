@@ -60,7 +60,12 @@ async function unitroller(block, chain, provider, web3) {
       ).toLowerCase();
     });
 
-    basicUtil.savedIntoCache(olaTokens, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(
+      olaTokens,
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   }
 
   const results = await util.executeDifferentCallsOfMultiTargets(

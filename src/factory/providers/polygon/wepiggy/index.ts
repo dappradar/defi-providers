@@ -41,7 +41,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     markets.map((market) => getUnderlyings(market, block, web3)),
   );
 
-  await basicUtil.savedIntoCache(ptokens, 'ptokens.json', chain, provider);
+  await basicUtil.saveIntoCache(ptokens, 'ptokens.json', chain, provider);
 
   const results = await util.executeCallOfMultiTargets(
     markets,

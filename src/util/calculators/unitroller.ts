@@ -72,7 +72,7 @@ async function getTvl(
       ).toLowerCase();
     });
 
-    await basicUtil.savedIntoCache(
+    await basicUtil.saveIntoCache(
       qiTokens,
       'cache/pools.json',
       chain,

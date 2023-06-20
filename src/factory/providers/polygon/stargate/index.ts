@@ -71,7 +71,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     }
 
-    await basicUtil.savedIntoCache(store, 'store.json', chain, provider);
+    await basicUtil.saveIntoCache(store, 'store.json', chain, provider);
   }
 
   const tokenBalances = await util.getTokenBalancesOfHolders(

@@ -53,7 +53,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       }
     });
 
-    basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
   }
 
   const results = await util.getTokenBalances(

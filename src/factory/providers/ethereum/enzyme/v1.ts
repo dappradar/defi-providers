@@ -104,7 +104,7 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     VERSIONS.map((token) => getTokenBalance(token, block, chain, web3)),
   );
 
-  basicUtil.savedIntoCache(
+  await basicUtil.saveIntoCache(
     ACCOUNTING_INFO,
     'accountingInfo.json',
     chain,

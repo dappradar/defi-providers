@@ -75,7 +75,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     formatter.sumMultiBalanceOf(balances, results, chain, provider);
     console.log(`Got staked balance from ${first} to ${last}`);
   }
-  await basicUtil.savedIntoCache(pools, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
   formatter.convertBalancesToFixed(balances);
 
   return { balances };

@@ -90,7 +90,7 @@ async function getJoins(block, chain, provider, web3) {
     }
   });
 
-  basicUtil.savedIntoCache(log_data, 'makerdao_log.json', chain, provider);
+  await basicUtil.saveIntoCache(log_data, 'makerdao_log.json', chain, provider);
   return log_data.data;
 }
 
