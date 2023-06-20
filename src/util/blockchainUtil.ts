@@ -1451,7 +1451,7 @@ async function ConvertToUnderlyings(
   web3: Web3,
 ): Promise<{ [key: string]: string }> {
   try {
-    underlyingData = basicUtil.readDataFromFile(
+    underlyingData = await basicUtil.readFromCache(
       'underlyingList.json',
       chain,
       provider,
@@ -1468,7 +1468,7 @@ async function ConvertToUnderlyings(
   }
 
   const balanceResults = await Promise.all(getUnderlyings);
-  basicUtil.writeDataToFile(
+  basicUtil.savedIntoCache(
     underlyingData,
     'underlyingList.json',
     chain,

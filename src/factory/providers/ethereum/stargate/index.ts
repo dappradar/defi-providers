@@ -22,7 +22,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     tokens: {},
   };
   try {
-    store = basicUtil.readDataFromFile('cache/store.json', chain, provider);
+    store = await basicUtil.readFromCache('cache/store.json', chain, provider);
   } catch {}
 
   const factory = await util.executeCall(
@@ -76,7 +76,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         break;
       }
     }
-    basicUtil.writeDataToFile(store, 'cache/store.json', chain, provider);
+    basicUtil.savedIntoCache(store, 'cache/store.json', chain, provider);
   }
 
   const tokenBalances = await util.getTokenBalancesOfHolders(

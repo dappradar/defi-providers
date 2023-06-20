@@ -17,7 +17,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let qiTokens = {};
   try {
-    qiTokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    qiTokens = await basicUtil.readFromCache(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const allMarkets = await util.executeCall(
@@ -49,7 +53,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       ).toLowerCase();
     });
 
-    basicUtil.writeDataToFile(qiTokens, 'cache/pools.json', chain, provider);
+    basicUtil.savedIntoCache(qiTokens, 'cache/pools.json', chain, provider);
   }
 
   const results = await util.executeCallOfMultiTargets(

@@ -20,7 +20,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     lastDarknode: util.ZERO_ADDRESS,
   };
   try {
-    nodes = basicUtil.readDataFromFile('pools.json', chain, provider);
+    nodes = await basicUtil.readFromCache('pools.json', chain, provider);
   } catch {}
 
   const allDarknodes = nodes.allNodes;
@@ -46,7 +46,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       break;
     }
   } while (lastDarknode !== util.ZERO_ADDRESS);
-  await basicUtil.writeDataToFile(nodes, 'pools.json', chain, provider);
+  await basicUtil.savedIntoCache(nodes, 'pools.json', chain, provider);
 
   const balances = {};
 

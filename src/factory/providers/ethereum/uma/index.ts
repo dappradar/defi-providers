@@ -16,7 +16,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let pools;
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {
     pools = {
       start: STARTBLOCK,
@@ -57,7 +57,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       .filter((result) => result.currency),
   );
 
-  await basicUtil.writeDataToFile(
+  await basicUtil.savedIntoCache(
     {
       start: block,
       pools: CollateralResults,

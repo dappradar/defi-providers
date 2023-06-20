@@ -56,7 +56,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    wants = basicUtil.readDataFromFile('cache/pairs.json', chain, provider);
+    wants = await basicUtil.readFromCache('cache/pairs.json', chain, provider);
   } catch {}
 
   const vaults = await getVaults();
@@ -66,7 +66,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       .map((vault) => getWants(vault, web3)),
   );
 
-  basicUtil.writeDataToFile(wants, 'cache/wants.json', chain, provider);
+  basicUtil.savedIntoCache(wants, 'cache/wants.json', chain, provider);
 
   const [results, stakingContractBalances] = await Promise.all([
     util.executeCallOfMultiTargets(

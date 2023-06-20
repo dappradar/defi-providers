@@ -28,7 +28,7 @@ async function v1Tvl(balances, block, chain, provider, web3) {
   let _pools;
 
   try {
-    _pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    _pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {
     _pools = {
       start: START_BLOCK,
@@ -111,7 +111,7 @@ async function v1Tvl(balances, block, chain, provider, web3) {
     }
   });
 
-  basicUtil.writeDataToFile(
+  basicUtil.savedIntoCache(
     {
       start: block,
       pools,

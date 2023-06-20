@@ -71,7 +71,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   ];
   let _token01 = {};
   try {
-    _token01 = basicUtil.readDataFromFile(
+    _token01 = await basicUtil.readFromCache(
       'cache/token01.json',
       chain,
       provider,
@@ -102,12 +102,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     ).toLowerCase();
   }
 
-  basicUtil.writeDataToFile(
-    token01Infos,
-    'cache/token01.json',
-    chain,
-    provider,
-  );
+  basicUtil.savedIntoCache(token01Infos, 'cache/token01.json', chain, provider);
 
   console.time('Getting PairInfo');
   log.info({
