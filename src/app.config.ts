@@ -1,7 +1,9 @@
 import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 dotenv.config();
-dotenv.config({ path: `.env.${process.env.APP_ENV || 'dev'}`, override: true });
+dotenv.config({
+  path: process.env.APP_ENV ? `.env.${process.env.APP_ENV}` : '.env',
+});
 
 const {
   HOST = '127.0.0.1',
