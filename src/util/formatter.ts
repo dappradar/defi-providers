@@ -124,17 +124,11 @@ function swapTokenAddresses(
 ) {
   Object.keys(tokens).forEach((address) => {
     if (rule[address]) {
-      if (tokens[rule[address].address]) {
-        tokens[rule[address].address] = BigNumber(tokens[rule[address].address])
-          .plus(
-            BigNumber(tokens[address]).shiftedBy(rule[address].decimals - 18),
-          )
-          .toFixed();
-      } else {
-        tokens[rule[address].address] = BigNumber(tokens[address])
-          .shiftedBy(rule[address].decimals - 18)
-          .toFixed();
-      }
+      tokens[rule[address].address] = BigNumber(
+        tokens[rule[address].address] || 0,
+      )
+        .plus(BigNumber(tokens[address]).shiftedBy(rule[address].decimals - 18))
+        .toFixed();
       delete tokens[address];
     }
   });
