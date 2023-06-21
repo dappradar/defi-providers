@@ -26,7 +26,7 @@ const swapToken = {
   },
   '0xd90764041da2720396863836e9f78ddaee140533': {
     address: 'coingecko_wtbt',
-    decimals: 18,
+    decimals: 0,
   },
 };
 const stakedToken = [
