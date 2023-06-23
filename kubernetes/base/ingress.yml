@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: defi-providers
+  annotations:
+    # SSL certificate
+    cert-manager.io/issuer: prod-issuer
+    cert-manager.io/issuer-kind: OriginIssuer
+    cert-manager.io/issuer-group: cert-manager.k8s.cloudflare.com
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "" # set in overlay
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: defi-providers
+              port:
+                number: 443
+
+  tls:
+    # specifying a host in the TLS section will tell cert-manager what
+    # DNS SANs should be on the created certificate.
+    - hosts:
+      - "" # set in overlay
+      # cert-manager will create this secret
+      secretName: defi-providers-tls
