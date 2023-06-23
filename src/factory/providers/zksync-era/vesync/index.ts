@@ -11,28 +11,28 @@ const VS_TOKEN = '0x5756A28E2aAe01F600FC2C01358395F5C1f8ad3A';
 const swapToken = {
   //BUSD
   '0x2039bb4116b4efc145ec4f0e2ea75012d6c0f181': {
-    address: '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
-    decimals: 6,
+    sourceDecimal: 18,
+    targetAddress: '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
+    targetDecimal: 6,
   },
   //sIUSDT
   '0x496d88d1efc3e145b7c12d53b78ce5e7eda7a42c': {
-    address: '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
-    decimals: 6,
+    sourceDecimal: 18,
+    targetAddress: '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
+    targetDecimal: 6,
   },
   //iUSD
   '0x1382628e018010035999a1ff330447a0751aa84f': {
-    address: '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
-    decimals: 6,
+    sourceDecimal: 18,
+    targetAddress: '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
+    targetDecimal: 6,
   },
   '0xd90764041da2720396863836e9f78ddaee140533': {
-    address: 'coingecko_wtbt',
-    decimals: 0,
+    sourceDecimal: 18,
+    targetAddress: 'coingecko_wtbt',
+    targetDecimal: 0,
   },
 };
-const stakedToken = [
-  util.ZERO_ADDRESS,
-  '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
-];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
