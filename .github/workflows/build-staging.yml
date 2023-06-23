@@ -45,7 +45,7 @@ jobs:
     - name: Build Docker image
       uses: docker/build-push-action@v4
       with:
-        tags: "${{ vars.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${GITHUB_SHA}-${TIMESTAMP}"
+        tags: "${{ vars.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ env.GITHUB_SHA }}-${{ env.TIMESTAMP }}"
         push: true
 
     # TODO: Add trivy security scanning
