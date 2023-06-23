@@ -1,0 +1,53 @@
+name: Build image (staging)
+
+on:
+  push:
+    branches:
+      - k8s_poc # TODO: change after testing
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+env:
+  ECR_REPOSITORY_NAME_APP: defi-providers
+  ECR_REPOSITORY_NAME_INFRA: defi-providers-infra
+  AWS_DEFAULT_REGION: eu-central-1
+  AWS_IAM_ROLE_GITHUB: "${{ secrets.AWS_IAM_ROLE_GITHUB }}"
+
+jobs:
+  build:
+    name: Build and push image
+    runs-on: dappradar-runner
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set timestamp as env variable
+      run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+        role-to-assume: ${{ env.AWS_IAM_ROLE_GITHUB }}
+        role-session-name: github-repo-defi-providers
+
+    - name: Authenticate to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v4
+      with:
+        tags: "${{ vars.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${GITHUB_SHA}-${TIMESTAMP}"
+        push: true
+
+    # TODO: Add trivy security scanning
+
+    - name: Bake and push manifests
+      run: |
+        echo "TODO"
