@@ -45,6 +45,7 @@ jobs:
     - name: Build Docker image
       uses: docker/build-push-action@v4
       with:
+        context: .
         tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"
         push: true
 
