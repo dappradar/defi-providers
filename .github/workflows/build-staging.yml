@@ -57,15 +57,17 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"        
-        format: sarif
-        output: trivy-results.sarif
+        format: table
+        # format: sarif
+        # output: trivy-results.sarif
+        hide-progress: false
         exit-code: 1
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      if: always()
-      with:
-        sarif_file: trivy-results.sarif
+    # - name: Upload Trivy scan results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v2
+    #   if: always()
+    #   with:
+    #     sarif_file: trivy-results.sarif
 
     - name: Push Docker image
       uses: docker/build-push-action@v4
