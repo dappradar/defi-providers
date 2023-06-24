@@ -32,7 +32,6 @@ jobs:
       with:
         aws-region: ${{ env.AWS_DEFAULT_REGION }}
         role-to-assume: ${{ env.AWS_IAM_ROLE_GITHUB }}
-        role-session-name: github-repo-defi-providers
 
     - name: Authenticate to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
