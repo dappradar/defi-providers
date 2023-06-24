@@ -24,8 +24,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set timestamp as env variable
-      run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+    - name: Construct tag variable
+      run: |
+        TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+        IMAGE_TAG=staging-${github.sha}-$TIMESTAMP
+        echo $IMAGE_TAG
+        echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -46,9 +50,28 @@ jobs:
       with:
         context: .
         tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"
-        push: true
+        push: false
 
-    # TODO: Add trivy security scanning
+    - name: Scan image - High and Critical Severity
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"        
+        format: sarif
+        output: trivy-results.sarif
+        exit-code: 1
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: trivy-results.sarif
+
+    - name: Push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"
+        push: true
 
     - name: Bake and push manifests
       run: |
