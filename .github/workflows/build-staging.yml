@@ -27,7 +27,7 @@ jobs:
     - name: Construct tag variable
       run: |
         TIMESTAMP=$(date +'%Y%m%d%H%M%S')
-        IMAGE_TAG=staging-${github.sha}-$TIMESTAMP
+        IMAGE_TAG=staging-${GITHUB_SHA}-$TIMESTAMP
         echo $IMAGE_TAG
         echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
