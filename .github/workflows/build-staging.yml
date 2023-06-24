@@ -7,8 +7,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write   # This is required for requesting the JWT
-  contents: read    # This is required for actions/checkout
+  id-token: write           # Required for requesting the JWT
+  contents: read            # Required for actions/checkout
+  security-events: write    # Required for uploading security scan results
 
 env:
   ECR_REPOSITORY_NAME_APP: defi-providers
