@@ -12,6 +12,7 @@ const TOKENS = gql`
     }
   }
 `;
+const MAX_SKIP = 5000;
 
 /**
  * Gets TVL of Pancakeswap V3 using subgraph
@@ -29,7 +30,7 @@ async function getTvlFromSubgraph(
 
   let skip = 0;
 
-  while (true) {
+  while (skip <= MAX_SKIP) {
     const requestResult = await request(endpoint, TOKENS, {
       block,
       skip,
