@@ -18,7 +18,7 @@ const ABI = [
   },
 ];
 const START_BLOCK = 724058;
-const MARK_TO_MARKET_ADDRESS = '0x240aad990FFc5F04F11593fF4dCF1fF714d6fc80';
+const MARK_TO_MARKET_ADDRESS = '0x240aad990ffc5f04f11593ff4dcf1ff714d6fc80';
 const USDC_ADDRESS = '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
