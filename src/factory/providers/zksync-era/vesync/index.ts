@@ -2,7 +2,6 @@ import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import BigNumber from 'bignumber.js';
 
 const START_BLOCK = 95972;
 const FACTORY_ADDRESS = '0x529Bd7Fc43285B96f1e8d5158626d1F15bb8A834';
