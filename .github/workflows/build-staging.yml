@@ -77,12 +77,17 @@ jobs:
     - name: Bake and push manifests
       run: |
         kubectl kustomize ./kubernetes/staging \
-        | envsubst \
-        | flux push artifact oci://$IMAGE_URL:$IMAGE_TAG -f - \ 
+        | envsubst '$CONTAINER_IMAGE' \
+        | flux push artifact oci://$IMAGE_URL:$IMAGE_TAG -f - \
           --source="$(git config --get remote.origin.url)" \
-          --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)"
+          --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" \
+          --provider=aws \
+        && flux tag artifact oci://$IMAGE_URL:$IMAGE_TAG \
+          --tag staging \
+          --provider aws
       env:
         IMAGE_URL: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_INFRA }}"
+        CONTAINER_IMAGE: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"
 
       # https://github.com/Azure/k8s-bake
       # https://www.baeldung.com/linux/envsubst-command
