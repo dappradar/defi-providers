@@ -74,13 +74,15 @@ jobs:
         tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"
         push: true
 
-    # - name: Bake and push manifests
-    #   run: |
-    #     kubectl kustomize ./kubernetes/staging \
-    #     | envsubst \
-    #     | flux push artifact oci://ghcr.io/org/config/app:$(git rev-parse --short HEAD) -f - \ 
-    #       --source="$(git config --get remote.origin.url)" \
-    #       --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" 
+    - name: Bake and push manifests
+      run: |
+        kubectl kustomize ./kubernetes/staging \
+        | envsubst \
+        | flux push artifact oci://$IMAGE_URL:$IMAGE_TAG -f - \ 
+          --source="$(git config --get remote.origin.url)" \
+          --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)"
+      env:
+        IMAGE_URL: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_INFRA }}"
 
       # https://github.com/Azure/k8s-bake
       # https://www.baeldung.com/linux/envsubst-command
