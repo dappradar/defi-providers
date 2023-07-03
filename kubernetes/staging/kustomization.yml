@@ -12,3 +12,8 @@ patches:
     target:
       kind: Ingress
       name: defi-providers
+
+  - path: ./patch-secrets.yml
+    target:
+      kind: ExternalSecret
+      name: defi-providers
