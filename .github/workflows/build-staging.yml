@@ -28,9 +28,8 @@ jobs:
     - name: Construct tag variable
       run: |
         TIMESTAMP=$(date +'%Y%m%d%H%M%S')
-        IMAGE_TAG=staging-${GITHUB_SHA}-$TIMESTAMP
-        echo $IMAGE_TAG
-        echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        TAG=staging-${GITHUB_SHA}-$TIMESTAMP
+        echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -50,13 +49,13 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"
+        tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"
         push: false
 
     - name: Scan image - High and Critical Severity
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"        
+        image-ref: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"        
         format: sarif
         output: trivy-results.sarif
         hide-progress: false
@@ -72,9 +71,17 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:staging-${{ github.sha }}-${{ env.TIMESTAMP }}"
+        tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"
         push: true
 
-    - name: Bake and push manifests
-      run: |
-        echo "TODO"
+    # - name: Bake and push manifests
+    #   run: |
+    #     kubectl kustomize ./kubernetes/staging \
+    #     | envsubst \
+    #     | flux push artifact oci://ghcr.io/org/config/app:$(git rev-parse --short HEAD) -f - \ 
+    #       --source="$(git config --get remote.origin.url)" \
+    #       --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" 
+
+      # https://github.com/Azure/k8s-bake
+      # https://www.baeldung.com/linux/envsubst-command
+      # https://www.reddit.com/r/kubernetes/comments/116hze5/comment/j98kh17/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
