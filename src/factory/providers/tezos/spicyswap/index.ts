@@ -15,7 +15,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const tokenList = await axios.get(
     `${SPICY_API}${Math.floor(new Date(date).getTime() / 1000)}`,
   );
-  console.log(Math.floor(new Date(date).getTime() / 1000));
   balances['xtz'] = tokenList.data.tokens
     .reduce((accumulator, token) => {
       return BigNumber(accumulator).plus(token.totalliquidityxtz);
