@@ -1,9 +1,11 @@
-name: Build image (staging)
+name: Build and push image
 
 on:
   push:
     branches:
-      - k8s_poc # TODO: change after testing
+      - k8s_poc # TODO: remove after testing
+      - staging
+      - master
   workflow_dispatch:
 
 permissions:
@@ -12,8 +14,10 @@ permissions:
   security-events: write    # Required for uploading security scan results
 
 env:
-  ECR_REPOSITORY_NAME_APP: defi-providers
-  ECR_REPOSITORY_NAME_INFRA: defi-providers-infra
+  ECR_REPOSITORY_URL_APP: "${{ secrets.IMAGE_REGISTRY_URL }}/defi-providers"
+  ECR_REPOSITORY_URL_INFRA: "${{ secrets.IMAGE_REGISTRY_URL }}/defi-providers-infra"
+  IMAGE_TAG: "${{ github.ref_name }}-${{ github.sha }}"
+  MANIFESTS_PATH: "${{ github.ref_name }} === 'master' ? './kubernetes/production' : './kubernetes/staging'"
   AWS_DEFAULT_REGION: eu-central-1
   AWS_IAM_ROLE_GITHUB: "${{ secrets.AWS_IAM_ROLE_GITHUB }}"
 
@@ -24,12 +28,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Construct tag variable
-      run: |
-        TIMESTAMP=$(date +'%Y%m%d%H%M%S')
-        TAG=staging-${GITHUB_SHA}-$TIMESTAMP
-        echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -49,13 +47,13 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"
+        tags: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
         push: false
 
     - name: Scan image - High and Critical Severity
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"        
+        image-ref: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"        
         format: sarif
         output: trivy-results.sarif
         hide-progress: false
@@ -71,24 +69,20 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        tags: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"
+        tags: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
         push: true
 
     - name: Bake and push manifests
       run: |
-        kubectl kustomize ./kubernetes/staging \
-        | envsubst '$CONTAINER_IMAGE' \
-        | flux push artifact oci://$IMAGE_URL:$IMAGE_TAG -f - \
+        kubectl kustomize ${MANIFESTS_PATH} | \
+        envsubst '${CONTAINER_IMAGE}' \
+        flux push artifact oci://${OCI_IMAGE_URL_INFRA} -f - | \
           --source="$(git config --get remote.origin.url)" \
           --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" \
-          --provider=aws \
-        && flux tag artifact oci://$IMAGE_URL:$IMAGE_TAG \
-          --tag staging \
+          --provider=aws && \
+        flux tag artifact oci://${OCI_IMAGE_URL_INFRA} \
+          --tag ${GITHUB_REF_NAME} \
           --provider aws
       env:
-        IMAGE_URL: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_INFRA }}"
-        CONTAINER_IMAGE: "${{ secrets.IMAGE_REGISTRY_URL }}/${{ env.ECR_REPOSITORY_NAME_APP }}:${{ env.IMAGE_TAG }}"
-
-      # https://github.com/Azure/k8s-bake
-      # https://www.baeldung.com/linux/envsubst-command
-      # https://www.reddit.com/r/kubernetes/comments/116hze5/comment/j98kh17/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+        OCI_IMAGE_URL_INFRA: "${{ env.ECR_REPOSITORY_URL_INFRA }}:${{ env.IMAGE_TAG }}"
+        CONTAINER_IMAGE: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
