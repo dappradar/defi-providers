@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: defi-providers
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: defi-providers
+  template:
+    metadata:
+      labels:
+        component: defi-providers
+    spec:
+      containers:
+        - name: defi-providers
+          image: "${CONTAINER_IMAGE}" # image name:tag will be replaced during runtime
+          envFrom:
+            - secretRef:
+                name: defi-providers-secrets
+          ports:
+            - name: app-port
+              containerPort: 3002
