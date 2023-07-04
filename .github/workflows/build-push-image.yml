@@ -74,14 +74,14 @@ jobs:
 
     - name: Bake and push manifests
       run: |
-        kubectl kustomize ${MANIFESTS_PATH} | \
-        envsubst '${CONTAINER_IMAGE}' | \
-        flux push artifact oci://${OCI_IMAGE_URL_INFRA} -f - | \
+        kubectl kustomize $MANIFESTS_PATH | \
+        envsubst '$CONTAINER_IMAGE' | \
+        flux push artifact oci://$OCI_IMAGE_URL_INFRA -f - | \
           --source="$(git config --get remote.origin.url)" \
           --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" \
           --provider=aws && \
-        flux tag artifact oci://${OCI_IMAGE_URL_INFRA} \
-          --tag ${GITHUB_REF_NAME} \
+        flux tag artifact oci://$OCI_IMAGE_URL_INFRA \
+          --tag $GITHUB_REF_NAME \
           --provider aws
       env:
         OCI_IMAGE_URL_INFRA: "${{ env.ECR_REPOSITORY_URL_INFRA }}:${{ env.IMAGE_TAG }}"
