@@ -18,7 +18,6 @@ COPY package*.json ./
 RUN npm install --production
 
 COPY --from=builder /usr/src/app/dist/ dist/
-COPY --from=builder /usr/src/app/proto/ proto/
 
 EXPOSE 3002
 
