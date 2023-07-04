@@ -76,7 +76,7 @@ jobs:
       run: |
         kubectl kustomize $MANIFESTS_PATH | \
         envsubst '$CONTAINER_IMAGE' | \
-        flux push artifact oci://$OCI_IMAGE_URL_INFRA -f - | \
+        flux push artifact oci://$OCI_IMAGE_URL_INFRA -f - \
           --source="$(git config --get remote.origin.url)" \
           --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" \
           --provider=aws && \
