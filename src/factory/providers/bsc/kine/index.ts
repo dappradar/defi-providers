@@ -17,7 +17,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   let markets = {};
   try {
-    markets = basicUtil.readDataFromFile('cache/markets.json', chain, provider);
+    markets = await basicUtil.readFromCache(
+      'cache/markets.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   const allMarkets = await util.executeCall(
@@ -49,7 +53,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       ).toLowerCase();
     });
 
-    basicUtil.writeDataToFile(markets, 'cache/markets.json', chain, provider);
+    await basicUtil.saveIntoCache(
+      markets,
+      'cache/markets.json',
+      chain,
+      provider,
+    );
   }
 
   const results = await util.executeDifferentCallsOfMultiTargets(

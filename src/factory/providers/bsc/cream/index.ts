@@ -41,12 +41,16 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   try {
-    ctokens = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    ctokens = await basicUtil.readFromCache(
+      'cache/pools.json',
+      chain,
+      provider,
+    );
   } catch {}
 
   await getMarkets(block, chain, web3);
 
-  basicUtil.writeDataToFile(ctokens, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(ctokens, 'cache/pools.json', chain, provider);
 
   const ctokenList = Object.keys(ctokens);
   // Get V1 tokens locked

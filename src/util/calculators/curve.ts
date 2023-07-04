@@ -118,10 +118,10 @@ async function getPools(curveFactory, block, chain, provider, web3) {
   let pools = {};
   let basePools = {};
   try {
-    pools = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    pools = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
   try {
-    basePools = basicUtil.readDataFromFile(
+    basePools = await basicUtil.readFromCache(
       'cache/basePools.json',
       chain,
       provider,
@@ -153,7 +153,7 @@ async function getPools(curveFactory, block, chain, provider, web3) {
         ),
       ),
     };
-    basicUtil.writeDataToFile(pools, 'cache/pools.json', chain, provider);
+    await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
   }
   if (Object.keys(basePools).length < basePoolCount) {
     basePools = {
@@ -170,7 +170,7 @@ async function getPools(curveFactory, block, chain, provider, web3) {
         ),
       ),
     };
-    basicUtil.writeDataToFile(
+    await basicUtil.saveIntoCache(
       basePools,
       'cache/basePools.json',
       chain,

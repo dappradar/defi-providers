@@ -42,11 +42,12 @@ export class FactoryService {
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider, 'index')
     );
+    const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
     const tvlData = await providerService.tvl({
       web3: await this.web3ProviderService.getWeb3(req?.chain),
       chain: req?.chain,
       provider: req?.provider,
-      block: parseInt(req?.block),
+      block,
       date: req?.date,
     });
 
@@ -65,10 +66,12 @@ export class FactoryService {
       this.getProviderServicePath(req.chain, req.provider, 'index')
     );
 
+    const block = parseInt(req.query.block) - basicUtil.getDelay(req.chain);
+
     const poolVolumes = await providerService.getPoolVolumes({
       chain: req.chain,
       provider: req.provider,
-      block: parseInt(req.query.block),
+      block,
       pools: req.query.pools,
     });
     for (const [, poolVolume] of Object.entries(poolVolumes)) {
@@ -81,7 +84,7 @@ export class FactoryService {
     const tokenVolumes = await providerService.getTokenVolumes({
       chain: req.chain,
       provider: req.provider,
-      block: parseInt(req.query.block),
+      block,
       tokens: req.query.tokens,
     });
     for (const [, tokenVolume] of Object.entries(tokenVolumes)) {

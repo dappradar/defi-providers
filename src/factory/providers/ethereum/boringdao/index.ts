@@ -23,7 +23,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const contract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
 
   try {
-    data = basicUtil.readDataFromFile('cache/pools.json', chain, provider);
+    data = await basicUtil.readFromCache('cache/pools.json', chain, provider);
   } catch {}
 
   for (let i = data.length; ; i += 1) {
@@ -41,7 +41,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
   }
 
-  basicUtil.writeDataToFile(data, 'cache/pools.json', chain, provider);
+  await basicUtil.saveIntoCache(data, 'cache/pools.json', chain, provider);
 
   const tokenBalances = {};
 

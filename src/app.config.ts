@@ -32,6 +32,7 @@ const {
   CRONOS_NODE_URL,
   ARBITRUM_NODE_URL,
   BASE_URL = './blockchainCache/',
+  REDIS_URL,
 } = process.env;
 
 const config = {
@@ -51,6 +52,7 @@ const config = {
   SLACK_WEBHOOK_URL,
   SLACK_LOGGING,
   BASE_URL,
+  REDIS_URL,
 };
 
 const nodeUrls = {
