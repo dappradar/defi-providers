@@ -17,7 +17,7 @@ env:
   ECR_REPOSITORY_URL_APP: "${{ secrets.IMAGE_REGISTRY_URL }}/defi-providers"
   ECR_REPOSITORY_URL_INFRA: "${{ secrets.IMAGE_REGISTRY_URL }}/defi-providers-infra"
   IMAGE_TAG: "${{ github.ref_name }}-${{ github.sha }}"
-  MANIFESTS_PATH: "${{ github.ref_name }} === 'master' ? './kubernetes/production' : './kubernetes/staging'"
+  MANIFESTS_PATH: "${{ github.ref_name == 'master' && './kubernetes/production' || './kubernetes/staging' }}"
   AWS_DEFAULT_REGION: eu-central-1
   AWS_IAM_ROLE_GITHUB: "${{ secrets.AWS_IAM_ROLE_GITHUB }}"
 
