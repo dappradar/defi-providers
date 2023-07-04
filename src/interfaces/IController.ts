@@ -45,10 +45,6 @@ export interface PoolBalance {
 export interface GetPoolAndTokenVolumesRequest {
   provider: string;
   chain: string;
-  query: GetPoolAndTokenVolumesQuery | undefined;
-}
-
-export interface GetPoolAndTokenVolumesQuery {
   block: string;
   pools: string[];
   tokens: string[];

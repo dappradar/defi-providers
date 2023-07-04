@@ -1,11 +1,9 @@
-import { Controller, Get, Query, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
 import { GenericErrorFilter } from './genericErrorFilter';
 import {
   GetPoolAndTokenVolumesReply,
   GetPoolAndTokenVolumesRequest,
-  GetTokenDetailsReply,
-  GetTokenDetailsRequest,
   GetTvlReply,
   GetTvlRequest,
   HealthCheckReply,
@@ -21,18 +19,11 @@ export class AppController {
     return await this.appService.getTvl(req);
   }
 
-  @Get('pool-token-volumes')
+  @Post('pool-token-volumes')
   async getPoolAndTokenVolumes(
-    @Query() req: GetPoolAndTokenVolumesRequest,
+    @Body() req: GetPoolAndTokenVolumesRequest,
   ): Promise<GetPoolAndTokenVolumesReply> {
     return await this.appService.getPoolAndTokenVolumes(req);
-  }
-
-  @Get('token-detail')
-  async getTokenDetails(
-    @Query() req: GetTokenDetailsRequest,
-  ): Promise<GetTokenDetailsReply> {
-    return await this.appService.getTokenDetails(req);
   }
 
   @Get('health-check')

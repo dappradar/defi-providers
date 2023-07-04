@@ -23,10 +23,4 @@ export class AppService {
   ): Promise<GetPoolAndTokenVolumesReply> {
     return await this.factoryService.getPoolAndTokenVolumes(req);
   }
-
-  async getTokenDetails(
-    req: GetTokenDetailsRequest,
-  ): Promise<GetTokenDetailsReply> {
-    return await this.factoryService.getTokenDetails(req);
-  }
 }

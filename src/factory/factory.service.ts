@@ -3,8 +3,6 @@ import BigNumber from 'bignumber.js';
 import {
   GetPoolAndTokenVolumesReply,
   GetPoolAndTokenVolumesRequest,
-  GetTokenDetailsReply,
-  GetTokenDetailsRequest,
   GetTvlReply,
   GetTvlRequest,
   PoolVolume,
@@ -58,7 +56,7 @@ export class FactoryService {
   async getPoolAndTokenVolumes(
     req: GetPoolAndTokenVolumesRequest,
   ): Promise<GetPoolAndTokenVolumesReply> {
-    if (req.query.block === undefined) {
+    if (req.block === undefined) {
       throw new RpcException('Block is undefined');
     }
 
@@ -66,13 +64,13 @@ export class FactoryService {
       this.getProviderServicePath(req.chain, req.provider, 'index')
     );
 
-    const block = parseInt(req.query.block) - basicUtil.getDelay(req.chain);
+    const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
 
     const poolVolumes = await providerService.getPoolVolumes({
       chain: req.chain,
       provider: req.provider,
       block,
-      pools: req.query.pools,
+      pools: req.pools,
     });
     for (const [, poolVolume] of Object.entries(poolVolumes)) {
       poolVolume.volumes = poolVolume.volumes.map((volume) =>
@@ -85,7 +83,7 @@ export class FactoryService {
       chain: req.chain,
       provider: req.provider,
       block,
-      tokens: req.query.tokens,
+      tokens: req.tokens,
     });
     for (const [, tokenVolume] of Object.entries(tokenVolumes)) {
       tokenVolume.volume = BigNumber(tokenVolume.volume).toFixed();
@@ -93,15 +91,6 @@ export class FactoryService {
     }
 
     return { poolVolumes, tokenVolumes };
-  }
-
-  async getTokenDetails(
-    req: GetTokenDetailsRequest,
-  ): Promise<GetTokenDetailsReply> {
-    const { address, name, symbol, decimals, logo } = await import(
-      this.getProviderServicePath(req.chain, req.provider, 'data.json')
-    );
-    return { address, name, symbol, decimals, logo };
   }
 
   getProviderServicePath(
