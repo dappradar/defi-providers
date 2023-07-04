@@ -6,6 +6,6 @@ spec:
   selector:
     component: defi-providers
   ports:
-    - name: defi-providers-grpc
+    - name: defi-providers
       port: 443
-      targetPort: grpc-port
+      targetPort: app-port

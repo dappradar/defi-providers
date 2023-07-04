@@ -19,5 +19,5 @@ spec:
             - secretRef:
                 name: defi-providers-secrets
           ports:
-            - name: grpc-port
+            - name: app-port
               containerPort: 3002

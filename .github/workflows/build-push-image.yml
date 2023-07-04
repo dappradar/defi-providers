@@ -3,7 +3,6 @@ name: Build and push image
 on:
   push:
     branches:
-      - k8s_poc # TODO: remove after testing
       - staging
       - master
   workflow_dispatch:
