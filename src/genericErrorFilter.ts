@@ -10,7 +10,6 @@ import {
 export class GenericErrorFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost): Observable<any> {
     const ctx = host.switchToHttp();
-
     const errorResponse: any = {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       timestamp: new Date().toISOString(),
