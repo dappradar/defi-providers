@@ -4,11 +4,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FactoryModule } from './factory/factory.module';
 import { GenericInterceptor } from './generic.interceptor';
-import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [FactoryModule],
-  controllers: [AppController, HealthController],
+  controllers: [AppController],
   providers: [
     AppService,
     {
