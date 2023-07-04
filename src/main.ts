@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   await app.listen(config.PORT);
   log.info({
-    message: `Microservice is listening on ${URI}`,
+    message: `Defi Provider is listening on ${URI}`,
     endpoint: 'bootstrap',
   });
 }
