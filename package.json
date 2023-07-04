@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "dev": "APP_ENV=dev ts-node src/main.ts",
     "prod": "APP_ENV=prod node dist/main",
-    "build": "rm -rf src/generated && mkdir src/generated && protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true,nestJs=true,addNestjsRestParameter=true --ts_proto_out=src/generated proto/*.proto && tsc -p tsconfig.build.json",
+    "build": "rm -rf src/generated && mkdir src/generated && tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
