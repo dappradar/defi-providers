@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
-import { GenericErrorFilter } from './genericRpcError';
+import { GenericErrorFilter } from './genericErrorFilter';
 import {
   GetPoolAndTokenVolumesReply,
   GetPoolAndTokenVolumesRequest,
