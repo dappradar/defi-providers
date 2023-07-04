@@ -4,7 +4,7 @@ metadata:
   name: defi-providers
 spec:
   selector:
-    app: defi-providers
+    component: defi-providers
   ports:
     - name: defi-providers-grpc
       port: 443
