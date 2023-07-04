@@ -23,7 +23,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.7.3",
     "@hashgraph/hethers": "^1.2.6",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
@@ -46,8 +45,6 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "slack-notify": "^2.0.6",
-    "ts-proto": "^1.131.0",
-    "ts-protoc-gen": "^0.15.0",
     "underscore": "^1.13.6",
     "web3": "^1.8.1"
   },
