@@ -6,10 +6,19 @@ let client;
 
 function Redis() {
   if (!client && REDIS_URL) {
-    client = createClient({
-      url: REDIS_URL,
-    });
-    client.connect();
+    try {
+      client = createClient({
+        url: REDIS_URL,
+      });
+      client.connect();
+    } catch (e) {
+      log.error({
+        message: e?.message || '',
+        stack: e?.stack || '',
+        detail: `Error: redis createClient`,
+        endpoint: 'redis',
+      });
+    }
   }
 
   async function setCache(key, data) {
