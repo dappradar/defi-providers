@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: defi-providers
+spec:
+  rules:
+    - host: defi-providers-k8s.dappradar.com # TODO: change after testing to actual DNS entry
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: defi-providers
+              port:
+                number: 443
+
+  tls:
+    - hosts:
+      - defi-providers-k8s.dappradar.com # TODO: change after testing to actual DNS entry
+      secretName: defi-providers-tls

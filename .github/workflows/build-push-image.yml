@@ -1,0 +1,87 @@
+name: Build and push image
+
+on:
+  push:
+    branches:
+      - staging
+      - master
+  workflow_dispatch:
+
+permissions:
+  id-token: write           # Required for requesting the JWT
+  contents: read            # Required for actions/checkout
+  security-events: write    # Required for uploading security scan results
+
+env:
+  ECR_REPOSITORY_URL_APP: "${{ secrets.IMAGE_REGISTRY_URL }}/defi-providers"
+  ECR_REPOSITORY_URL_INFRA: "${{ secrets.IMAGE_REGISTRY_URL }}/defi-providers-infra"
+  IMAGE_TAG: "${{ github.ref_name }}-${{ github.sha }}"
+  MANIFESTS_PATH: "${{ github.ref_name == 'master' && './kubernetes/production' || './kubernetes/staging' }}"
+  AWS_DEFAULT_REGION: eu-central-1
+  AWS_IAM_ROLE_GITHUB: "${{ secrets.AWS_IAM_ROLE_GITHUB }}"
+
+jobs:
+  build:
+    name: Build and push image
+    runs-on: dappradar-runner
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ env.AWS_IAM_ROLE_GITHUB }}
+
+      - name: Authenticate to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver: docker
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
+          push: false
+
+      - name: Scan image - High and Critical Severity
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
+          format: sarif
+          output: trivy-results.sarif
+          hide-progress: false
+          exit-code: 1
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+
+      - name: Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
+          push: true
+
+      - name: Bake and push manifests
+        run: |
+          kubectl kustomize $MANIFESTS_PATH | \
+          envsubst '$CONTAINER_IMAGE' | \
+          flux push artifact oci://$OCI_IMAGE_URL_INFRA -f - \
+            --source="$(git config --get remote.origin.url)" \
+            --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" \
+            --provider=aws && \
+          flux tag artifact oci://$OCI_IMAGE_URL_INFRA \
+            --tag $GITHUB_REF_NAME \
+            --provider aws
+        env:
+          OCI_IMAGE_URL_INFRA: "${{ env.ECR_REPOSITORY_URL_INFRA }}:${{ env.IMAGE_TAG }}"
+          CONTAINER_IMAGE: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
