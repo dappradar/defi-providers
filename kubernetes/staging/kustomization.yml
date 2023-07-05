@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+patches:
+  - path: ./patch-deployment.yml
+    target:
+      kind: Deployment
+      name: defi-providers
+
+  - path: ./patch-ingress.yml
+    target:
+      kind: Ingress
+      name: defi-providers
+
+  - path: ./patch-secrets.yml
+    target:
+      kind: ExternalSecret
+      name: defi-providers
