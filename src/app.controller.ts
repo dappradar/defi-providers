@@ -1,44 +1,33 @@
-import { Controller, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GenericErrorFilter } from './genericErrorFilter';
 import {
-  GetTvlRequest,
-  GetTvlReply,
-  GetPoolAndTokenVolumesRequest,
   GetPoolAndTokenVolumesReply,
-  GetTokenDetailsReply,
-  GetTokenDetailsRequest,
-  HealthCheckRequest,
+  GetPoolAndTokenVolumesRequest,
+  GetTvlReply,
+  GetTvlRequest,
   HealthCheckReply,
-} from './generated/proto/defi-providers';
-import { GenericRpcErrorFilter } from './genericRpcError';
+} from './interfaces/IController';
 
 @Controller()
-@UseFilters(new GenericRpcErrorFilter())
+@UseFilters(new GenericErrorFilter())
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @GrpcMethod('DefiProviders', 'GetTvl')
-  async getTvl(req: GetTvlRequest): Promise<GetTvlReply> {
+  @Get('tvl')
+  async getTvl(@Query() req: GetTvlRequest): Promise<GetTvlReply> {
     return await this.appService.getTvl(req);
   }
 
-  @GrpcMethod('DefiProviders', 'GetPoolAndTokenVolumes')
+  @Post('pool-token-volumes')
   async getPoolAndTokenVolumes(
-    req: GetPoolAndTokenVolumesRequest,
+    @Body() req: GetPoolAndTokenVolumesRequest,
   ): Promise<GetPoolAndTokenVolumesReply> {
     return await this.appService.getPoolAndTokenVolumes(req);
   }
 
-  @GrpcMethod('DefiProviders', 'GetTokenDetails')
-  async getTokenDetails(
-    req: GetTokenDetailsRequest,
-  ): Promise<GetTokenDetailsReply> {
-    return await this.appService.getTokenDetails(req);
-  }
-
-  @GrpcMethod('DefiProviders', 'HealthCheck')
-  async heathCheck(req: HealthCheckRequest): Promise<HealthCheckReply> {
+  @Get('health-check')
+  async heathCheck(req): Promise<HealthCheckReply> {
     return { run: true };
   }
 }
