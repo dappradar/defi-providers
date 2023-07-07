@@ -56,7 +56,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   });
   requestResult.pools.forEach((pool) => {
     poolBalances[pool.id] = {
-      tokens: [pool.token0, pool.token1],
+      tokens: [pool.token0.id, pool.token1.id],
       balances: [
         BigNumber(pool.totalValueLockedToken0)
           .shiftedBy(Number(pool.token0.decimals))
