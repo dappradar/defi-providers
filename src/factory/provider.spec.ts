@@ -21,18 +21,13 @@ describe(process.argv[6], () => {
   it(
     process.argv[7],
     async () => {
-      const chain = process.argv[6];
-      const provider = process.argv[7];
-      const block = process.argv[8];
-      const showPoolBalancesFlg = process.argv[9];
       const { balances, poolBalances } = await factoryService.getTvl({
-        provider,
-        chain,
-        block,
-        date: '0',
+        provider: process.argv[7],
+        chain: process.argv[6],
+        query: { block: process.argv[8], date: '0' },
       });
       console.log('balances:', balances);
-      if (showPoolBalancesFlg) console.log('poolBalances:', poolBalances);
+      console.log('poolBalances:', poolBalances);
     },
     2000000,
   );
