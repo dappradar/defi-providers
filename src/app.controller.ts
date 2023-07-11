@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post, Query, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
-import { GenericErrorFilter } from './genericErrorFilter';
 import {
   GetPoolAndTokenVolumesReply,
   GetPoolAndTokenVolumesRequest,
@@ -10,7 +9,6 @@ import {
 } from './interfaces/IController';
 
 @Controller()
-@UseFilters(new GenericErrorFilter())
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
