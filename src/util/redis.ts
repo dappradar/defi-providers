@@ -26,7 +26,13 @@ function Redis() {
   }
 
   async function getCache(key) {
-    if (client) return client.get(key);
+    if (client) {
+      log.info({
+        message: `Getting data for ${key}`,
+        endpoint: 'getCache',
+      });
+      return client.get(key);
+    }
   }
   return {
     setCache,
