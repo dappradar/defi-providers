@@ -1,9 +1,26 @@
 import BigNumber from 'bignumber.js';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import uniswapV2 from '../../../../util/calculators/uniswapV2';
+import { request, gql } from 'graphql-request';
+import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 10000835;
-const V2_FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
+const QUERY_SIZE = 1000;
+const SUBGRAPH_ENDPOINT =
+  'https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v2-dev';
+const TOKENS = gql`
+  query getTokens($id: String!, $block: Int!) {
+    tokens(
+      block: { number: $block }
+      first: ${QUERY_SIZE}
+      orderBy: id
+      where: { id_gt: $id tradeVolumeUSD_gt: 100 }
+    ) {
+      id
+      decimals
+      totalLiquidity
+    }
+  }
+`;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -11,32 +28,29 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   if (block < START_BLOCK) {
     return {};
   }
-
-  const v2 = await uniswapV2.getTvl(
-    V2_FACTORY_ADDRESS,
-    block,
-    chain,
-    provider,
-    web3,
-  );
-
   const balances = {};
-  for (const token in v2.balances) {
-    const address = token.toLowerCase();
-    if (!balances[address]) {
-      balances[address] = BigNumber(0);
+
+  let lastId = '';
+  while (true) {
+    const requestResult = await request(SUBGRAPH_ENDPOINT, TOKENS, {
+      block: block,
+      id: lastId,
+    });
+
+    for (const token of requestResult.tokens) {
+      balances[token.id.toLowerCase()] = BigNumber(
+        token.totalLiquidity,
+      ).shiftedBy(Number(token.decimals));
     }
-    balances[address] = balances[address].plus(v2.balances[token]);
+
+    if (requestResult.tokens.length < QUERY_SIZE) {
+      break;
+    }
+
+    lastId = requestResult.tokens[requestResult.tokens.length - 1].id;
   }
 
-  for (const token in balances) {
-    if (balances[token].isLessThan(10_000_000_000)) {
-      delete balances[token];
-    } else {
-      balances[token] = balances[token].toFixed();
-    }
-  }
-
+  formatter.convertBalancesToFixed(balances);
   return { balances };
 }
 
