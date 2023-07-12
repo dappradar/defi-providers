@@ -1,8 +1,5 @@
 FROM --platform=linux/amd64 node:18-alpine as builder
 
-RUN apk --no-cache upgrade && \
-    apk --no-cache add protoc
-
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci
