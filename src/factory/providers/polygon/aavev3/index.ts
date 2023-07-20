@@ -2,8 +2,8 @@ import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import aaveV3 from '../../../../util/calculators/aaveV3';
 
-const START_BLOCK = 11700000;
-const POOL_DATA_PROVIDER_V3 = '0x69fa688f1dc47d4b5d8029d5a35fb7a548310654';
+const START_BLOCK = 25824401;
+const POOL_DATA_PROVIDER_V3 = '0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
