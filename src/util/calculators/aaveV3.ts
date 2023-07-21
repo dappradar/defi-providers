@@ -1,5 +1,5 @@
-import util from '../../util/blockchainUtil';
-import formatter from '../../util/formatter';
+import util from '../blockchainUtil';
+import formatter from '../formatter';
 import POOL_DATA_PROVIDER_V3_ABI from '../../constants/abi/poolDataProviderV3Abi.json';
 import AAVE_ERC20_ABI from '../../constants/abi/aaveErc20Abi.json';
 import Web3 from 'web3';
