@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  UseFilters,
-  HttpException,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
   GetPoolAndTokenVolumesReply,
@@ -22,11 +14,7 @@ export class AppController {
 
   @Get('tvl')
   async getTvl(@Query() req: GetTvlRequest): Promise<GetTvlReply> {
-    try {
-      return await this.appService.getTvl(req);
-    } catch (e) {
-      throw new HttpException(e.message, 500);
-    }
+    return await this.appService.getTvl(req);
   }
 
   @Post('pool-token-volumes')

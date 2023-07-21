@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
+  HttpException,
 } from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
 import { log } from './util/logger/logger';
@@ -34,6 +35,7 @@ export class GenericInterceptor implements NestInterceptor {
             detail: err?.name,
             endpoint: endpoint.name,
           });
+          throw new HttpException(err.message, 500);
         },
       }),
     );
