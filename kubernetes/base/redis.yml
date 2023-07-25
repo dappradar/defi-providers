@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: defi-providers-redis
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       component: defi-providers-redis
