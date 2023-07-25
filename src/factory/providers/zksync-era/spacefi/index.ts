@@ -1,24 +1,27 @@
+import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import aaveV3 from '../../../../util/calculators/aaveV3';
 
-const START_BLOCK = 11700000;
-const POOL_DATA_PROVIDER_V3 = '0x69fa688f1dc47d4b5d8029d5a35fb7a548310654';
+const START_BLOCK = 9683;
+const FACTORY_ADDRESS = '0x0700fb51560cfc8f896b2c812499d17c5b0bf6a7';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
-    return {};
+    return { balances: {} };
   }
 
-  const balances = await aaveV3.getTvl(
-    POOL_DATA_PROVIDER_V3,
+  const { balances, poolBalances } = await uniswapV2.getTvl(
+    FACTORY_ADDRESS,
     block,
     chain,
+    provider,
     web3,
   );
 
   formatter.convertBalancesToFixed(balances);
-  return { balances };
+
+  return { balances, poolBalances };
 }
+
 export { tvl };

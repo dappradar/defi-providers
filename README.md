@@ -14,33 +14,7 @@ If dapp doesn't exist on [DappRadar DeFi page](https://dappradar.com/defi), it c
 
 ```bash
 $ npm install
-$ npm run build #If you followed the Protoc Installation step
-```
-
-### Protoc Installation (Optional)
-
-If you want to test the provider you added with grpc, you need to install it.
-The new provider can also be tested without protoc installation as in the [test](#Testing) section.
-Installation [Protoc](http://google.github.io/proto-lens/installing-protoc.html)
-
-##### Mac OS X
-
-```bash
-PROTOC_ZIP=protoc-3.14.0-osx-x86_64.zip
-curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
-sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
-sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
-rm -f $PROTOC_ZIP
-```
-
-##### Linux
-
-```bash
-PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
-curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
-sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
-sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
-rm -f $PROTOC_ZIP
+$ npm run build
 ```
 
 ## Adding New Provider
@@ -62,7 +36,7 @@ By submitting the code, you transfer all the rights to the code to DappRadar UAB
 
 ## Testing
 
-After adding the new provider, you can test it by running this command:
+After adding the new provider, you can test it by running this command or url:
 
 ```
 npm run test <chain> <provider> <blocknumber>
@@ -74,10 +48,15 @@ npm run test bsc alpaca 25094000
 npm run test polygon curve 38513512
 npm run test solana saber 167690535
 
+<URL>/tvl?provider=<ProviderName>&chain=<Chain>&block=<BlockNumber>&date=<Date>
+
+Example:
+http://localhost:3002/tvl?provider=uniswapv3&chain=arbitrum&block=113084375&date=2023-07-20
+http://localhost:3002/tvl?provider=uniswap&chain=ethereum&block=17733346&date=2023-07-20
+http://localhost:3002/tvl?provider=radarstaking&chain=ethereum&block=17733357&date=2023-07-20
+
 Some providers might not work with free RPC endpoints. RPC URLs can be changed in .env.dev
 ```
-
-You can use [Bloomrpc](https://github.com/bloomrpc/bloomrpc) to test with the grpc endpoint.
 
 ## Integration examples
 
