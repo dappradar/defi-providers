@@ -6,18 +6,18 @@ import formatter from '../../../../util/formatter';
 const START_BLOCK = 10000835;
 const QUERY_SIZE = 1000;
 const SUBGRAPH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v2-dev';
+  'https://api.thegraph.com/subgraphs/name/lynnshaoyu/uniswap-v3-avax';
 const TOKENS = gql`
   query getTokens($id: String!, $block: Int!) {
     tokens(
       block: { number: $block }
       first: ${QUERY_SIZE}
       orderBy: id
-      where: { id_gt: $id tradeVolumeUSD_gt: 100 }
+      where: { id_gt: $id }
     ) {
       id
       decimals
-      totalLiquidity
+      totalValueLocked
     }
   }
 `;
@@ -39,7 +39,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
     for (const token of requestResult.tokens) {
       balances[token.id.toLowerCase()] = BigNumber(
-        token.totalLiquidity,
+        token.totalValueLocked,
       ).shiftedBy(Number(token.decimals));
     }
 

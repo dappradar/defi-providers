@@ -33,7 +33,7 @@ configure({
 
 class Logger {
   info(message) {
-    console.log(message);
+    logger.info(message);
   }
 
   warning(message) {

@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 dotenv.config();
-dotenv.config({ path: `.env.${process.env.APP_ENV || 'dev'}`, override: true });
+dotenv.config({ path: `.env.${process.env.APP_ENV || 'dev'}` });
 
 const {
   HOST = '127.0.0.1',
@@ -20,13 +20,6 @@ const config = {
   HOST,
   PORT,
   APP_ENV,
-  DEFI_PROVIDERS_SERVICE_PACKAGE: 'dappradar.defi.providers',
-  DEFI_PROVIDERS_SERVICE_PROTOFILE: resolve(
-    __dirname,
-    '..',
-    'proto',
-    'defi-providers.proto',
-  ),
   LOGSTASH_HOST,
   LOGSTASH_PORT,
   LOGSTASH_INDEX,

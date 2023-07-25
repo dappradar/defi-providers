@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: defi-providers-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: defi-providers-redis
+  template:
+    metadata:
+      labels:
+        component: defi-providers-redis
+    spec:
+      containers:
+      - name: defi-providers-redis
+        image: redis:7.0.11
+        imagePullPolicy: Always
+        args: ["--requirepass", "$(REDIS_PASS)"]
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        ports:
+          - name: redis-port
+            containerPort: 6379
+        env:
+        - name: MASTER
+          value: "true"
+        - name: REDIS_PASS
+          valueFrom:
+            secretKeyRef:
+              name: defi-providers-secrets
+              key: REDIS_PASS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: defi-providers-redis
+spec:
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: redis-port
+      protocol: TCP
+  selector:
+    component: defi-providers-redis

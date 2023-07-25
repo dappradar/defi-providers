@@ -53,7 +53,7 @@ function generatePayload(loggingEvent: ILoggingEvent): ILogstashMessage {
 const send = async (loggingEvent: ILoggingEvent) => {
   try {
     const payload = JSON.stringify(generatePayload(loggingEvent));
-    if (LOGSTASH_HOST && process.env.APP_ENV == 'prod') sendMessage(payload);
+    if (LOGSTASH_HOST) sendMessage(payload);
   } catch (e) {
     console.error(e);
     throw new Error(`There was a error with the logstash request ${e}`);

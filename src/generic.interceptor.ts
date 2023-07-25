@@ -3,8 +3,9 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
+  HttpException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { log } from './util/logger/logger';
 
 @Injectable()
@@ -15,11 +16,28 @@ export class GenericInterceptor implements NestInterceptor {
   ): Observable<any> {
     const req = context.switchToHttp().getRequest();
     const endpoint = context.getHandler();
-    log.info({
-      message:
-        endpoint.name == 'getPoolAndTokenVolumes' ? '' : JSON.stringify(req),
-      endpoint: endpoint.name,
-    });
-    return next.handle().pipe();
+
+    return next.handle().pipe(
+      tap({
+        next: (value) => {
+          log.info({
+            message:
+              endpoint.name == 'getPoolAndTokenVolumes'
+                ? ''
+                : JSON.stringify(req.query),
+            endpoint: endpoint.name,
+          });
+        },
+        error: (err: Error) => {
+          log.error({
+            message: err?.message,
+            stack: err?.stack || '',
+            detail: err?.name,
+            endpoint: endpoint.name,
+          });
+          throw new HttpException(err.message, 500);
+        },
+      }),
+    );
   }
 }
