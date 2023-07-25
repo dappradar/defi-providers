@@ -1,7 +1,7 @@
 import 'dotenv/config.js';
 import { config } from '../../../app.config';
 import dgram from 'dgram';
-import { logger } from 'ethers';
+import os from 'os';
 const client = dgram.createSocket('udp4');
 
 interface ILoggingEvent {
@@ -25,6 +25,7 @@ interface ILogstashMessage {
   Stack: string;
   Detail: string;
   Endpoint: string;
+  Host: string;
   Level: string;
 }
 const { LOGSTASH_HOST, LOGSTASH_PORT, LOGSTASH_INDEX } = config;
@@ -46,6 +47,7 @@ function generatePayload(loggingEvent: ILoggingEvent): ILogstashMessage {
     Stack: stack,
     Detail: detail,
     Endpoint: endpoint,
+    Host: os.hostname(),
     Level: loggingEvent.level.levelStr,
   };
 }

@@ -5,7 +5,7 @@ const data = {
   CHAINS: {
     ethereum: {
       prefix: '',
-      delay: 600,
+      delay: 800,
     },
     bsc: {
       prefix: 'bsc_',
