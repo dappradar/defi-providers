@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: defi-providers
 spec:
-  replicas: 1
+  replicas: 2
