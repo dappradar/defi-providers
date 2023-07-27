@@ -6,6 +6,11 @@ export interface ITvlParams {
   web3: any;
 }
 
+export interface ITvlAutointegrationParams extends ITvlParams {
+  dappType: string;
+  addresses: string;
+}
+
 export interface ITvlReturn {
   balances: { [key: string]: string };
   poolBalances: { [key: string]: PoolBalance };

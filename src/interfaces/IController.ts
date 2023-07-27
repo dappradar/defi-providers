@@ -20,6 +20,7 @@ export interface GetTvlRequest {
   chain: string;
   block: string;
   date: string;
+  autointegrationParams: AutointegrationParams;
 }
 
 export interface GetTvlReply {
@@ -73,4 +74,10 @@ export interface PoolVolume {
 export interface TokenVolume {
   volume: string;
   volumeUsd: string;
+}
+
+export interface AutointegrationParams {
+  autointegrated: boolean;
+  dappType: string | undefined;
+  addresses: string | undefined;
 }
