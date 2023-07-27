@@ -14,7 +14,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return { balances: {} };
   }
 
-  const { balances } = await uniswapV2.getTvl(
+  const { balances, poolBalances } = await uniswapV2.getTvl(
     FACTORY_ADDRESS,
     block,
     chain,
@@ -33,7 +33,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   formatter.sumMultiBalanceOf(balances, stakingBalance, chain, provider);
   formatter.convertBalancesToFixed(balances);
 
-  return { balances };
+  return { balances, poolBalances };
 }
 
 export { tvl };
