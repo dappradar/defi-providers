@@ -10,7 +10,6 @@ const MUTE_TOKEN = '0x0e97c7a0f8b2c9885c8ac9fc6136e829cbc21d42';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
-
   if (block < START_BLOCK) {
     return { balances: {} };
   }
