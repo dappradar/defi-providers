@@ -77,7 +77,7 @@ export interface TokenVolume {
 }
 
 export interface AutointegrationParams {
-  autointegrated: boolean;
+  autointegrated: string | undefined;
   dappType: string | undefined;
   addresses: string | undefined;
 }

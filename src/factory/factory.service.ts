@@ -43,7 +43,11 @@ export class FactoryService {
     const web3 = await this.web3ProviderService.getWeb3(req?.chain);
     let tvlData;
     console.log('req', req);
-    if (!req?.autointegrationParams?.autointegrated) {
+
+    if (
+      req?.autointegrationParams?.autointegrated === 'false' ||
+      req?.autointegrationParams?.autointegrated === undefined
+    ) {
       const providerService: IProvider = await import(
         this.getProviderServicePath(req.chain, req.provider, 'index')
       );
