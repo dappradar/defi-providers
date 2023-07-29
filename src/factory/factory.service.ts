@@ -40,17 +40,37 @@ export class FactoryService implements OnModuleInit {
     if (this.web3ProviderService.checkNodeUrl(req?.chain)) {
       throw new RpcException('Node URL is not provided');
     }
-    const providerService: IProvider = await import(
-      this.getProviderServicePath(req.chain, req.provider, 'index')
-    );
+
     const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
-    const tvlData = await providerService.tvl({
-      web3: await this.web3ProviderService.getWeb3(req?.chain),
-      chain: req?.chain,
-      provider: req?.provider,
-      block,
-      date: req?.date,
-    });
+    const web3 = await this.web3ProviderService.getWeb3(req?.chain);
+    let tvlData;
+    console.log('req', req);
+
+    if (
+      req?.autointegrationParams?.autointegrated === 'false' ||
+      req?.autointegrationParams?.autointegrated === undefined
+    ) {
+      const providerService: IProvider = await import(
+        this.getProviderServicePath(req.chain, req.provider, 'index')
+      );
+      tvlData = await providerService.tvl({
+        web3,
+        chain: req?.chain,
+        provider: req?.provider,
+        block,
+        date: req?.date,
+      });
+    } else {
+      tvlData = await autointegration.tvl({
+        web3,
+        chain: req?.chain,
+        provider: req?.provider,
+        block,
+        date: req?.date,
+        dappType: req?.autointegrationParams?.dappType,
+        addresses: req?.autointegrationParams?.addresses,
+      });
+    }
 
     const balances = basicUtil.checkZeroBalance(tvlData.balances);
     return { balances, poolBalances: tvlData.poolBalances };
