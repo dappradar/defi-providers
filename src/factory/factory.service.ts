@@ -14,7 +14,6 @@ import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 import { log } from '../util/logger/logger';
 import basicUtil from '../util/basicUtil';
 import { config, nodeUrls } from '../app.config';
-import * as autointegration from './providers/autointegration/index';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
