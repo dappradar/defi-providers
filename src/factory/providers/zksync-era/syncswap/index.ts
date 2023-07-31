@@ -12,7 +12,6 @@ const FACTORIES = [
 ];
 const TOPIC =
   '0x9c5d829b9b23efc461f9aeef91979ec04bb903feb3bee4f26d22114abfc7335b';
-const BLOCK_LIMIT = 10000;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -30,27 +29,21 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   for (const factory of FACTORIES) {
-    for (
-      let i = Math.max(cache.start, START_BLOCK);
-      i < block;
-      i += BLOCK_LIMIT
-    ) {
-      const logs = await util.getLogs(
-        i,
-        Math.min(i + BLOCK_LIMIT, block),
-        TOPIC,
-        factory,
-        web3,
-      );
+    const logs = await util.getLogs(
+      Math.max(START_BLOCK, cache.start),
+      block,
+      TOPIC,
+      factory,
+      web3,
+    );
 
-      logs.output.forEach((log) => {
-        const token0 = `0x${log.topics[1].substring(26, 66)}`;
-        const token1 = `0x${log.topics[2].substring(26, 66)}`;
-        const pool = `0x${log.data.substring(26, 66)}`;
+    logs.output.forEach((log) => {
+      const token0 = `0x${log.topics[1].substring(26, 66)}`;
+      const token1 = `0x${log.topics[2].substring(26, 66)}`;
+      const pool = `0x${log.data.substring(26, 66)}`;
 
-        cache.pools[pool] = { token0, token1 };
-      });
-    }
+      cache.pools[pool] = { token0, token1 };
+    });
   }
 
   cache.start = block;
