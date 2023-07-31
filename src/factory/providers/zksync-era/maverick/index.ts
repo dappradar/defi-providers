@@ -21,6 +21,7 @@ const typesArray = [
   { type: 'address', name: 'tokenA' },
   { type: 'address', name: 'tokenB' },
 ];
+const BLOCK_LIMIT = 10000;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -38,25 +39,30 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   } catch {}
 
   for (const factory of FACTORIES) {
-    const logs = await util.getLogs(
-      Math.max(START_BLOCK, cache.start),
-      block,
-      TOPIC,
-      factory,
-      web3,
-    );
-
-    logs.output.forEach((log) => {
-      const decodedParameters = formatter.decodeParameters(
-        typesArray,
-        log.data,
+    for (
+      let i = Math.max(cache.start, START_BLOCK);
+      i < block;
+      i += BLOCK_LIMIT
+    ) {
+      const logs = await util.getLogs(
+        i,
+        Math.min(i + BLOCK_LIMIT, block),
+        TOPIC,
+        factory,
+        web3,
       );
+      logs.output.forEach((log) => {
+        const decodedParameters = formatter.decodeParameters(
+          typesArray,
+          log.data,
+        );
 
-      cache.pools[decodedParameters.poolAddress] = [
-        decodedParameters.tokenA,
-        decodedParameters.tokenB,
-      ];
-    });
+        cache.pools[decodedParameters.poolAddress] = [
+          decodedParameters.tokenA,
+          decodedParameters.tokenB,
+        ];
+      });
+    }
   }
 
   cache.start = block;
