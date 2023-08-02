@@ -4,7 +4,7 @@ metadata:
   name: defi-providers
 spec:
   rules:
-    - host: https://defi-providers.dappradar.com
+    - host: defi-providers.dappradar.com
       http:
         paths:
         - path: /
@@ -17,5 +17,5 @@ spec:
 
   tls:
     - hosts:
-        - https://defi-providers.dappradar.com
+      - defi-providers.dappradar.com
       secretName: defi-providers-tls
