@@ -4,7 +4,7 @@ metadata:
   name: defi-providers
 spec:
   rules:
-    - host: defi-providers-k8s.dappradar.com # TODO: change after testing to actual DNS entry
+    - host: https://defi-providers.dappradar.com
       http:
         paths:
         - path: /
@@ -17,5 +17,5 @@ spec:
 
   tls:
     - hosts:
-      - defi-providers-k8s.dappradar.com # TODO: change after testing to actual DNS entry
+        - https://defi-providers.dappradar.com
       secretName: defi-providers-tls
