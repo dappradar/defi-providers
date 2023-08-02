@@ -1,12 +1,9 @@
 import { AbiItem } from 'web3-utils';
-import uniswapV2 from './uniswapV2';
-import formatter from '../../../util/formatter';
+import uniswapV2 from './calculators/uniswapV2';
+import formatter from './formatter';
 import BigNumber from 'bignumber.js';
-import {
-  ITvlAutointegrationParams,
-  ITvlReturn,
-} from '../../../interfaces/ITvl';
-import FACTORY_ABI from '../../../constants/abi/factory.json';
+import { ITvlAutointegrationParams, ITvlReturn } from '../interfaces/ITvl';
+import FACTORY_ABI from '../constants/abi/factory.json';
 
 const UNISWAP_V2 = 'uniswapV2';
 const SUPPORTED_DAPP_TYPES = [UNISWAP_V2];
