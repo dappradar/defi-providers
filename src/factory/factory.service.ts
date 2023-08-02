@@ -15,7 +15,7 @@ import { log } from '../util/logger/logger';
 import basicUtil from '../util/basicUtil';
 import { config, nodeUrls } from '../app.config';
 
-import * as autointegration from './providers/autointegration/index';
+import * as autointegration from '../util/autointegration';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
