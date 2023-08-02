@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
 import {
   GetPoolAndTokenVolumesReply,
@@ -13,6 +13,9 @@ import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 import { log } from '../util/logger/logger';
 import basicUtil from '../util/basicUtil';
+import { config, nodeUrls } from '../app.config';
+
+import * as autointegration from '../util/autointegration';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
@@ -25,7 +28,7 @@ interface IProvider {
 }
 
 @Injectable()
-export class FactoryService {
+export class FactoryService implements OnModuleInit {
   constructor(private readonly web3ProviderService: Web3ProviderService) {}
   async getTvl(
     req: GetTvlRequest,
@@ -37,17 +40,37 @@ export class FactoryService {
     if (this.web3ProviderService.checkNodeUrl(req?.chain)) {
       throw new RpcException('Node URL is not provided');
     }
-    const providerService: IProvider = await import(
-      this.getProviderServicePath(req.chain, req.provider, 'index')
-    );
+
     const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
-    const tvlData = await providerService.tvl({
-      web3: await this.web3ProviderService.getWeb3(req?.chain),
-      chain: req?.chain,
-      provider: req?.provider,
-      block,
-      date: req?.date,
-    });
+    const web3 = await this.web3ProviderService.getWeb3(req?.chain);
+    let tvlData;
+    console.log('req', req);
+
+    if (
+      req?.autointegrationParams?.autointegrated === 'false' ||
+      req?.autointegrationParams?.autointegrated === undefined
+    ) {
+      const providerService: IProvider = await import(
+        this.getProviderServicePath(req.chain, req.provider, 'index')
+      );
+      tvlData = await providerService.tvl({
+        web3,
+        chain: req?.chain,
+        provider: req?.provider,
+        block,
+        date: req?.date,
+      });
+    } else {
+      tvlData = await autointegration.tvl({
+        web3,
+        chain: req?.chain,
+        provider: req?.provider,
+        block,
+        date: req?.date,
+        dappType: req?.autointegrationParams?.dappType,
+        addresses: req?.autointegrationParams?.addresses,
+      });
+    }
 
     const balances = basicUtil.checkZeroBalance(tvlData.balances);
     return { balances, poolBalances: tvlData.poolBalances };
@@ -99,5 +122,15 @@ export class FactoryService {
     path: string,
   ): string {
     return `${__dirname}/providers/${chain}/${provider}/${path}`;
+  }
+
+  async onModuleInit() {
+    console.log(config);
+    console.log(JSON.stringify(config));
+    log.info({
+      message: `Node Urls: ${JSON.stringify(nodeUrls)} config: 
+      ${JSON.stringify(config)}`,
+      endpoint: 'printenv',
+    });
   }
 }
