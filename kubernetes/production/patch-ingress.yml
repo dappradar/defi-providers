@@ -17,5 +17,5 @@ spec:
 
   tls:
     - hosts:
-        - defi-providers.dappradar.com
+      - defi-providers.dappradar.com
       secretName: defi-providers-tls
