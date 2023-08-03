@@ -21,6 +21,7 @@ interface IMessage {
 interface ILogstashMessage {
   '@timestamp': string;
   '@metadata': { package: string };
+  Env: string;
   Message: string;
   Stack: string;
   Detail: string;
@@ -28,7 +29,7 @@ interface ILogstashMessage {
   Host: string;
   Level: string;
 }
-const { LOGSTASH_HOST, LOGSTASH_PORT, LOGSTASH_INDEX } = config;
+const { NODE_ENV, LOGSTASH_HOST, LOGSTASH_PORT, LOGSTASH_INDEX } = config;
 
 function generatePayload(loggingEvent: ILoggingEvent): ILogstashMessage {
   const {
@@ -43,6 +44,7 @@ function generatePayload(loggingEvent: ILoggingEvent): ILogstashMessage {
     '@metadata': {
       package: LOGSTASH_INDEX,
     },
+    Env: NODE_ENV,
     Message: message,
     Stack: stack,
     Detail: detail,
