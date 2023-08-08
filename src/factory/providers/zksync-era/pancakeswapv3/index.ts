@@ -129,7 +129,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const token0Balances = await util.getTokenBalancesOfHolders(
     pairAddresses,
-    tokens0,
+    tokens0.filter(Boolean),
     block,
     chain,
     web3,
@@ -137,7 +137,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const token1Balances = await util.getTokenBalancesOfHolders(
     pairAddresses,
-    tokens1,
+    tokens1.filter(Boolean),
     block,
     chain,
     web3,
