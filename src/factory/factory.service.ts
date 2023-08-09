@@ -13,9 +13,6 @@ import { RpcException } from '@nestjs/microservices';
 import { Web3ProviderService } from '../web3Provider/web3Provider.service';
 import { log } from '../util/logger/logger';
 import basicUtil from '../util/basicUtil';
-import { config, nodeUrls } from '../app.config';
-
-import * as autointegration from '../util/autointegration';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
@@ -40,37 +37,17 @@ export class FactoryService {
     if (this.web3ProviderService.checkNodeUrl(req?.chain)) {
       throw new RpcException('Node URL is not provided');
     }
-
+    const providerService: IProvider = await import(
+      this.getProviderServicePath(req.chain, req.provider, 'index')
+    );
     const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
-    const web3 = await this.web3ProviderService.getWeb3(req?.chain);
-    let tvlData;
-    console.log('req', req);
-
-    if (
-      req?.autointegrationParams?.autointegrated === 'false' ||
-      req?.autointegrationParams?.autointegrated === undefined
-    ) {
-      const providerService: IProvider = await import(
-        this.getProviderServicePath(req.chain, req.provider, 'index')
-      );
-      tvlData = await providerService.tvl({
-        web3,
-        chain: req?.chain,
-        provider: req?.provider,
-        block,
-        date: req?.date,
-      });
-    } else {
-      tvlData = await autointegration.tvl({
-        web3,
-        chain: req?.chain,
-        provider: req?.provider,
-        block,
-        date: req?.date,
-        dappType: req?.autointegrationParams?.dappType,
-        addresses: req?.autointegrationParams?.addresses,
-      });
-    }
+    const tvlData = await providerService.tvl({
+      web3: await this.web3ProviderService.getWeb3(req?.chain),
+      chain: req?.chain,
+      provider: req?.provider,
+      block,
+      date: req?.date,
+    });
 
     const balances = basicUtil.checkZeroBalance(tvlData.balances);
     return { balances, poolBalances: tvlData.poolBalances };

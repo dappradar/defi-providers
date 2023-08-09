@@ -123,35 +123,15 @@ async function getTvl(
   let _pairs = [];
   let _token01 = {};
   try {
-    _pairs = await basicUtil.readFromCache(
-      `cache/${factoryAddress.toLowerCase()}_pairs.json`,
-      chain,
-      provider,
-    );
-  } catch {
-    try {
-      _pairs = await basicUtil.readFromCache(
-        'cache/pairs.json',
-        chain,
-        provider,
-      );
-    } catch {}
-  }
+    _pairs = await basicUtil.readFromCache('cache/pairs.json', chain, provider);
+  } catch {}
   try {
     _token01 = await basicUtil.readFromCache(
-      `cache/${factoryAddress.toLowerCase()}_token01.json`,
+      'cache/token01.json',
       chain,
       provider,
     );
-  } catch {
-    try {
-      _token01 = await basicUtil.readFromCache(
-        'cache/token01.json',
-        chain,
-        provider,
-      );
-    } catch {}
-  }
+  } catch {}
 
   const contract = new web3.eth.Contract(
     FACTORY_ABI as AbiItem[],
@@ -216,7 +196,7 @@ async function getTvl(
   if (pairLength < len) {
     await basicUtil.saveIntoCache(
       poolInfos,
-      `cache/${factoryAddress.toLowerCase()}_pairs.json`,
+      'cache/pairs.json',
       chain,
       provider,
     );
@@ -286,7 +266,7 @@ async function getTvl(
 
   await basicUtil.saveIntoCache(
     token01Infos,
-    `cache/${factoryAddress.toLowerCase()}_token01.json`,
+    'cache/token01.json',
     chain,
     provider,
   );
