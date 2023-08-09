@@ -30,11 +30,6 @@ describe(process.argv[6], () => {
         chain,
         block,
         date: '0',
-        autointegrationParams: {
-          autointegrated: 'false',
-          dappType: '',
-          addresses: '',
-        },
       });
       console.log('balances:', balances);
       if (showPoolBalancesFlg) console.log('poolBalances:', poolBalances);
