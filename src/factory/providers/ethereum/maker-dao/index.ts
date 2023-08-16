@@ -12,15 +12,21 @@ async function getJoins(block, chain, provider, web3) {
     '0x65fae35e00000000000000000000000000000000000000000000000000000000';
 
   // get list of auths
-  let offset = 100000;
-  const stored_log = await basicUtil.readFromCache(
-    'makerdao_log.json',
-    chain,
-    provider,
-  );
+  let offset = 10000;
+  let stored_log;
+  try {
+    stored_log = await basicUtil.readFromCache(
+      'makerdao_log.json',
+      chain,
+      provider,
+    );
+  } catch {}
 
-  let i = Math.max(MakerMCDConstants.STARTBLOCK, Number(stored_log.block) || 0);
-  const logs = stored_log.data || [];
+  let i = Math.max(
+    MakerMCDConstants.STARTBLOCK,
+    Number(stored_log?.block) || 0,
+  );
+  const logs = stored_log?.data || [];
 
   for (;;) {
     if (i > block) {
