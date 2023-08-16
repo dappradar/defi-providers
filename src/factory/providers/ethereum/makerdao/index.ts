@@ -6,7 +6,6 @@ import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import { log } from '../../../../util/logger/logger';
 
 async function getJoins(block, chain, provider, web3) {
   const relyTopic =
@@ -19,12 +18,11 @@ async function getJoins(block, chain, provider, web3) {
     chain,
     provider,
   );
-  console.log(stored_log);
+
   let i = Math.max(MakerMCDConstants.STARTBLOCK, Number(stored_log.block) || 0);
   const logs = stored_log.data || [];
 
   for (;;) {
-    console.log(i);
     if (i > block) {
       break;
     }
@@ -132,25 +130,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     );
 
     formatter.sumMultiBalanceOf(balances, balanceResults);
-
-    try {
-      const pie = await new web3.eth.Contract(
-        MakerMCDConstants.abi,
-        MakerMCDConstants.POT,
-      ).methods
-        .Pie()
-        .call(null, block);
-      balances[MakerMCDConstants.DAI] = balances[MakerMCDConstants.DAI]
-        ? balances[MakerMCDConstants.DAI].plus(new BigNumber(pie))
-        : new BigNumber(pie);
-    } catch (e) {
-      log.error({
-        message: e?.message || '',
-        stack: e?.stack || '',
-        detail: `Error: Failed to get Pie ethereum/makerdao`,
-        endpoint: 'tvl',
-      });
-    }
   }
 
   formatter.convertBalancesToFixed(balances);
