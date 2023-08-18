@@ -10,7 +10,11 @@ const GRAPHQL_API =
 const QUERY_SIZE = 200;
 const POOLS = gql`
   query getPools($block: Int) {
-    liquidityPools(first: ${QUERY_SIZE}  orderBy: totalValueLockedUSD orderDirection: desc) {
+    liquidityPools(
+      block: { number: $block }
+      first: ${QUERY_SIZE}  
+      orderBy: totalValueLockedUSD 
+      orderDirection: desc) {
     inputTokens {
       id
     }
