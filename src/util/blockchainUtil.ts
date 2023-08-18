@@ -1644,7 +1644,8 @@ async function getDecodedLogsParameters(
   toBlock: number,
   topic: string,
   target: string,
-  typesArray: { type: string; name: string }[],
+  indexedKey: string,
+  dataTypesArray: { type: string; name: string }[],
   web3: Web3,
   batchSize = 10000,
   chunkSize = 2,
@@ -1663,11 +1664,14 @@ async function getDecodedLogsParameters(
     const chunkLogs = await Promise.all(chunk);
 
     chunkLogs.forEach((logs) => {
-      logs.output.forEach((log: { data: string }) => {
+      logs.output.forEach((log: { topics: string[]; data: string }) => {
         const decodedLogParameters = web3.eth.abi.decodeParameters(
-          typesArray,
+          dataTypesArray,
           log.data,
         );
+        if (indexedKey) {
+          decodedLogParameters[indexedKey] = `0x${log.topics[1].slice(26)}`;
+        }
         decodedLogsParameters.push(decodedLogParameters);
       });
     });
