@@ -23,18 +23,26 @@ async function tvl(params: ITvlParams): Promise<any[]> {
     };
   }
 
-  /* pull melon fund holding addresses */
-  const logs = (
-    await util.getLogs(
-      Math.max(_v2Vaults.start, START_BLOCK),
-      block,
-      '0xa50560b448ad796ef60adfeffe1c19ed34daf94c2aa6905d0e209017dbc19f58',
-      DISPATCHER,
-      web3,
-    )
-  ).output;
+  const blocksLimit = 10000;
+  const poolLogs = [];
+  for (
+    let i = Math.max(START_BLOCK, _v2Vaults.start);
+    i < block;
+    i += blocksLimit
+  ) {
+    const logs = (
+      await util.getLogs(
+        i,
+        Math.min(i + blocksLimit, block),
+        '0xa50560b448ad796ef60adfeffe1c19ed34daf94c2aa6905d0e209017dbc19f58',
+        DISPATCHER,
+        web3,
+      )
+    ).output;
+    Array.prototype.push.apply(poolLogs, logs);
+  }
 
-  const vaultProxies = logs.map((log) =>
+  const vaultProxies = poolLogs.map((log) =>
     `0x${log.data.slice(64 - 40 + 2, 64 + 2)}`.toLowerCase(),
   );
 
