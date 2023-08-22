@@ -24,17 +24,22 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     };
   }
 
-  const logs = (
-    await util.getLogs(
-      Math.max(pools.start, STARTBLOCK),
-      block,
-      '0xf360b00b309dfe6565667df6b06eab15d0e0958d5e82d89a399ae7dd417b4b09',
-      CREATOR,
-      web3,
-    )
-  ).output;
+  const blocksLimit = 10000;
+  const poolLogs = [];
+  for (let i = Math.max(STARTBLOCK, pools.start); i < block; i += blocksLimit) {
+    const logs = (
+      await util.getLogs(
+        i,
+        Math.min(i + blocksLimit, block),
+        '0xf360b00b309dfe6565667df6b06eab15d0e0958d5e82d89a399ae7dd417b4b09',
+        CREATOR,
+        web3,
+      )
+    ).output;
+    Array.prototype.push.apply(poolLogs, logs);
+  }
 
-  const financialContracts = logs.map((log) =>
+  const financialContracts = poolLogs.map((log) =>
     `0x${log.topics[1].slice(64 - 40 + 2, 64 + 2)}`.toLowerCase(),
   );
 

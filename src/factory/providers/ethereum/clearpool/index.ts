@@ -25,15 +25,26 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     );
   } catch {}
 
-  const logs = await util.getLogs(
-    Math.max(START_BLOCK, poolsAndTokens.start),
-    block,
-    '0x9c5d829b9b23efc461f9aeef91979ec04bb903feb3bee4f26d22114abfc7335b',
-    POOL_FACTORY,
-    web3,
-  );
+  const blocksLimit = 10000;
+  const poolLogs = [];
+  for (
+    let i = Math.max(START_BLOCK, poolsAndTokens.start);
+    i < block;
+    i += blocksLimit
+  ) {
+    const logs = (
+      await util.getLogs(
+        i,
+        Math.min(i + blocksLimit, block),
+        '0x9c5d829b9b23efc461f9aeef91979ec04bb903feb3bee4f26d22114abfc7335b',
+        POOL_FACTORY,
+        web3,
+      )
+    ).output;
+    Array.prototype.push.apply(poolLogs, logs);
+  }
 
-  logs.output.forEach((log) => {
+  poolLogs.forEach((log) => {
     const token = `0x${log.topics[3].substring(26, 66)}`;
     const pool = `0x${log.topics[1].substring(26, 66)}`;
     if (!poolsAndTokens.tokens.includes(token)) {

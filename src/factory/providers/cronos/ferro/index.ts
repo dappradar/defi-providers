@@ -40,6 +40,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       block,
       TOPIC,
       SWAP_DEPLOYER,
+      undefined,
       typesArray,
       web3,
       LOGS_BATCH_SIZE,
