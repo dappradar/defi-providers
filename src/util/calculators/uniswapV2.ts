@@ -333,7 +333,7 @@ async function getTvl(
           token01Infos[reserve.pool_address].token0 &&
           reserve.reserve0
         ) {
-          const token = token01Infos[reserve.pool_address].token0;
+          const token = token01Infos[reserve.pool_address].token0.toLowerCase();
           if (!balances[token]) {
             balances[token] = BigNumber(0);
           }
@@ -346,7 +346,7 @@ async function getTvl(
           token01Infos[reserve.pool_address].token1 &&
           reserve.reserve1
         ) {
-          const token = token01Infos[reserve.pool_address].token1;
+          const token = token01Infos[reserve.pool_address].token1.toLowerCase();
           if (!balances[token]) {
             balances[token] = BigNumber(0);
           }
