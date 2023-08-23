@@ -3,8 +3,8 @@ import abi from './abi.json';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
-import { channel } from 'diagnostics_channel';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import { request, gql } from 'graphql-request';
 
 // cache some data
 let ctokens = {
@@ -30,6 +30,39 @@ let ctokens = {
 const UNITROLLER_ADDRESS = '0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b';
 const MONEY_MARKET_ADDRESS = '0x3FDA67f7583380E67ef93072294a7fAc882FD7E7';
 const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+
+const COMPOUND_V3_GRAPHQL_API =
+  'https://api.thegraph.com/subgraphs/name/messari/compound-v3-ethereum';
+const V3_MARKETS = gql`
+  query getMarkets($block: Int) {
+    markets(
+      block: { number: $block }
+      orderBy: totalValueLockedUSD
+      orderDirection: desc
+    ) {
+      inputToken {
+        id
+      }
+      inputTokenBalance
+      variableBorrowedTokenBalance
+      stableBorrowedTokenBalance
+    }
+  }
+`;
+
+async function addV3MarketBalances(block, balances) {
+  const requestResult = await request(COMPOUND_V3_GRAPHQL_API, V3_MARKETS, {
+    block: block,
+  });
+  requestResult.markets.forEach((market) => {
+    balances[market.inputToken.id] = BigNumber(
+      balances[market.inputToken.id] || 0,
+    )
+      .plus(market.inputTokenBalance)
+      .minus(market.variableBorrowedTokenBalance || 0)
+      .minus(market.stableBorrowedTokenBalance || 0);
+  });
+}
 
 async function getMarkets(block, chain, web3) {
   try {
@@ -97,6 +130,9 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const balances = {};
   formatter.sumMultiBalanceOf(balances, balanceResults, chain, provider);
+
+  await addV3MarketBalances(block, balances);
+
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }
