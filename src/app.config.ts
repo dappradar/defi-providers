@@ -32,6 +32,7 @@ const {
   TEZOS_NODE_URL,
   CRONOS_NODE_URL,
   ARBITRUM_NODE_URL,
+  ELYSIUM_NODE_URL,
   BASE_URL = './blockchainCache/',
   REDIS_URL,
 } = process.env;
@@ -70,6 +71,7 @@ const nodeUrls = {
   TEZOS_NODE_URL,
   CRONOS_NODE_URL,
   ARBITRUM_NODE_URL,
+  ELYSIUM_NODE_URL,
 };
 
 export { config, nodeUrls };

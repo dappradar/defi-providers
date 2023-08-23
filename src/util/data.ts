@@ -79,6 +79,10 @@ const data = {
       prefix: 'arb_',
       delay: 400,
     },
+    elysium: {
+      prefix: 'lava_',
+      delay: 400,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
