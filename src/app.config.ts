@@ -53,5 +53,6 @@ nodeUrls['TEZOS_NODE_URL'] = process.env['TEZOS_NODE_URL'];
 nodeUrls['CRONOS_NODE_URL'] = process.env['CRONOS_NODE_URL'];
 nodeUrls['ARBITRUM_NODE_URL'] = process.env['ARBITRUM_NODE_URL'];
 nodeUrls['ZKSYNC-ERA_NODE_URL'] = process.env['ZKSYNC-ERA_NODE_URL'];
+nodeUrls['ELYSIUM_NODE_URL'] = process.env['ELYSIUM_NODE_URL'];
 
 export { config, nodeUrls };
