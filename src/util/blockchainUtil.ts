@@ -4,6 +4,7 @@ import { AbiItem } from 'web3-utils';
 import { request, gql } from 'graphql-request';
 import ERC20_ABI from '../constants/abi/erc20.json';
 import UNI_ABI from '../constants/abi/uni.json';
+import SYNCSWAP_CLASSIC_POOL_ABI from '../constants/abi/syncswapClassicPoolAbi.json';
 import CURVE128_ABI from '../constants/abi/curve128.json';
 import CURVE256_ABI from '../constants/abi/curve.json';
 import ONEINCH_ABI from '../constants/abi/1inch.json';
@@ -1094,8 +1095,23 @@ async function GetUnderlyingBalance(
     const ratio = balance.div(totalSupply);
 
     try {
-      const contract = new web3.eth.Contract(UNI_ABI as AbiItem[], token);
-      const reserves = await contract.methods.getReserves().call(null, block);
+      let contract;
+      let reserves;
+      try {
+        contract = new web3.eth.Contract(UNI_ABI as AbiItem[], token);
+        reserves = await contract.methods.getReserves().call(null, block);
+      } catch (e) {
+        if ((chain = 'zksync-era')) {
+          contract = new web3.eth.Contract(
+            SYNCSWAP_CLASSIC_POOL_ABI as AbiItem[],
+            token,
+          );
+          reserves = await contract.methods.getReserves().call(null, block);
+        } else {
+          throw e;
+        }
+      }
+
       if (!underlyingData[key].token0) {
         underlyingData[key].token0 = (
           await contract.methods.token0().call()

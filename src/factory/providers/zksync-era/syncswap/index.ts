@@ -3,7 +3,7 @@ import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import CLASSIC_POOL_ABI from './classicPoolAbi.json';
+import CLASSIC_POOL_ABI from '../../../../constants/abi/syncswapClassicPoolAbi.json';
 
 const START_BLOCK = 9775;
 const FACTORIES = [
