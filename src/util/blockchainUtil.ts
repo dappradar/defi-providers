@@ -1101,15 +1101,11 @@ async function GetUnderlyingBalance(
         contract = new web3.eth.Contract(UNI_ABI as AbiItem[], token);
         reserves = await contract.methods.getReserves().call(null, block);
       } catch (e) {
-        if ((chain = 'zksync-era')) {
-          contract = new web3.eth.Contract(
-            SYNCSWAP_CLASSIC_POOL_ABI as AbiItem[],
-            token,
-          );
-          reserves = await contract.methods.getReserves().call(null, block);
-        } else {
-          throw e;
-        }
+        contract = new web3.eth.Contract(
+          SYNCSWAP_CLASSIC_POOL_ABI as AbiItem[],
+          token,
+        );
+        reserves = await contract.methods.getReserves().call(null, block);
       }
 
       if (!underlyingData[key].token0) {
