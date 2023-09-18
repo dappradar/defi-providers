@@ -1,157 +1,219 @@
+import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
-import ERC20_ABI from '../../../../constants/abi/erc20.json';
-import MakerSCDConstants from './makerdao.json';
-import MakerMCDConstants from './maker-mcd.json';
 import formatter from '../../../../util/formatter';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import { log } from '../../../../util/logger/logger';
+import ERC20_ABI from '../../../../constants/abi/erc20.json';
+import CDP_MANAGER_ABI from './abi/cdpManager.json';
+import IKL_REGISTRY_ABI from './abi/ilkRegistry.json';
+import MCD_MONITOR_V2 from './abi/mcdMonitorV2.json';
 
-async function getJoins(block, chain, provider, web3) {
-  const relyTopic =
-    '0x65fae35e00000000000000000000000000000000000000000000000000000000';
+const START_BLOCK = 14583413;
+const BLOCK_LIMIT = 10000;
 
-  // get list of auths
-  let offset = 100000;
-  const stored_log = await basicUtil.readFromCache(
-    'makerdao_log.json',
-    chain,
-    provider,
-  );
-  console.log(stored_log);
-  let i = Math.max(MakerMCDConstants.STARTBLOCK, Number(stored_log.block) || 0);
-  const logs = stored_log.data || [];
+// TO DO MOVE TO STORAGE
+const API_URL = '';
+const CONTRACTS = {
+  AutomationV1Contract: '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b',
+  McdMonitorV2: '0xa59d5E94BFE605A9a4aC7e02f5380e02061c8dd2',
+  CdpManager: '0x5ef30b9986345249bc32d8928b7ee64de9435e39',
+  IlkRegistry: '0x5a464c28d19848f44199d003bef5ecc87d090f87',
+};
 
-  for (;;) {
-    console.log(i);
-    if (i > block) {
-      break;
-    }
-    try {
-      const seperatedLogs = await web3.eth.getPastLogs({
-        fromBlock: i,
-        toBlock: Math.min(i + offset, block),
-        topics: [relyTopic],
-        address: MakerMCDConstants.VAT,
-      });
-      const tokens = seperatedLogs.map(
-        (log) => `0x${log.topics[1].substr(26)}`,
+const LOGS_TOPIC = {
+  TriggerAdded:
+    '0xcb616360dd177f28577e33576c8ac7ffcc1008cba7ac2323e0b2f170faf60bd2',
+  TriggerExecuted:
+    '0xc10f224f2f1ceab5e36f97effaa05c4b75eccbecd77b65bfb20c484de9096cdd',
+  TriggerRemoved:
+    '0xb4a1fc324bd863f8cd42582bebf2ce7f2d309c6a84bf371f28e069f95a4fa9e1',
+};
+
+async function getAutomationCdpIdList(block, chain, provider, web3) {
+  let cache: {
+    start: number;
+    cdpIdList: number[];
+  } = { start: START_BLOCK, cdpIdList: [] };
+  try {
+    cache = await basicUtil.readFromCache('cache.json', chain, provider);
+  } catch {}
+
+  const cdpIdList = new Set(cache.cdpIdList);
+
+  const triggerEvents = [];
+  for (
+    let i = Math.max(cache.start, START_BLOCK);
+    i < block;
+    i += BLOCK_LIMIT
+  ) {
+    console.log('loop', i);
+    const [triggerAddedLogs, triggerRemovedLogs, triggerExecutedLogs] =
+      await Promise.all(
+        Object.keys(LOGS_TOPIC).map((key) =>
+          util.getLogs(
+            i,
+            Math.min(i + BLOCK_LIMIT, block),
+            LOGS_TOPIC[key],
+            CONTRACTS.AutomationV1Contract,
+            web3,
+          ),
+        ),
       );
-      tokens.forEach((token) => {
-        if (!logs.includes(token)) {
-          logs.push(token);
-        }
-      });
-      i += offset;
-      if (offset < 20) {
-        offset += 2;
-      } else if (offset < 200) {
-        offset += 20;
-      } else if (offset < 2000) {
-        offset += 200;
-      } else {
-        offset += 2000;
-      }
-    } catch (e) {
-      if (offset > 2000) {
-        offset -= 2000;
-      } else if (offset > 200) {
-        offset -= 200;
-      } else if (offset > 20) {
-        offset -= 20;
-      } else if (offset > 2) {
-        offset -= 2;
-      } else {
-        break;
-      }
-    }
+
+    triggerAddedLogs.output.forEach((log) => {
+      const trigger = new BigNumber(
+        `0x${log.topics[1].substring(26, 66)}`,
+      ).toFixed();
+      const cdp = new BigNumber(
+        `0x${log.topics[3].substring(26, 66)}`,
+      ).toFixed();
+      const action = `triggerAdded`;
+
+      triggerEvents.push({ cdp, trigger, action });
+    });
+
+    triggerRemovedLogs.output.forEach((log) => {
+      const trigger = new BigNumber(
+        `0x${log.topics[2].substring(26, 66)}`,
+      ).toFixed();
+      const cdp = new BigNumber(
+        `0x${log.topics[1].substring(26, 66)}`,
+      ).toFixed();
+      const action = `triggerRemoved`;
+
+      triggerEvents.push({ cdp, trigger, action });
+    });
+
+    triggerExecutedLogs.output.forEach((log) => {
+      const trigger = new BigNumber(
+        `0x${log.topics[1].substring(26, 66)}`,
+      ).toFixed();
+      const cdp = new BigNumber(
+        `0x${log.topics[2].substring(26, 66)}`,
+      ).toFixed();
+      const action = `triggerExecuted`;
+
+      triggerEvents.push({ cdp, trigger, action });
+    });
   }
 
-  const log_data = {
-    block: undefined,
-    data: undefined,
-  };
-  log_data.block = Math.max(Number(stored_log.block) || 0, block);
-  log_data.data = [];
+  triggerEvents.sort((a, b) => a.trigger - b.trigger);
 
-  const ilkResults = await util.executeCallOfMultiTargets(
-    logs,
-    MakerMCDConstants.abi,
-    'ilk',
+  triggerEvents.forEach((event) => {
+    const { cdp, action } = event;
+    if (action === 'triggerAdded') {
+      cdpIdList.add(cdp);
+    } else if (action === 'triggerRemoved' || action === 'triggerExecuted') {
+      cdpIdList.delete(cdp);
+    }
+  });
+
+  cache.start = block;
+  cache.cdpIdList = Array.from(cdpIdList);
+  await basicUtil.saveIntoCache(cache, 'cache.json', chain, provider);
+
+  return cdpIdList;
+}
+
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
+  let balances = {};
+  if (block < START_BLOCK) {
+    return { balances };
+  }
+
+  const confirmedSummerFiMakerVaults = await fetch(API_URL).then((res) =>
+    res.json(),
+  );
+
+  const confirmedSummerFiMakerVaultsArray = [
+    ...Object.keys(confirmedSummerFiMakerVaults),
+  ];
+  const confirmedSummerFiMakerVaultsSet = new Set(
+    confirmedSummerFiMakerVaultsArray,
+  );
+
+  const cdpIdList = await getAutomationCdpIdList(block, chain, provider, web3);
+
+  [...cdpIdList].forEach((cdpId) => {
+    confirmedSummerFiMakerVaultsSet.delete(cdpId.toString());
+  });
+
+  const filteredVaultsList = [...confirmedSummerFiMakerVaultsSet].filter(
+    (i) => {
+      const [startBlock] = confirmedSummerFiMakerVaults[i];
+      return block > startBlock;
+    },
+  );
+
+  const cdpIds = [...new Set(filteredVaultsList)];
+
+  const ilkNames = await util.executeMultiCallsOfTarget(
+    CONTRACTS.CdpManager,
+    CDP_MANAGER_ABI,
+    'ilks',
+    cdpIds,
+    block,
+    chain,
+    web3,
+  );
+
+  const cdpIlkIds = {};
+  ilkNames.forEach((val, idx) => (cdpIlkIds[cdpIds[idx]] = val));
+  const ilkIds = [...new Set(ilkNames)];
+  const tokens = (
+    await util.executeMultiCallsOfTarget(
+      CONTRACTS.IlkRegistry,
+      IKL_REGISTRY_ABI,
+      'info',
+      ilkIds,
+      block,
+      chain,
+      web3,
+    )
+  ).map((i) => i[4]);
+  const decimals = await util.executeCallOfMultiTargets(
+    tokens,
+    ERC20_ABI,
+    'decimals',
     [],
     block,
     chain,
     web3,
   );
-  ilkResults.forEach((result, index) => {
-    if (result) {
-      log_data.data.push(logs[index]);
+
+  const collData = await util.executeMultiCallsOfTarget(
+    CONTRACTS.McdMonitorV2,
+    MCD_MONITOR_V2,
+    'getCdpInfo',
+    filteredVaultsList.map((i) => [i, cdpIlkIds[i]]),
+    block,
+    chain,
+    web3,
+  );
+  collData.forEach((coll, i) => {
+    const idx = ilkIds.indexOf(ilkNames[i]);
+    if (idx === -1) {
+      return;
     }
+    balances[String(tokens[idx]).toLowerCase()] = BigNumber(
+      balances[tokens[idx].toLowerCase()] || 0,
+    ).plus(coll['0'] / 10 ** (18 - decimals[idx]));
   });
 
-  await basicUtil.saveIntoCache(log_data, 'makerdao_log.json', chain, provider);
-  return log_data.data;
-}
+  const tokenBalances = {};
+  Object.keys(balances).forEach(function (key) {
+    tokenBalances[key] = BigNumber(balances[key]);
+  });
 
-async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
-  const balances = {};
-
-  const scdContract = new web3.eth.Contract(
-    ERC20_ABI,
-    MakerSCDConstants.WETH_ADDRESS,
+  balances = await util.convertToUnderlyings(
+    tokenBalances,
+    block,
+    chain,
+    provider,
+    web3,
   );
-  balances[MakerSCDConstants.WETH_ADDRESS] = new BigNumber(
-    await scdContract.methods
-      .balanceOf(MakerSCDConstants.TUB_ADDRESS)
-      .call(null, block),
-  );
-
-  if (block >= MakerMCDConstants.STARTBLOCK) {
-    let joins = await getJoins(block, chain, provider, web3);
-
-    let gemResults = await util.executeCallOfMultiTargets(
-      joins,
-      MakerMCDConstants.abi,
-      'gem',
-      [],
-      block,
-      chain,
-      web3,
-    );
-
-    joins = joins.filter((_, index) => gemResults[index]);
-    gemResults = gemResults.filter((_, index) => gemResults[index]);
-    const balanceResults = await util.getTokenBalancesOfHolders(
-      joins,
-      gemResults,
-      block,
-      chain,
-      web3,
-    );
-
-    formatter.sumMultiBalanceOf(balances, balanceResults);
-
-    try {
-      const pie = await new web3.eth.Contract(
-        MakerMCDConstants.abi,
-        MakerMCDConstants.POT,
-      ).methods
-        .Pie()
-        .call(null, block);
-      balances[MakerMCDConstants.DAI] = balances[MakerMCDConstants.DAI]
-        ? balances[MakerMCDConstants.DAI].plus(new BigNumber(pie))
-        : new BigNumber(pie);
-    } catch (e) {
-      log.error({
-        message: e?.message || '',
-        stack: e?.stack || '',
-        detail: `Error: Failed to get Pie ethereum/makerdao`,
-        endpoint: 'tvl',
-      });
-    }
-  }
 
   formatter.convertBalancesToFixed(balances);
   return { balances };
