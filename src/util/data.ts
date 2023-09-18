@@ -83,6 +83,10 @@ const data = {
       prefix: 'zke_',
       delay: 200,
     },
+    elysium: {
+      prefix: 'lava_',
+      delay: 400,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',

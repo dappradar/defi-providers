@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
 import {
   GetPoolAndTokenVolumesReply,
@@ -28,7 +28,7 @@ interface IProvider {
 }
 
 @Injectable()
-export class FactoryService {
+export class FactoryService implements OnModuleInit {
   constructor(private readonly web3ProviderService: Web3ProviderService) {}
   async getTvl(
     req: GetTvlRequest,
@@ -122,5 +122,15 @@ export class FactoryService {
     path: string,
   ): string {
     return `${__dirname}/providers/${chain}/${provider}/${path}`;
+  }
+
+  async onModuleInit() {
+    console.log(config);
+    console.log(JSON.stringify(config));
+    log.info({
+      message: `Node Urls: ${JSON.stringify(nodeUrls)} config: 
+      ${JSON.stringify(config)}`,
+      endpoint: 'printenv',
+    });
   }
 }
