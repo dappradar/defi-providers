@@ -1,13 +1,15 @@
 import BigNumber from 'bignumber.js';
-import { request, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
 import basicUtil from '../basicUtil';
+import { parse } from 'graphql';
+import { print } from 'graphql/language/printer';
 import { ITvlReturn } from '../../interfaces/ITvl';
 import { log } from '../logger/logger';
 
 const QUERY_SIZE = 400;
 const POOLS_QUERY = gql`
   query getPools($block: Int!, $skip: Int!) {
-    pools(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}, orderBy: totalValueLockedUSD, orderDirection: desc) {
+    pools(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}, orderBy: totalValueLockedUSD, orderDirection: desc, subgraphError: allow) {
       id
       token0 {
         id
@@ -32,10 +34,18 @@ async function getPools(
 ) {
   let data;
   try {
-    data = await request(endpoint, POOLS_QUERY, {
-      block: block,
-      skip: skip,
-    });
+    data = (
+      await (
+        await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: print(parse(POOLS_QUERY)),
+            variables: { block: block, skip: skip },
+          }),
+        })
+      ).json()
+    ).data;
   } catch (e) {
     try {
       log.warning({
@@ -44,10 +54,21 @@ async function getPools(
         detail: `Error: tvl of ${chain}/${provider}`,
         endpoint: 'uniswapV3.getPools',
       });
-      data = await request(endpoint, POOLS_QUERY, {
-        block: block - basicUtil.getDelay(chain),
-        skip: skip,
-      });
+      data = (
+        await (
+          await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query: print(parse(POOLS_QUERY)),
+              variables: {
+                block: block - basicUtil.getDelay(chain),
+                skip: skip,
+              },
+            }),
+          })
+        ).json()
+      ).data;
     } catch (e) {
       log.error({
         message: e?.message || '',
