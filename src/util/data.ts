@@ -87,6 +87,10 @@ const data = {
       prefix: 'lava_',
       delay: 400,
     },
+    base: {
+      prefix: 'base_',
+      delay: 400,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
