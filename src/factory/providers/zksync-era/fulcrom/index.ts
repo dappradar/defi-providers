@@ -4,8 +4,8 @@ import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import ABI from '../../../../constants/abi/fulcrom.json';
 
-const START_BLOCK = 7154232;
-const VAULT_ADDRESS = '0x8c7ef34aa54210c76d6d5e475f43e0c11f876098';
+const START_BLOCK = 14743823;
+const VAULT_ADDRESS = '0x7d5b0215EF203D0660BC37d5D09d964fd6b55a1E';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
