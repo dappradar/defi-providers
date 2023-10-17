@@ -12,7 +12,8 @@
     "polygon": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
     "cronos": "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23",
     "arbitrum": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-    "zksync-era": "0x5aea5775959fbc2557cc8789bc1bf90a239d9a91"
+    "zksync-era": "0x5aea5775959fbc2557cc8789bc1bf90a239d9a91",
+    "base": "0x4200000000000000000000000000000000000006"
   },
   "BULK_BALANCE_ADDRESSES": {
     "ethereum": "0xb173393e08496209ad1cd9d57c769de76bdcea5a",
@@ -27,7 +28,8 @@
     "polygon": "0xb81bB004BD9ccc0EEd7a1A60D3D8eD8DC52D11d8",
     "cronos": "0x63aCCa16a1fcfD406d3EA8Ec5137884861863828",
     "arbitrum": "0x63acca16a1fcfd406d3ea8ec5137884861863828",
-    "zksync-era": "0x19b86d343394427ccc6c82c921b68305feaee833"
+    "zksync-era": "0x19b86d343394427ccc6c82c921b68305feaee833",
+    "base": "0x63acca16a1fcfd406d3ea8ec5137884861863828"
   },
   "BULK_BALANCE_DEPOLYED": {
     "ethereum": 11439603,
@@ -42,7 +44,8 @@
     "polygon": 16836227,
     "cronos": 7617073,
     "arbitrum": 86897490,
-    "zksync-era": 6397812
+    "zksync-era": 6397812,
+    "base": 4724504
   },
   "BULK_RESERVES_ADDRESSES": {
     "ethereum": "0x4261b012f3d0d752ee9d738a4664df7117a148ab",
@@ -57,7 +60,8 @@
     "polygon": "0x92E144b73abb3b1aA4BEA18d4dbc142F95a3E56a",
     "cronos": "0xBb90C1A84F51d57c2046741B15156810D20f3592",
     "arbitrum": "0xbb90c1a84f51d57c2046741b15156810d20f3592",
-    "zksync-era": "0xe7b54a13e456532675b4edc360a1c2818ef9f707"
+    "zksync-era": "0xe7b54a13e456532675b4edc360a1c2818ef9f707",
+    "base": "0xbb90c1a84f51d57c2046741b15156810d20f3592"
   },
   "BULK_RESERVES_DEPOLYED": {
     "ethereum": 11438212,
@@ -72,7 +76,8 @@
     "polygon": 15823447,
     "cronos": 7617098,
     "arbitrum": 86898048,
-    "zksync-era": 6398730
+    "zksync-era": 6398730,
+    "base": 4729900
   },
   "MULTIBALANCES_ADDRESSES": {
     "ethereum": "0x09b6fd79f8c6bdaba4d94731f0fc90edd15742af",
@@ -87,7 +92,8 @@
     "polygon": "0x3e9E7c58dc5f5b25DA878790bed0E17Ea4290278",
     "cronos": "0x5a3CF2C199bBB28cD0A2f380d1f96B8d73D74B78",
     "arbitrum": "0x47012c5a5a20893f342d279ddc6fd0847f196898",
-    "zksync-era": "0x7d1f4f2bc62bd7e7d1208ae4d8f3ad1b35467244"
+    "zksync-era": "0x7d1f4f2bc62bd7e7d1208ae4d8f3ad1b35467244",
+    "base": "0x7d9965aee6b51c944b20beb8954fe5018781fb19"
   },
   "MULTIBALANCES_DEPOLYED": {
     "ethereum": 11606340,
@@ -102,7 +108,8 @@
     "polygon": 16354960,
     "cronos": 7617273,
     "arbitrum": 86899235,
-    "zksync-era": 6399985
+    "zksync-era": 6399985,
+    "base": 4729971
   },
   "BULK_METADATA_ADDRESSES": {
     "ethereum": "0x570B73444cC1077398f83777f34Bd672a50235cD",
@@ -117,7 +124,8 @@
     "polygon": "0x06A9b1F8f87968137D57D53eA40fF1Bfa7Be6dcA",
     "cronos": "0x7d9965AeE6b51C944b20beb8954Fe5018781fb19",
     "arbitrum": "0x7d9965aee6b51c944b20beb8954fe5018781fb19",
-    "zksync-era": "0x9ccc6685b99cc682e432441f704775550d8c5664"
+    "zksync-era": "0x9ccc6685b99cc682e432441f704775550d8c5664",
+    "base": "0x47012c5a5a20893f342d279ddc6fd0847f196898"
   },
   "BULK_METADATA_DEPOLYED": {
     "ethereum": 12825801,
@@ -132,7 +140,8 @@
     "polygon": 16851733,
     "cronos": 7617255,
     "arbitrum": 86899489,
-    "zksync-era": 6399344
+    "zksync-era": 6399344,
+    "base": 4729939
   },
   "MULTICALL_ADDRESSES": {
     "ethereum": "0x092C637b120Ad6C5DF6CFc2b2A9b284ed2E5b11F",
@@ -147,7 +156,8 @@
     "polygon": "0x5b0a546efac0ce2914f3ce163b6379bceef9b50a",
     "cronos": "0xD3C43fb98512E5965034087b891F4460223F8940",
     "arbitrum": "0x5a3cf2c199bbb28cd0a2f380d1f96b8d73d74b78",
-    "zksync-era": "0x9ce596f561ca117591bfb0f6f9a20f721290976b"
+    "zksync-era": "0x9ce596f561ca117591bfb0f6f9a20f721290976b",
+    "base": "0x5a3cf2c199bbb28cd0a2f380d1f96b8d73d74b78"
   },
   "MULTICALL_DEPOLYED": {
     "ethereum": 12949381,
@@ -162,6 +172,7 @@
     "polygon": 17554810,
     "cronos": 7617284,
     "arbitrum": 86899646,
-    "zksync-era": 6400154
+    "zksync-era": 6400154,
+    "base": 4730173
   }
 }
