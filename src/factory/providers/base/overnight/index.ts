@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 
 const START_BLOCK = 2176086;
 const USD_MARK_TO_MARKET_ADDRESS = '0x1F4947Cd5A5c058DD5EA6Fd1CCd5c311aDa9E6Fb';
-const USDbc = '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA';
+const USDplus = '0xb79dd08ea68a908a97220c76d19a6aa9cbde4376';
 const DAI_ARK_TO_MARKET_ADDRESS = '0x7a62315519A39d562c1E49EB35b300d2E6742f86';
 const DAI = '0x50c5725949a6f0c72e6c4a641f24049a917db0cb';
 const ABI = [
@@ -50,7 +50,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       web3,
     ),
   ]);
-  balances[USDbc] = new BigNumber(usdcBalance).toFixed();
+  balances[USDplus] = new BigNumber(usdcBalance).toFixed();
   balances[DAI] = new BigNumber(daiBalance).toFixed();
 
   return { balances };
