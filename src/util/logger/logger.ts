@@ -10,7 +10,6 @@ interface ILogger {
 
 configure({
   appenders: {
-    console: { type: 'console' },
     logstash: {
       type: `${__dirname}/appenders/logstashAppender`,
     },
@@ -25,7 +24,7 @@ configure({
   },
   categories: {
     default: {
-      appenders: ['console', '_slackError', '_logstash'],
+      appenders: ['_slackError', '_logstash'],
       level: 'all',
     },
   },
