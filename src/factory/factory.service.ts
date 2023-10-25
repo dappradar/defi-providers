@@ -44,8 +44,6 @@ export class FactoryService implements OnModuleInit {
     const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
     const web3 = await this.web3ProviderService.getWeb3(req?.chain);
     let tvlData;
-    console.log('req', req);
-
     if (
       req?.autointegrationParams?.autointegrated === 'false' ||
       req?.autointegrationParams?.autointegrated === undefined
@@ -125,8 +123,6 @@ export class FactoryService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    console.log(config);
-    console.log(JSON.stringify(config));
     log.info({
       message: `Node Urls: ${JSON.stringify(nodeUrls)} config: 
       ${JSON.stringify(config)}`,
