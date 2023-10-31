@@ -726,6 +726,16 @@ describe('providers', () => {
         '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72': '3665671212212286826786',
       });
     });
+    it('paradex block: 18471533', async () => {
+      const { balances } = await factoryService.getTvl({
+        provider: 'paradex',
+        chain: 'ethereum',
+        query: { block: '18471533', date: '0' },
+      });
+      expect(balances).toEqual({
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '2104887566406',
+    });
+    });
     it('yearn block: 16145650', async () => {
       const { balances } = await factoryService.getTvl({
         provider: 'yearn',
