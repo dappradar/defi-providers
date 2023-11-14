@@ -21,7 +21,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     util.getTokenBalances(Treasury, [USDC_TOKEN], block, chain, web3),
     util.getTokenBalances(Staking, [CNG_TOKEN], block, chain, web3),
   ]);
-  // console.log(tokenBalances[0], tokenBalances[1], tokenBalances[2]);
 
   const balances = {};
   formatter.sumMultiBalanceOf(balances, tokenBalances[0]);
