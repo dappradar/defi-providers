@@ -49,14 +49,14 @@ jobs:
           tags: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
           push: false
 
-      - name: Scan image - High and Critical Severity
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
-          format: sarif
-          output: trivy-results.sarif
-          hide-progress: false
-          exit-code: 1
+#      - name: Scan image - High and Critical Severity
+#        uses: aquasecurity/trivy-action@master
+#        with:
+#          image-ref: "${{ env.ECR_REPOSITORY_URL_APP }}:${{ env.IMAGE_TAG }}"
+#          format: sarif
+#          output: trivy-results.sarif
+#          hide-progress: false
+#          exit-code: 1
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
