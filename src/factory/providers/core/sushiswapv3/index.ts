@@ -5,7 +5,7 @@ import { log } from '../../../../util/logger/logger';
 import PAIR_ABI from '../../../../constants/abi/uni.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const V3_START_BLOCK = 8313215;
+const V3_START_BLOCK = 5211850;
 const V3_FACTORY_ADDRESS = '0xc35dadb65012ec5796536bd9864ed8773abc74c4';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
