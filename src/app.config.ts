@@ -55,5 +55,6 @@ nodeUrls['ARBITRUM_NODE_URL'] = process.env['ARBITRUM_NODE_URL'];
 nodeUrls['ZKSYNC-ERA_NODE_URL'] = process.env['ZKSYNC-ERA_NODE_URL'];
 nodeUrls['ELYSIUM_NODE_URL'] = process.env['ELYSIUM_NODE_URL'];
 nodeUrls['BASE_NODE_URL'] = process.env['BASE_NODE_URL'];
+nodeUrls['CORE_NODE_URL'] = process.env['CORE_NODE_URL'];
 
 export { config, nodeUrls };

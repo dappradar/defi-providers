@@ -91,6 +91,10 @@ const data = {
       prefix: 'base_',
       delay: 400,
     },
+    core: {
+      prefix: 'core_',
+      delay: 400,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
