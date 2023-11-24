@@ -10,6 +10,7 @@ const STAKING_CONTRACT = '0xbde345771eb0c6adebc54f41a169ff6311fe096f';
 const VELOCORE_TOKEN = '0x85d84c774cf8e9ff85342684b0e795df72a24908';
 const FACTORY_ADDRESS_V2 = '0xf55150000aac457eCC88b34dA9291e3F6E7DB165';
 const VAULT_ADDRESS_V2 = '0xf5E67261CB357eDb6C7719fEFAFaaB280cB5E2A6';
+const E_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -51,9 +52,13 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         .concat(wombatGauges)
         .map((g) => g.poolData.listedTokens)
         .flat()
-        .map((i: string) => '0x' + i.slice(2 + 24)),
+        .map((i: string) => '0x' + i.slice(2 + 24))
+        .filter((address) => address !== E_ADDRESS),
     ),
   ];
+
+  const balance = await web3.eth.getBalance(VAULT_ADDRESS_V2, block);
+  balances['eth'] = balance;
 
   const tokenBalances = await util.getTokenBalances(
     VAULT_ADDRESS_V2,
