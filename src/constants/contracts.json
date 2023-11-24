@@ -32,7 +32,8 @@
     "arbitrum": "0x63acca16a1fcfd406d3ea8ec5137884861863828",
     "zksync-era": "0x19b86d343394427ccc6c82c921b68305feaee833",
     "base": "0x63acca16a1fcfd406d3ea8ec5137884861863828",
-    "core": "0xad4E66ac498FD091Af2E6185f204654B6Ac7bFcc"
+    "core": "0xad4E66ac498FD091Af2E6185f204654B6Ac7bFcc",
+    "linea": "0x63aCCa16a1fcfD406d3EA8Ec5137884861863828"
   },
   "BULK_BALANCE_DEPOLYED": {
     "ethereum": 11439603,
@@ -49,7 +50,8 @@
     "arbitrum": 86897490,
     "zksync-era": 6397812,
     "base": 4724504,
-    "core": 7653313
+    "core": 7653313,
+    "linea": 957303
   },
   "BULK_RESERVES_ADDRESSES": {
     "ethereum": "0x4261b012f3d0d752ee9d738a4664df7117a148ab",
@@ -66,7 +68,8 @@
     "arbitrum": "0xbb90c1a84f51d57c2046741b15156810d20f3592",
     "zksync-era": "0xe7b54a13e456532675b4edc360a1c2818ef9f707",
     "base": "0xbb90c1a84f51d57c2046741b15156810d20f3592",
-    "core": "0xc79D535188b27C8f7f3011931f7417A584b237Fc"
+    "core": "0xc79D535188b27C8f7f3011931f7417A584b237Fc",
+    "linea": "0xBb90C1A84F51d57c2046741B15156810D20f3592"
   },
   "BULK_RESERVES_DEPOLYED": {
     "ethereum": 11438212,
@@ -83,7 +86,8 @@
     "arbitrum": 86898048,
     "zksync-era": 6398730,
     "base": 4729900,
-    "core": 7653332
+    "core": 7653332,
+    "linea": 957341
   },
   "MULTIBALANCES_ADDRESSES": {
     "ethereum": "0x09b6fd79f8c6bdaba4d94731f0fc90edd15742af",
@@ -100,7 +104,8 @@
     "arbitrum": "0x47012c5a5a20893f342d279ddc6fd0847f196898",
     "zksync-era": "0x7d1f4f2bc62bd7e7d1208ae4d8f3ad1b35467244",
     "base": "0x7d9965aee6b51c944b20beb8954fe5018781fb19",
-    "core": "0x73AAB8664A7213517ecF93443EB3a2A6137fC892"
+    "core": "0x73AAB8664A7213517ecF93443EB3a2A6137fC892",
+    "linea": "0x7d9965AeE6b51C944b20beb8954Fe5018781fb19"
   },
   "MULTIBALANCES_DEPOLYED": {
     "ethereum": 11606340,
@@ -117,7 +122,8 @@
     "arbitrum": 86899235,
     "zksync-era": 6399985,
     "base": 4729971,
-    "core": 7653372
+    "core": 7653372,
+    "linea": 957390
   },
   "BULK_METADATA_ADDRESSES": {
     "ethereum": "0x570B73444cC1077398f83777f34Bd672a50235cD",
@@ -134,7 +140,8 @@
     "arbitrum": "0x7d9965aee6b51c944b20beb8954fe5018781fb19",
     "zksync-era": "0x9ccc6685b99cc682e432441f704775550d8c5664",
     "base": "0x47012c5a5a20893f342d279ddc6fd0847f196898",
-    "core": "0x6679aA0f478293eA24614f30f4eC23e855747bEB"
+    "core": "0x6679aA0f478293eA24614f30f4eC23e855747bEB",
+    "linea": "0x47012c5a5A20893f342d279DdC6Fd0847f196898"
   },
   "BULK_METADATA_DEPOLYED": {
     "ethereum": 12825801,
@@ -151,7 +158,8 @@
     "arbitrum": 86899489,
     "zksync-era": 6399344,
     "base": 4729939,
-    "core": 7653353
+    "core": 7653353,
+    "linea": 957366
   },
   "MULTICALL_ADDRESSES": {
     "ethereum": "0x092C637b120Ad6C5DF6CFc2b2A9b284ed2E5b11F",
@@ -168,7 +176,8 @@
     "arbitrum": "0x5a3cf2c199bbb28cd0a2f380d1f96b8d73d74b78",
     "zksync-era": "0x9ce596f561ca117591bfb0f6f9a20f721290976b",
     "base": "0x5a3cf2c199bbb28cd0a2f380d1f96b8d73d74b78",
-    "core": "0x97fFB44f17018475260332dcc3f4D9C45D498514"
+    "core": "0x97fFB44f17018475260332dcc3f4D9C45D498514",
+    "linea": "0x5a3CF2C199bBB28cD0A2f380d1f96B8d73D74B78"
   },
   "MULTICALL_DEPOLYED": {
     "ethereum": 12949381,
@@ -185,6 +194,7 @@
     "arbitrum": 86899646,
     "zksync-era": 6400154,
     "base": 4730173,
-    "core": 7653400
+    "core": 7653400,
+    "linea": 957405
   }
 }
