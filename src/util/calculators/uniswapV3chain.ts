@@ -6,6 +6,11 @@ import PAIR_ABI from '../../constants/abi/uni.json';
 import { IBalances } from '../../interfaces/ITvl';
 import Web3 from 'web3';
 
+const UNISWAP_TOPIC =
+  '0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118';
+const ALGEBRA_TOPIC =
+  '0x91ccaa7a278130b65168c3a0c8d3bcae84cf5e43704342bd3ec0b59e59c036db';
+
 /**
  * Gets TVL of Uniswap V2 (or it's clone) using factory address
  *
@@ -15,6 +20,7 @@ import Web3 from 'web3';
  * @param chain - EVM chain name (providers parent folder name)
  * @param provider - the provider folder name
  * @param web3 - The Web3 object
+ * @param algebra - true if algebra methods are used
  * @returns The object containing object with token addresses and their locked values and object with pool balances
  *
  */
@@ -25,8 +31,16 @@ async function getTvl(
   chain: string,
   provider: string,
   web3: Web3,
+  isAlgebra = false,
 ): Promise<IBalances> {
   const balances = {};
+
+  let topic: string;
+  if (isAlgebra) {
+    topic = ALGEBRA_TOPIC;
+  } else {
+    topic = UNISWAP_TOPIC;
+  }
 
   let v3Pairs = { block: startBlock, pairs: [], token01: [] };
   try {
@@ -50,7 +64,7 @@ async function getTvl(
         await util.getLogs(
           i,
           Math.min(block, i + offset),
-          '0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118',
+          topic,
           factoryAddress,
           web3,
         )
@@ -93,7 +107,12 @@ async function getTvl(
   pairAddresses = pairAddresses.concat(
     logs
       .map((log) => {
-        let pairAddress = `0x${log.data.slice(start, end)}`;
+        let pairAddress: string;
+        if (isAlgebra) {
+          pairAddress = `0x${log.data.slice(-40)}`;
+        } else {
+          pairAddress = `0x${log.data.slice(start, end)}`;
+        }
         pairAddress = pairAddress.toLowerCase();
 
         pairs[pairAddress] = {
