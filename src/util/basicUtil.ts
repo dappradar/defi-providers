@@ -16,7 +16,7 @@ function basicUtil() {
   }
 
   function getDelay(chain) {
-    return data.CHAINS[chain].delay || DEFAULT_DELAY;
+    return data.CHAINS[chain]?.delay || DEFAULT_DELAY;
   }
 
   async function saveIntoCache(data, fileName, chain, provider) {
