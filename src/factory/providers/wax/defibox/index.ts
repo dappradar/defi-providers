@@ -9,6 +9,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   if (block < START_BLOCK) {
     return {};
   }
+
   const swap = (await axios.get(END_POINT + 'swap/get24HInfo')).data;
   const balances = { wax: (Number(swap.data.waxBalance) * 2).toFixed() }; // swap TVL (dual sided 50/50 AMM pool)
   formatter.convertBalancesToFixed(balances);
