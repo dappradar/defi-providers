@@ -7,6 +7,7 @@ import { Solana } from './solana';
 import { Stacks } from './stacks';
 import { Tezos } from './tezos';
 import Web3 from 'web3';
+import { Wax } from './wax';
 
 const webSocketConfig = {
   timeout: 60000,
@@ -34,6 +35,7 @@ export class Web3ProviderService {
     private readonly solana: Solana,
     private readonly stacks: Stacks,
     private readonly tezos: Tezos,
+    private readonly wax: Wax,
   ) {}
 
   async getWeb3(chain = 'ethereum') {
@@ -64,6 +66,10 @@ export class Web3ProviderService {
       }
       case 'near': {
         web3 = { eth: this.near };
+        break;
+      }
+      case 'wax': {
+        web3 = { eth: this.wax };
         break;
       }
       case 'solana': {
