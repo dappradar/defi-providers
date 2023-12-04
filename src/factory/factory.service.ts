@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import BigNumber from 'bignumber.js';
 import {
   GetPoolAndTokenVolumesReply,
@@ -28,7 +28,7 @@ interface IProvider {
 }
 
 @Injectable()
-export class FactoryService implements OnModuleInit {
+export class FactoryService {
   constructor(private readonly web3ProviderService: Web3ProviderService) {}
   async getTvl(
     req: GetTvlRequest,
@@ -44,6 +44,8 @@ export class FactoryService implements OnModuleInit {
     const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
     const web3 = await this.web3ProviderService.getWeb3(req?.chain);
     let tvlData;
+    console.log('req', req);
+
     if (
       req?.autointegrationParams?.autointegrated === 'false' ||
       req?.autointegrationParams?.autointegrated === undefined
@@ -120,13 +122,5 @@ export class FactoryService implements OnModuleInit {
     path: string,
   ): string {
     return `${__dirname}/providers/${chain}/${provider}/${path}`;
-  }
-
-  async onModuleInit() {
-    log.info({
-      message: `Node Urls: ${JSON.stringify(nodeUrls)} config: 
-      ${JSON.stringify(config)}`,
-      endpoint: 'printenv',
-    });
   }
 }

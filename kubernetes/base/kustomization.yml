@@ -5,4 +5,4 @@ resources:
 - service.yml
 - ingress.yml
 - secrets.yml
-- redis.yml
+# - redis.yml
