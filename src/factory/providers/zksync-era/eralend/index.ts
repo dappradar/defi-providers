@@ -21,6 +21,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
+
   const tokenBalances = {};
   Object.keys(balances).forEach(function (key) {
     tokenBalances[key] = BigNumber(balances[key]);
