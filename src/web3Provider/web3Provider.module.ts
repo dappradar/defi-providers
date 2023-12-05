@@ -6,6 +6,7 @@ import { Solana } from './solana';
 import { Stacks } from './stacks';
 import { Near } from './near';
 import { Tezos } from './tezos';
+import { Wax } from './wax';
 
 @Module({
   exports: [Web3ProviderService],
@@ -17,6 +18,7 @@ import { Tezos } from './tezos';
     Solana,
     Stacks,
     Tezos,
+    Wax,
   ],
 })
 export class Web3ProviderModule {}
