@@ -19,10 +19,10 @@ import * as autointegration from '../util/autointegration';
 
 interface IProvider {
   tvl: ({ web3, block, chain, provider, date }) => Promise<GetTvlReply>;
-  getPoolVolumes: ({ block, chain, provider, pools }) => Promise<{
+  getPoolVolumes: ({ web3, block, chain, provider, pools }) => Promise<{
     [key: string]: PoolVolume;
   }>;
-  getTokenVolumes: ({ block, chain, provider, tokens }) => Promise<{
+  getTokenVolumes: ({ web3, block, chain, provider, tokens }) => Promise<{
     [key: string]: TokenVolume;
   }>;
 }
@@ -82,14 +82,19 @@ export class FactoryService {
     if (req.block === undefined) {
       throw new RpcException('Block is undefined');
     }
+    if (this.web3ProviderService.checkNodeUrl(req?.chain)) {
+      throw new RpcException('Node URL is not provided');
+    }
 
     const providerService: IProvider = await import(
       this.getProviderServicePath(req.chain, req.provider, 'index')
     );
 
     const block = parseInt(req.block) - basicUtil.getDelay(req.chain);
+    const web3 = await this.web3ProviderService.getWeb3(req?.chain);
 
     const poolVolumes = await providerService.getPoolVolumes({
+      web3,
       chain: req.chain,
       provider: req.provider,
       block,
@@ -103,6 +108,7 @@ export class FactoryService {
     }
 
     const tokenVolumes = await providerService.getTokenVolumes({
+      web3,
       chain: req.chain,
       provider: req.provider,
       block,

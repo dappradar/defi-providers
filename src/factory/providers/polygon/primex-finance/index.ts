@@ -3,32 +3,22 @@ import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import BUCKETS_FACTORY_ABI from './abi/bucketsFactory.json';
 import BUCKET_ABI from './abi/bucket.json';
-
-const START_BLOCK = 48893377;
-const BUCKETS_FACTORY_ADDRESS = '0x7E6915D307F434E4171cCee90e180f5021c60089';
-const POSITION_MANAGER_ADDRESS = '0x02bcaA4633E466d151b34112608f60A82a4F6035';
-const TRADER_BALANCE_VAULT_ADDRESS =
-  '0x0801896C67CF024606BcC92bd788d6Eb077CC74F';
-const DEFAULT_TOKENS = {
-  WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  WBTC: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
-  WMATIC: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-  USDC: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-  USDT: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-  EPMX: '0xDc6D1bd104E1efa4A1bf0BBCf6E0BD093614E31A',
-};
-const AAVE_TOKENS = {
-  ['0x7ceb23fd6bc0add59e62ac25578270cff1b9f619']:
-    '0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8',
-  ['0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6']:
-    '0x078f358208685046a11C85e8ad32895DED33A249',
-  ['0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270']:
-    '0x6d80113e533a2C0fe82EaBD35f1875DcEA89Ea97',
-  ['0x2791bca1f2de4661ed88a30c99a7a9449aa84174']:
-    '0x625E7708f30cA75bfd92586e17077590C60eb4cD',
-  ['0xc2132d05d31c914a87c6611c10748aeb04b58e8f']:
-    '0x6ab707Aca953eDAeFBc4fD23bA73294241490620',
-};
+import request from 'graphql-request';
+import {
+  AAVE_TOKENS,
+  BUCKETS_FACTORY_ADDRESS,
+  DEFAULT_TOKENS,
+  GRAPHQL_API,
+  POSITION_MANAGER_ADDRESS,
+  START_BLOCK,
+  TRADER_BALANCE_VAULT_ADDRESS,
+  CLOSE_POSITIONS_VOLUMES_QUERY,
+  OPEN_POSITIONS_VOLUMES_QUERY,
+  PARTIALLY_CLOSE_POSITIONS_VOLUMES_QUERY,
+  SWAP_VOLUMES_QUERY,
+  QUERY_SIZE,
+} from './utils';
+import BigNumber from 'bignumber.js';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -95,4 +85,126 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   return { balances };
 }
 
-export { tvl };
+async function getTokenVolumes(params) {
+  const { web3, block } = params;
+
+  const { timestamp } = await web3.eth.getBlock(block);
+
+  const fromTimestamp = (timestamp - 60 * 60 * 24).toString();
+  const toTimestamp = timestamp.toString();
+
+  const tokenVolumes = {};
+
+  const spotSwaps = [];
+  const openPositions = [];
+  const closePositions = [];
+  const partialClosePositions = [];
+
+  for (let i = 0; ; i++) {
+    const { spotSwaps: data } = await request(
+      GRAPHQL_API,
+      SWAP_VOLUMES_QUERY(i * QUERY_SIZE),
+      {
+        fromTimestamp,
+        toTimestamp,
+      },
+    ).then((res) => res);
+
+    spotSwaps.push(...data);
+
+    if (data.length < QUERY_SIZE) break;
+  }
+
+  for (let i = 0; ; i++) {
+    const { openPositions: data } = await request(
+      GRAPHQL_API,
+      OPEN_POSITIONS_VOLUMES_QUERY(i * QUERY_SIZE),
+      {
+        fromTimestamp,
+        toTimestamp,
+      },
+    ).then((res) => res);
+
+    openPositions.push(...data);
+
+    if (data.length < QUERY_SIZE) break;
+  }
+  for (let i = 0; ; i++) {
+    const { closePositions: data } = await request(
+      GRAPHQL_API,
+      CLOSE_POSITIONS_VOLUMES_QUERY(i * QUERY_SIZE),
+      {
+        fromTimestamp,
+        toTimestamp,
+      },
+    ).then((res) => res);
+
+    closePositions.push(...data);
+
+    if (data.length < QUERY_SIZE) break;
+  }
+  for (let i = 0; ; i++) {
+    const { partialClosePositions: data } = await request(
+      GRAPHQL_API,
+      PARTIALLY_CLOSE_POSITIONS_VOLUMES_QUERY(i * QUERY_SIZE),
+      {
+        fromTimestamp,
+        toTimestamp,
+      },
+    ).then((res) => res);
+
+    partialClosePositions.push(...data);
+
+    if (data.length < QUERY_SIZE) break;
+  }
+
+  const volumes = spotSwaps
+    .map((swap) => ({
+      token: swap.tokenA.id,
+      volume: BigNumber(swap.amountSold),
+      volumeUsd: BigNumber(swap.amountSoldUSD),
+    }))
+    .concat(
+      openPositions.map((o) => ({
+        token: o.position_positionAsset.id,
+        volume: BigNumber(o.position_positionAmount),
+        volumeUsd: BigNumber(o.position_positionAmountUSD),
+      })),
+    )
+    .concat(
+      closePositions.map((o) => ({
+        token: o.soldAsset.id,
+        volume: BigNumber(o.amountOut),
+        volumeUsd: BigNumber(o.amountOutUSD),
+      })),
+    )
+    .concat(
+      partialClosePositions.map((o) => ({
+        token: o.soldAsset.id,
+        volume: BigNumber(o.amountOut),
+        volumeUsd: BigNumber(o.amountOutUSD),
+      })),
+    );
+
+  volumes.forEach((v) => {
+    if (!tokenVolumes[v.token]) {
+      tokenVolumes[v.token] = {
+        volume: v.volume,
+        volumeUsd: v.volumeUsd,
+      };
+    } else {
+      tokenVolumes[v.token] = {
+        volume: tokenVolumes[v.token].volume.plus(v.volume),
+        volumeUsd: tokenVolumes[v.token].volumeUsd.plus(v.volumeUsd),
+      };
+    }
+  });
+
+  return tokenVolumes;
+}
+
+async function getPoolVolumes() {
+  return {};
+}
+
+export { tvl, getTokenVolumes, getPoolVolumes };
