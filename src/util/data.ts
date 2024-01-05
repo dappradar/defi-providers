@@ -93,7 +93,7 @@ const data = {
     },
     core: {
       prefix: 'core_',
-      delay: 400,
+      delay: 0,
     },
   },
   FILTERS: {
