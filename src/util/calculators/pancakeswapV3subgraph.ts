@@ -12,7 +12,7 @@ const TOKENS = gql`
     }
   }
 `;
-const MAX_SKIP = 5000;
+const MAX_SKIP = 3000;
 
 /**
  * Gets TVL of Pancakeswap V3 using subgraph
@@ -28,24 +28,22 @@ async function getTvlFromSubgraph(
 ): Promise<IBalances> {
   const balances = {};
 
-  let skip = 0;
-
-  while (skip <= MAX_SKIP) {
-    const requestResult = await request(endpoint, TOKENS, {
-      block,
-      skip,
-    });
-
-    for (const token of requestResult.tokens) {
-      balances[token.id.toLowerCase()] = BigNumber(token._totalSupply);
-    }
-
-    if (requestResult.tokens.length < QUERY_SIZE) {
-      break;
-    }
-    skip += QUERY_SIZE;
+  const promises = [];
+  for (let i = 0; i <= MAX_SKIP; i += QUERY_SIZE) {
+    promises.push(
+      request(endpoint, TOKENS, {
+        block,
+        skip: i,
+      }),
+    );
   }
 
+  const results = await Promise.all(promises);
+  for (const result of results) {
+    for (const token of result.tokens) {
+      balances[token.id.toLowerCase()] = BigNumber(token._totalSupply);
+    }
+  }
   formatter.convertBalancesToFixed(balances);
 
   return balances;
