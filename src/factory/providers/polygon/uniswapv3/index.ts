@@ -6,7 +6,7 @@ import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 22757547;
 const THEGRAPTH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-polygon';
+  'https://api.thegraph.com/subgraphs/name/revert-finance/uniswap-v3-polygon';
 const QUERY_SIZE = 500;
 const TOKENS_QUERY = gql`
   query getTokens($block: Int!, $skip: Int!) {
