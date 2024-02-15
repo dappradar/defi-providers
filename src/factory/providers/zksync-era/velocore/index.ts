@@ -12,6 +12,31 @@ const FACTORY_ADDRESS_V2 = '0xf55150000aac457eCC88b34dA9291e3F6E7DB165';
 const VAULT_ADDRESS_V2 = '0xf5E67261CB357eDb6C7719fEFAFaaB280cB5E2A6';
 const E_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
+async function getAllCanonicalPools(contract, block) {
+  const MAX_POOLS_PER_CALL = 20;
+  let allPools = [];
+  let startPosition = 0;
+  let hasMorePools = true;
+
+  while (hasMorePools) {
+    const pools = await contract.methods['canonicalPools'](
+      FACTORY_ADDRESS_V2,
+      startPosition,
+      MAX_POOLS_PER_CALL,
+    ).call(null, block);
+
+    allPools = allPools.concat(pools);
+
+    if (pools.length < MAX_POOLS_PER_CALL) {
+      hasMorePools = false;
+    } else {
+      startPosition += MAX_POOLS_PER_CALL;
+    }
+  }
+
+  return allPools;
+}
+
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
@@ -36,11 +61,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const contract = new web3.eth.Contract(factoryAbi, FACTORY_ADDRESS_V2);
 
-  const canonicalPools = await contract.methods['canonicalPools'](
-    FACTORY_ADDRESS_V2,
-    0,
-    1000,
-  ).call(null, block);
+  const canonicalPools = await getAllCanonicalPools(contract, block);
 
   const wombatGauges = await contract.methods['wombatGauges'](
     FACTORY_ADDRESS_V2,

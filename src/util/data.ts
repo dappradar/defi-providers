@@ -93,7 +93,11 @@ const data = {
     },
     core: {
       prefix: 'core_',
-      delay: 400,
+      delay: 0,
+    },
+    aptos: {
+      prefix: 'apt_',
+      delay: 4600,
     },
   },
   FILTERS: {
