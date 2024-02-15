@@ -95,6 +95,10 @@ const data = {
       prefix: 'core_',
       delay: 0,
     },
+    aptos: {
+      prefix: 'apt_',
+      delay: 4600,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',

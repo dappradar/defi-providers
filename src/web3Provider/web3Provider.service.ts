@@ -8,6 +8,7 @@ import { Stacks } from './stacks';
 import { Tezos } from './tezos';
 import Web3 from 'web3';
 import { Wax } from './wax';
+import { Aptos } from './aptos';
 
 const webSocketConfig = {
   timeout: 60000,
@@ -36,6 +37,7 @@ export class Web3ProviderService {
     private readonly stacks: Stacks,
     private readonly tezos: Tezos,
     private readonly wax: Wax,
+    private readonly aptos: Aptos,
   ) {}
 
   async getWeb3(chain = 'ethereum') {
@@ -54,6 +56,7 @@ export class Web3ProviderService {
           nodeUrls[`ETHEREUM_NODE_URL`]);
 
     let web3;
+    console.log(nodeUrls[`${chain.toUpperCase()}_NODE_URL`]);
     switch (chain) {
       case 'everscale': {
         web3 = { eth: this.everscale };
@@ -78,6 +81,10 @@ export class Web3ProviderService {
       }
       case 'stacks': {
         web3 = { eth: this.stacks };
+        break;
+      }
+      case 'aptos': {
+        web3 = { eth: this.aptos };
         break;
       }
       case 'tezos': {

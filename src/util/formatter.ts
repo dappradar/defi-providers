@@ -69,6 +69,13 @@ function sum(balanceArray) {
   return balances;
 }
 
+function merge(balances, token, reserve) {
+  if (!balances[token.toLowerCase()]) {
+    balances[token.toLowerCase()] = new BigNumber(reserve);
+  } else
+    balances[token.toLowerCase()] = balances[token.toLowerCase()].plus(reserve);
+}
+
 function sumMultiBalanceOf(balances, results, chain = '', provider = '') {
   try {
     if (results.output) {
@@ -145,6 +152,7 @@ export default {
   decodeResult,
   convertBalancesToFixed,
   convertBalancesToBigNumber,
+  merge,
   sum,
   sumMultiBalanceOf,
   swapTokenAddresses,
