@@ -58,5 +58,6 @@ nodeUrls['BASE_NODE_URL'] = process.env['BASE_NODE_URL'];
 nodeUrls['CORE_NODE_URL'] = process.env['CORE_NODE_URL'];
 nodeUrls['LINEA_NODE_URL'] = process.env['LINEA_NODE_URL'];
 nodeUrls['WAX_NODE_URL'] = process.env['WAX_NODE_URL'];
+nodeUrls['APTOS_NODE_URL'] = process.env['APTOS_NODE_URL'];
 
 export { config, nodeUrls };

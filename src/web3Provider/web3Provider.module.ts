@@ -7,6 +7,7 @@ import { Stacks } from './stacks';
 import { Near } from './near';
 import { Tezos } from './tezos';
 import { Wax } from './wax';
+import { Aptos } from './aptos';
 
 @Module({
   exports: [Web3ProviderService],
@@ -19,6 +20,7 @@ import { Wax } from './wax';
     Stacks,
     Tezos,
     Wax,
+    Aptos,
   ],
 })
 export class Web3ProviderModule {}
