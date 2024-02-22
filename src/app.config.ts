@@ -1,4 +1,3 @@
-import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 dotenv.config();
 dotenv.config({ path: `.env.${process.env.APP_ENV || 'dev'}` });
@@ -14,7 +13,10 @@ const {
   LOGSTASH_HOST,
   LOGSTASH_INDEX,
   BASE_URL = './blockchainCache/',
-  REDIS_URL,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_USERNAME,
+  REDIS_PASSWORD,
 } = process.env;
 
 const config = {
@@ -28,7 +30,10 @@ const config = {
   SLACK_WEBHOOK_URL,
   SLACK_LOGGING,
   BASE_URL,
-  REDIS_URL,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_USERNAME,
+  REDIS_PASSWORD,
 };
 
 const nodeUrls: { [key: string]: string } = {};

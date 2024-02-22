@@ -1,13 +1,13 @@
 import { createClient } from 'redis';
 import { log } from './logger/logger';
 import { config } from '../app.config';
-const { REDIS_URL } = config;
+const { REDIS_HOST, REDIS_PORT, REDIS_USERNAME, REDIS_PASSWORD } = config;
 let client;
 
 function Redis() {
-  if (!client && REDIS_URL) {
+  if (!client && REDIS_HOST) {
     client = createClient({
-      url: REDIS_URL,
+      url: `redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}`,
     });
     client.connect();
   }
