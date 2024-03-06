@@ -81,6 +81,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     } catch {}
   }
 
+
   // Fetch WTZ Liquid Staking
   for (let i = 0; i < WTZ_ADDRESSES.length; i++) {
     const wtzIndex = i + globalIndex;
@@ -89,6 +90,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     balanceResults.push(wtz);
   }
   globalIndex += WTZ_ADDRESSES.length;
+
 
   // Fetch Deep Freezers TVL
   const contract = new web3.eth.Contract(null, DEEP_FREEZERS_ADDRESS);
@@ -125,7 +127,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
     globalIndex += Number(locksLength);
   } catch {}
-
+  
   await basicUtil.saveIntoCache(pools, 'cache/pools.json', chain, provider);
 
   const tokenBalances = {};
