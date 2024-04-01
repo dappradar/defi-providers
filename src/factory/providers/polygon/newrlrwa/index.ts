@@ -4,10 +4,11 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 55129443;
-const PROTOCOL_ADDRESSES = ['0xF1e1D35841Be075E10B2EeEc83CBCaC0D4FE90BA'];
+const PROTOCOL_ADDRESSES = ['0xbFeb0b78f9AB8223657B65c5aCAD846c12F8AA89'];
 const USDC_TOKEN_ADDRESS = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
 const TRACKED_TOKENS = [
-  '0x01d6d93feaa0a7157b22cf034d09807e63d1e3d8', // SUGR
+  '0x01D6D93feAA0a7157B22cF034d09807e63D1E3d8', // SUGR
+  '0x86a9B606295C8b76A0C921463Cd6312fc58483e1', // INRC
 ];
 const THEGRAPTH_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-polygon';
