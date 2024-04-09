@@ -4,8 +4,8 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 55129443;
-const PROTOCOL_ADDRESSES = ['0xbFeb0b78f9AB8223657B65c5aCAD846c12F8AA89'];
-const USDC_TOKEN_ADDRESS = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
+const PROTOCOL_ADDRESSES = ['0xbfeb0b78f9ab8223657b65c5acad846c12f8aa89'];
+const USDC_TOKEN_ADDRESS = '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359';
 const TRACKED_TOKENS = [
   '0x01d6d93feaa0a7157b22cf034d09807e63d1e3d8', // SUGR
   '0x86a9b606295c8b76a0c921463cd6312fc58483e1', // INRC
@@ -65,7 +65,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       continue;
     }
     // UniswapV3 is used to get the conversion rate of the commodity tokens to USDC
-    const conversionRate = await getConversion(block, token, USDC_TOKEN_ADDRESS);
+    const conversionRate = await getConversion(
+      block,
+      token,
+      USDC_TOKEN_ADDRESS,
+    );
     const tokenBalance = rawBalances[token];
     usdcValue += tokenBalance * conversionRate;
   }
