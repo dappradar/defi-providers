@@ -4,10 +4,10 @@ import uniswapV3 from '../../../../util/calculators/uniswapV3';
 
 const START_BLOCK = 3403624;
 const THEGRAPTH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/kalinbas/uniswap-v3-base';
+  'https://api.thegraph.com/subgraphs/name/lynnshaoyu/uniswap-v3-base';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  const { block, chain, provider } = params;
   if (block < START_BLOCK) {
     return { balances: {} };
   }
@@ -17,6 +17,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     block,
     chain,
     provider,
+    100,
   );
   formatter.convertBalancesToFixed(balances);
   return { balances, poolBalances };
