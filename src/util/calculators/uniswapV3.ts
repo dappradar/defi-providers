@@ -6,10 +6,11 @@ import { print } from 'graphql/language/printer';
 import { ITvlReturn } from '../../interfaces/ITvl';
 import { log } from '../logger/logger';
 
-const QUERY_SIZE = 400;
-const POOLS_QUERY = gql`
+const DEFAULT_QUERY_SIZE = 400;
+
+const POOLS_QUERY = (querySize: number) => gql`
   query getPools($block: Int!, $skip: Int!) {
-    pools(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}, orderBy: totalValueLockedUSD, orderDirection: desc, subgraphError: allow) {
+    pools(block: { number: $block }, skip: $skip, first: ${querySize}, orderBy: totalValueLockedUSD, orderDirection: desc, subgraphError: allow) {
       id
       token0 {
         id
@@ -29,6 +30,7 @@ async function getPools(
   endpoint: string,
   block: number,
   skip: number,
+  querySize: number,
   chain: string,
   provider: string,
 ) {
@@ -40,7 +42,7 @@ async function getPools(
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            query: print(parse(POOLS_QUERY)),
+            query: print(parse(POOLS_QUERY(querySize))),
             variables: { block: block, skip: skip },
           }),
         })
@@ -60,7 +62,7 @@ async function getPools(
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              query: print(parse(POOLS_QUERY)),
+              query: print(parse(POOLS_QUERY(querySize))),
               variables: {
                 block: block - basicUtil.getDelay(chain),
                 skip: skip,
@@ -83,11 +85,12 @@ async function getPools(
 }
 
 /**
- * Gets TVL of Uniswap V3 (or it's clone) using subgraph
+ * Gets TVL of Uniswap V3 (or its clone) using subgraph
  *
- * @param endpoint - The URL of Uniswap V3 (or it's clone) subgraph
+ * @param endpoint - The URL of Uniswap V3 (or its clone) subgraph
  * @param block - The block number for which data is requested
  * @param chain - EVM chain name (providers parent folder name)
+ * @param querySize - Optional query size, defaults to DEFAULT_QUERY_SIZE if not provided
  * @returns The object containing token addresses and their locked values
  *
  */
@@ -96,6 +99,7 @@ async function getTvlFromSubgraph(
   block: number,
   chain: string,
   provider: string,
+  querySize: number = DEFAULT_QUERY_SIZE,
 ): Promise<ITvlReturn> {
   const balances = {};
   const poolBalances = {};
@@ -103,8 +107,14 @@ async function getTvlFromSubgraph(
   try {
     let skip = 0;
     while (skip <= 5000) {
-      const pools = await getPools(endpoint, block, skip, chain, provider);
-
+      const pools = await getPools(
+        endpoint,
+        block,
+        skip,
+        querySize,
+        chain,
+        provider,
+      );
       pools.forEach((pool) => {
         const token0Balance = BigNumber(pool.totalValueLockedToken0).shiftedBy(
           Number(pool.token0.decimals),
@@ -125,8 +135,8 @@ async function getTvlFromSubgraph(
         };
       });
 
-      if (pools.length < QUERY_SIZE) break;
-      skip += QUERY_SIZE;
+      if (pools.length < querySize) break;
+      skip += querySize;
     }
   } catch (e) {
     log.error({
