@@ -8,7 +8,6 @@ const PROTOCOL_ADDRESSES = ['0xbfeb0b78f9ab8223657b65c5acad846c12f8aa89'];
 const USDC_TOKEN_ADDRESS = '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359';
 const TRACKED_TOKENS = [
   '0x01d6d93feaa0a7157b22cf034d09807e63d1e3d8', // SUGR
-  '0x86a9b606295c8b76a0c921463cd6312fc58483e1', // INRC
 ];
 const THEGRAPTH_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-polygon';
