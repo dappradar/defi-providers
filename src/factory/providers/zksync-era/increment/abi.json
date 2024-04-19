@@ -1,1160 +1,806 @@
 [
   {
+    "type": "constructor",
     "inputs": [
       {
-        "internalType": "contract IERC20Metadata",
         "name": "_ua",
-        "type": "address"
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [],
-    "name": "PRBMathSD59x18__MulInputTooSmall",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "rAbs",
-        "type": "uint256"
-      }
-    ],
-    "name": "PRBMathSD59x18__MulOverflow",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "prod1",
-        "type": "uint256"
-      }
-    ],
-    "name": "PRBMath__MulDivFixedPointOverflow",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "prod1",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "denominator",
-        "type": "uint256"
-      }
-    ],
-    "name": "PRBMath__MulDivOverflow",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_ApproveZeroAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_ClearingHouseAlreadySet",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_ClearingHouseZeroAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_CollateralAlreadyWhiteListed",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_ExcessiveCollateralWeight",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_InsufficientBalance",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_InsufficientCollateralWeight",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_InsuranceAlreadySet",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_InsuranceZeroAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_MaxCollateralAmountExceeded",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_OracleZeroAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_SenderNotClearingHouse",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_SenderNotInsurance",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_UADebt",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_UnsupportedCollateral",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_WithdrawExcessiveAmount",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Vault_WithdrawInsufficientAllowance",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "paramIndex",
-        "type": "uint8"
-      }
-    ],
-    "name": "Vault_ZeroAddressConstructor",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "tokenIdx",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Approval",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "contract IClearingHouse",
-        "name": "newClearingHouse",
-        "type": "address"
-      }
-    ],
-    "name": "ClearingHouseChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "contract IERC20Metadata",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "weight",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "maxAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "CollateralAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "contract IERC20Metadata",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMaxAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "CollateralMaxAmountChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "contract IERC20Metadata",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newWeight",
-        "type": "uint256"
-      }
-    ],
-    "name": "CollateralWeightChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Deposit",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "contract IInsurance",
-        "name": "newInsurance",
-        "type": "address"
-      }
-    ],
-    "name": "InsuranceChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "contract IOracle",
-        "name": "newOracle",
-        "type": "address"
-      }
-    ],
-    "name": "OracleChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "previousAdminRole",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "newAdminRole",
-        "type": "bytes32"
-      }
-    ],
-    "name": "RoleAdminChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      }
-    ],
-    "name": "RoleGranted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      }
-    ],
-    "name": "RoleRevoked",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "TraderBadDebtGenerated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Withdraw",
-    "type": "event"
-  },
-  {
-    "inputs": [],
+    "type": "function",
     "name": "DEFAULT_ADMIN_ROLE",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "EMERGENCY_ADMIN",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "GOVERNANCE",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "UA",
+    "inputs": [],
     "outputs": [
       {
-        "internalType": "contract IERC20Metadata",
         "name": "",
-        "type": "address"
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "UA_IDX",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract IERC20Metadata",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "weight",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "maxAmount",
-        "type": "uint256"
-      }
-    ],
+    "type": "function",
     "name": "addWhiteListedCollateral",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "contract IERC20Metadata",
         "name": "asset",
-        "type": "address"
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       },
-      {
-        "internalType": "uint256",
-        "name": "newMaxAmount",
-        "type": "uint256"
-      }
+      { "name": "weight", "type": "uint256", "internalType": "uint256" },
+      { "name": "maxAmount", "type": "uint256", "internalType": "uint256" }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "changeCollateralMaxAmount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "contract IERC20Metadata",
         "name": "asset",
-        "type": "address"
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       },
-      {
-        "internalType": "uint256",
-        "name": "newWeight",
-        "type": "uint256"
-      }
+      { "name": "newMaxAmount", "type": "uint256", "internalType": "uint256" }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "changeCollateralWeight",
+    "inputs": [
+      {
+        "name": "asset",
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
+      },
+      { "name": "newWeight", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "clearingHouse",
+    "inputs": [],
     "outputs": [
       {
-        "internalType": "contract IClearingHouse",
         "name": "",
-        "type": "address"
+        "type": "address",
+        "internalType": "contract IClearingHouse"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "subtractedAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "contract IERC20Metadata",
-        "name": "token",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "decreaseAllowance",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "receiver", "type": "address", "internalType": "address" },
       {
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
+        "name": "subtractedAmount",
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "contract IERC20Metadata",
-        "name": "depositToken",
-        "type": "address"
+        "name": "token",
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "deposit",
+    "inputs": [
+      { "name": "sender", "type": "address", "internalType": "address" },
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "depositToken",
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
+      }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenIdx",
-        "type": "uint256"
-      }
-    ],
+    "type": "function",
     "name": "getAllowance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "receiver", "type": "address", "internalType": "address" },
+      { "name": "tokenIdx", "type": "uint256", "internalType": "uint256" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenIdx",
-        "type": "uint256"
-      }
-    ],
+    "type": "function",
     "name": "getBalance",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "",
-        "type": "int256"
-      }
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "tokenIdx", "type": "uint256", "internalType": "uint256" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [{ "name": "", "type": "int256", "internalType": "int256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "getNumberOfCollaterals",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "isDiscounted",
-        "type": "bool"
-      }
-    ],
-    "name": "getReserveValue",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "",
-        "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getRoleAdmin",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
-    "name": "getTotalValueLocked",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "",
-        "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
+    "type": "function",
+    "name": "getReserveValue",
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "idx",
-        "type": "uint256"
-      }
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "isDiscounted", "type": "bool", "internalType": "bool" }
     ],
+    "outputs": [{ "name": "", "type": "int256", "internalType": "int256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRoleAdmin",
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTotalValueLocked",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "int256", "internalType": "int256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getWhiteListedCollateral",
+    "inputs": [{ "name": "idx", "type": "uint256", "internalType": "uint256" }],
     "outputs": [
       {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct IVault.Collateral",
         "components": [
           {
-            "internalType": "contract IERC20Metadata",
             "name": "asset",
-            "type": "address"
+            "type": "address",
+            "internalType": "contract IERC20Metadata"
           },
+          { "name": "weight", "type": "uint256", "internalType": "uint256" },
+          { "name": "decimals", "type": "uint8", "internalType": "uint8" },
           {
-            "internalType": "uint256",
-            "name": "weight",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint8",
-            "name": "decimals",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint256",
             "name": "currentAmount",
-            "type": "uint256"
+            "type": "uint256",
+            "internalType": "uint256"
           },
           {
-            "internalType": "uint256",
             "name": "maxAmount",
-            "type": "uint256"
+            "type": "uint256",
+            "internalType": "uint256"
           }
-        ],
-        "internalType": "struct IVault.Collateral",
-        "name": "",
-        "type": "tuple"
+        ]
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "grantRole",
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "hasRole",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "addedAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "contract IERC20Metadata",
-        "name": "token",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "increaseAllowance",
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "receiver", "type": "address", "internalType": "address" },
+      { "name": "addedAmount", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "token",
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
+      }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "insurance",
-    "outputs": [
-      {
-        "internalType": "contract IInsurance",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "isEmergencyAdmin",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "isGovernor",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
+    "outputs": [
+      { "name": "", "type": "address", "internalType": "contract IInsurance" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isEmergencyAdmin",
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isGovernor",
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "oracle",
+    "inputs": [],
     "outputs": [
-      {
-        "internalType": "contract IOracle",
-        "name": "",
-        "type": "address"
-      }
+      { "name": "", "type": "address", "internalType": "contract IOracle" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "renounceRole",
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "revokeRole",
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract IClearingHouse",
-        "name": "newClearingHouse",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "setClearingHouse",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "contract IInsurance",
-        "name": "newInsurance",
-        "type": "address"
+        "name": "newClearingHouse",
+        "type": "address",
+        "internalType": "contract IClearingHouse"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setInsurance",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "contract IOracle",
-        "name": "newOracle",
-        "type": "address"
+        "name": "newInsurance",
+        "type": "address",
+        "internalType": "contract IInsurance"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setOracle",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "liquidator",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "liquidatee",
-        "type": "address"
+        "name": "newOracle",
+        "type": "address",
+        "internalType": "contract IOracle"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "settleLiquidationOnCollaterals",
+    "inputs": [
+      { "name": "liquidator", "type": "address", "internalType": "address" },
+      { "name": "liquidatee", "type": "address", "internalType": "address" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "int256",
-        "name": "amount",
-        "type": "int256"
-      }
-    ],
+    "type": "function",
     "name": "settlePnL",
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "amount", "type": "int256", "internalType": "int256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes4",
-        "name": "interfaceId",
-        "type": "bytes4"
-      }
-    ],
+    "type": "function",
     "name": "supportsInterface",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+    "inputs": [
+      { "name": "interfaceId", "type": "bytes4", "internalType": "bytes4" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract IERC20Metadata",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "tokenToCollateralIdx",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "uint256",
         "name": "",
-        "type": "uint256"
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
+    "type": "function",
     "name": "transferUa",
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "contract IERC20Metadata",
-        "name": "withdrawToken",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "withdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" },
       {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20Metadata",
         "name": "withdrawToken",
-        "type": "address"
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "withdrawAll",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
       {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "contract IERC20Metadata",
         "name": "withdrawToken",
-        "type": "address"
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
       }
     ],
-    "name": "withdrawFrom",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "withdrawFrom",
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "receiver", "type": "address", "internalType": "address" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "withdrawToken",
+        "type": "address",
+        "internalType": "contract IERC20Metadata"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "Approval",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "receiver",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tokenIdx",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ClearingHouseChanged",
+    "inputs": [
+      {
+        "name": "newClearingHouse",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IClearingHouse"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CollateralAdded",
+    "inputs": [
+      {
+        "name": "asset",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IERC20Metadata"
+      },
+      {
+        "name": "weight",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "maxAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CollateralMaxAmountChanged",
+    "inputs": [
+      {
+        "name": "asset",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IERC20Metadata"
+      },
+      {
+        "name": "newMaxAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CollateralWeightChanged",
+    "inputs": [
+      {
+        "name": "asset",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IERC20Metadata"
+      },
+      {
+        "name": "newWeight",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Deposit",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "asset",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "InsuranceChanged",
+    "inputs": [
+      {
+        "name": "newInsurance",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IInsurance"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OracleChanged",
+    "inputs": [
+      {
+        "name": "newOracle",
+        "type": "address",
+        "indexed": false,
+        "internalType": "contract IOracle"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleAdminChanged",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "previousAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "newAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleGranted",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleRevoked",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TraderBadDebtGenerated",
+    "inputs": [
+      {
+        "name": "beneficiary",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Withdraw",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "asset",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "PRBMathSD59x18__MulInputTooSmall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PRBMathSD59x18__MulOverflow",
+    "inputs": [{ "name": "rAbs", "type": "uint256", "internalType": "uint256" }]
+  },
+  {
+    "type": "error",
+    "name": "PRBMath__MulDivFixedPointOverflow",
+    "inputs": [
+      { "name": "prod1", "type": "uint256", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "PRBMath__MulDivOverflow",
+    "inputs": [
+      { "name": "prod1", "type": "uint256", "internalType": "uint256" },
+      { "name": "denominator", "type": "uint256", "internalType": "uint256" }
+    ]
+  },
+  { "type": "error", "name": "Vault_ApproveZeroAddress", "inputs": [] },
+  { "type": "error", "name": "Vault_ClearingHouseAlreadySet", "inputs": [] },
+  { "type": "error", "name": "Vault_ClearingHouseZeroAddress", "inputs": [] },
+  {
+    "type": "error",
+    "name": "Vault_CollateralAlreadyWhiteListed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Vault_ExcessiveCollateralWeight",
+    "inputs": []
+  },
+  { "type": "error", "name": "Vault_InsufficientBalance", "inputs": [] },
+  {
+    "type": "error",
+    "name": "Vault_InsufficientCollateralWeight",
+    "inputs": []
+  },
+  { "type": "error", "name": "Vault_InsuranceAlreadySet", "inputs": [] },
+  { "type": "error", "name": "Vault_InsuranceZeroAddress", "inputs": [] },
+  {
+    "type": "error",
+    "name": "Vault_MaxCollateralAmountExceeded",
+    "inputs": []
+  },
+  { "type": "error", "name": "Vault_OracleZeroAddress", "inputs": [] },
+  { "type": "error", "name": "Vault_SenderNotClearingHouse", "inputs": [] },
+  { "type": "error", "name": "Vault_SenderNotInsurance", "inputs": [] },
+  { "type": "error", "name": "Vault_UADebt", "inputs": [] },
+  { "type": "error", "name": "Vault_UnsupportedCollateral", "inputs": [] },
+  { "type": "error", "name": "Vault_WithdrawExcessiveAmount", "inputs": [] },
+  {
+    "type": "error",
+    "name": "Vault_WithdrawInsufficientAllowance",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Vault_ZeroAddressConstructor",
+    "inputs": [
+      { "name": "paramIndex", "type": "uint8", "internalType": "uint8" }
+    ]
   }
 ]
