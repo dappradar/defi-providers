@@ -75,7 +75,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   balanceResults.unshift({ token: USDC, balance: ua['balance'] });
 
   const balances = {};
-
   formatter.sumMultiBalanceOf(balances, balanceResults);
   formatter.convertBalancesToFixed(balances);
   return { balances };
