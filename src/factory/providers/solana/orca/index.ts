@@ -4,6 +4,7 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import axios from 'axios';
 
 const WHIRLPOOL_Endpoint = 'https://api.mainnet.orca.so/v1/whirlpool/list';
+const WORK_ADDRESS = '9tnkusLJaycWpkzojAk5jmxkdkxBHRkFNVSsa7tPUgLb';
 
 async function getTokenAccountBalance(account, web3) {
   const tokenBalance = await web3.eth.call('getTokenAccountBalance', [account]);
@@ -88,6 +89,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     if (balances[token]) balances[token] = balances[token].toFixed();
   }
 
+  delete balances[WORK_ADDRESS];
   return { balances };
 }
 
