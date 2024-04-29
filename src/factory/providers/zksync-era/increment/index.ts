@@ -65,7 +65,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   // replace UA with USDC address
   const ua = balanceResults.shift();
-  balanceResults.unshift({ token: USDC, balance: ua['balance'] });
+  balanceResults.unshift({
+    token: USDC,
+    balance: ua['balance'].div(1e12).decimalPlaces(0),
+  });
 
   const balances = {};
   formatter.sumMultiBalanceOf(balances, balanceResults);
