@@ -3,24 +3,13 @@ import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
 
-const START_BLOCK = 144171029;
-const TOPICV1 =
-  '0xd0e737354a56400bbcbd585fbc60373a7d31e55ad3c2543cb7d4075d2052d576';
+const START_BLOCK = 19824726;
 const TOPICV15 =
   '0x711e3e5dab53990b08943dd1648a41413712f35934fc7775b3dc56345de0919d';
 
 const FACTORIES = [
   {
-    factory: '0x1e36749E00229759dca262cB25Ad8d9B21bEB3F5',
-    topic: TOPICV1,
-    types: [
-      { type: 'address', name: 'uniswapPool' },
-      { type: 'bool', name: 'quoteTokenIsToken0' },
-      { type: 'address', name: 'pool' },
-    ],
-  },
-  {
-    factory: '0x537A3417Fe03e28F4E9640Bece70887a6938ff92',
+    factory: '0xF8D88A292B0afa85E5Cf0d1195d0D3728Cfd7070',
     topic: TOPICV15,
     types: [
       { type: 'uint32', name: 'defaultSwapCallData' },
@@ -29,7 +18,7 @@ const FACTORIES = [
   },
 ];
 
-const BLOCK_LIMIT = 10000;
+const BLOCK_LIMIT = 1000;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
