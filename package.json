@@ -34,6 +34,7 @@
     "@taquito/taquito": "^14.2.0",
     "aptos": "^1.21.0",
     "bignumber.js": "^9.1.0",
+    "bottleneck": "^2.19.5",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "fs-extra": "^10.1.0",
