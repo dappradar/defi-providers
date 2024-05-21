@@ -6,7 +6,7 @@ import Bottleneck from 'bottleneck';
 const nodeUrl = nodeUrls.SOLANA_NODE_URL;
 
 const limiter = new Bottleneck({
-  minTime: 5000, // 5 seconds
+  minTime: 2500, // 2.5 seconds
 });
 
 @Injectable()
