@@ -1,35 +1,44 @@
 import BigNumber from 'bignumber.js';
 import { Injectable } from '@nestjs/common';
-import { nodeUrls } from '../app.config';
+import { config, nodeUrls } from '../app.config';
+import Bottleneck from 'bottleneck';
 
 const nodeUrl = nodeUrls.SOLANA_NODE_URL;
+const solanaBottleNeckMinTime = config.SOLANA_BOTTLENECK_MIN_TIME;
+
+const limiter = new Bottleneck({
+  minTime: solanaBottleNeckMinTime,
+});
 
 @Injectable()
 export class Solana {
   getNodeUrl() {
     return nodeUrl;
   }
+
   async call(method, params) {
-    try {
-      const res = await fetch(nodeUrl, {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: method,
-          params: params,
-        }),
-      }).then((res) => res.json());
+    return limiter.schedule(async () => {
+      try {
+        const res = await fetch(nodeUrl, {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: method,
+            params: params,
+          }),
+        }).then((res) => res.json());
 
-      if (res.error) {
-        throw res.error;
+        if (res.error) {
+          throw res.error;
+        }
+
+        return res.result;
+      } catch {
+        return null;
       }
-
-      return res.result;
-    } catch {
-      return null;
-    }
+    });
   }
 
   async getBlockNumber() {
@@ -63,32 +72,37 @@ export class Solana {
 class Contract {
   abi: string;
   address: string;
+
   constructor(abi, address) {
     this.abi = abi;
     this.address = address;
   }
+
   async call(method, params) {
-    try {
-      const res = await fetch(nodeUrl, {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: method,
-          params: params,
-        }),
-      }).then((res) => res.json());
+    return limiter.schedule(async () => {
+      try {
+        const res = await fetch(nodeUrl, {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: method,
+            params: params,
+          }),
+        }).then((res) => res.json());
 
-      if (res.error) {
-        throw res.error;
+        if (res.error) {
+          throw res.error;
+        }
+
+        return res.result;
+      } catch {
+        return null;
       }
-
-      return res.result;
-    } catch {
-      return null;
-    }
+    });
   }
+
   get methods() {
     return {
       totalSupply: () => {

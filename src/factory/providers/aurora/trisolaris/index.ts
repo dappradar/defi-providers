@@ -8,6 +8,7 @@ const FACTORY_ADDRESS = '0xc66f594268041db60507f00703b152492fb176e7';
 const STABLE_POOLS = [
   '0x458459e48dbac0c8ca83f8d0b7b29fefe60c3970',
   '0x13e7a001ec72ab30d66e2f386f677e25dcff5f59',
+  '0x3CE7AAD78B9eb47Fd2b487c463A17AAeD038B7EC',
 ];
 const TOKENS = [
   '0x5183e1b1091804bc2602586919e6880ac1cf2896',
@@ -41,6 +42,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   formatter.sumMultiBalanceOf(balances, stablePoolsBalances, chain, provider);
   formatter.convertBalancesToFixed(balances);
 
+  delete balances['0x0000000000000000000000000000000000000000'];
   return { balances, poolBalances };
 }
 

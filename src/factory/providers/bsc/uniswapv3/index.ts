@@ -9,7 +9,7 @@ const THEGRAPTH_ENDPOINT =
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider } = params;
   if (block < START_BLOCK) {
-    return {};
+    return { balances: {} };
   }
 
   const { balances, poolBalances } = await uniswapV3.getTvlFromSubgraph(
@@ -17,6 +17,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     block,
     chain,
     provider,
+    100,
   );
   formatter.convertBalancesToFixed(balances);
   return { balances, poolBalances };
