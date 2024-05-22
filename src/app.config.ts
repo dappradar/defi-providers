@@ -17,6 +17,7 @@ const {
   REDIS_PORT,
   REDIS_USERNAME,
   REDIS_PASSWORD,
+  SOLANA_BOTTLENECK_MIN_TIME,
 } = process.env;
 
 const config = {
@@ -34,6 +35,7 @@ const config = {
   REDIS_PORT,
   REDIS_USERNAME,
   REDIS_PASSWORD,
+  SOLANA_BOTTLENECK_MIN_TIME: Number(SOLANA_BOTTLENECK_MIN_TIME),
 };
 
 const nodeUrls: { [key: string]: string } = {};
