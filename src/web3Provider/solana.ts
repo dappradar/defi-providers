@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { Injectable } from '@nestjs/common';
-import { nodeUrls } from '../app.config';
+import { config, nodeUrls } from '../app.config';
 import Bottleneck from 'bottleneck';
 
 const nodeUrl = nodeUrls.SOLANA_NODE_URL;
+const solanaBottleNeckMinTime = config.SOLANA_BOTTLENECK_MIN_TIME;
 
 const limiter = new Bottleneck({
-  minTime: 2000, // 2 seconds
+  minTime: solanaBottleNeckMinTime,
 });
 
 @Injectable()
