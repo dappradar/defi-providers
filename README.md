@@ -513,4 +513,4 @@ assets.forEach((address, index) => {
 
 ## Contact
 
-Do not hesitate to contact us with any questions. Here is the [discord](https://discord.com/channels/415573887531745281/1059466542162653284)
+Do not hesitate to contact us with any questions. Here is the [discord](https://discord.com/channels/415573887531745281)
