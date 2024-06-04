@@ -34,8 +34,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   formatter.sumMultiBalanceOf(balances, balanceResults, chain, provider);
   formatter.convertBalancesToFixed(balances);
 
-  formatter.convertBalancesToFixed(balances);
-
   return { balances, poolBalances };
 }
 
