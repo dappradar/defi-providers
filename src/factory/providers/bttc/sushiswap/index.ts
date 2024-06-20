@@ -11,8 +11,8 @@ import basicUtil from '../../../../util/basicUtil';
 import util from '../../../../util/blockchainUtil';
 import { log } from '../../../../util/logger/logger';
 
-const START_BLOCK = 23534368;
-const FACTORY_ADDRESS = '0xee4bc42157cf65291ba2fe839ae127e3cc76f741';
+const START_BLOCK = 28215551;
+const FACTORY_ADDRESS = '0xB45e53277a7e0F1D35f2a77160e91e25507f1763';
 const BTT_ADDRESS = '0x0000000000000000000000000000000000001010';
 const WBTT_ADDRESS = '0x23181f21dea5936e24163ffaba4ea3b316b57f3c';
 
