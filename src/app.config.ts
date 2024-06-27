@@ -67,5 +67,6 @@ nodeUrls['LINEA_NODE_URL'] = process.env['LINEA_NODE_URL'];
 nodeUrls['WAX_NODE_URL'] = process.env['WAX_NODE_URL'];
 nodeUrls['APTOS_NODE_URL'] = process.env['APTOS_NODE_URL'];
 nodeUrls['BTTC_NODE_URL'] = process.env['BTTC_NODE_URL'];
+nodeUrls['XAI_NODE_URL'] = process.env['XAI_NODE_URL'];
 
 export { config, nodeUrls };
