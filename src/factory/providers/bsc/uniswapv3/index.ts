@@ -17,7 +17,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     provider,
     web3,
-    true,
   );
 
   return { balances, poolBalances: {} };
