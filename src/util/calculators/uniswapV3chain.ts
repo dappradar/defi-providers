@@ -12,7 +12,7 @@ const ALGEBRA_TOPIC =
   '0x91ccaa7a278130b65168c3a0c8d3bcae84cf5e43704342bd3ec0b59e59c036db';
 
 /**
- * Gets TVL of Uniswap V2 (or it's clone) using factory address
+ * Gets TVL of Uniswap V3 (or its clone) using factory address
  *
  * @param factoryAddress - The address of factory
  * @param startBlock - The block number of factory deploying transaction
@@ -51,7 +51,14 @@ async function getTvl(
     );
   } catch {}
 
-  let logs = [];
+  const pairs = v3Pairs.token01;
+  const pairAddresses = v3Pairs.pairs;
+  const start = 128 - 40 + 2;
+  const end = 128 + 2;
+
+  const pairExist = {};
+  pairAddresses.forEach((address) => (pairExist[address] = true));
+
   console.log('[v3] start getting tvl');
   console.log('[v3] get logs1');
 
@@ -88,53 +95,43 @@ async function getTvl(
       }
       continue;
     }
-    logs = logs.concat(eventLog);
+
+    eventLog.forEach((log) => {
+      let pairAddress: string;
+      if (isAlgebra) {
+        pairAddress = `0x${log.data.slice(-40)}`;
+      } else {
+        pairAddress = `0x${log.data.slice(start, end)}`;
+      }
+      pairAddress = pairAddress.toLowerCase();
+
+      pairs[pairAddress] = {
+        token0Address: `0x${log.topics[1].slice(26)}`,
+        token1Address: `0x${log.topics[2].slice(26)}`,
+      };
+
+      if (!pairExist[pairAddress]) {
+        pairExist[pairAddress] = true;
+        pairAddresses.push(pairAddress);
+      }
+
+      basicUtil.saveIntoCache(
+        {
+          block,
+          pairs: pairAddresses,
+          token01: pairs,
+        },
+        'cache/v3Pairs.json',
+        chain,
+        provider,
+      );
+    });
 
     i += offset;
     if (block < i) {
       break;
     }
   }
-
-  const pairs = v3Pairs.token01;
-  let pairAddresses = v3Pairs.pairs;
-  const start = 128 - 40 + 2;
-  const end = 128 + 2;
-
-  const pairExist = {};
-  pairAddresses.forEach((address) => (pairExist[address] = true));
-
-  pairAddresses = pairAddresses.concat(
-    logs
-      .map((log) => {
-        let pairAddress: string;
-        if (isAlgebra) {
-          pairAddress = `0x${log.data.slice(-40)}`;
-        } else {
-          pairAddress = `0x${log.data.slice(start, end)}`;
-        }
-        pairAddress = pairAddress.toLowerCase();
-
-        pairs[pairAddress] = {
-          token0Address: `0x${log.topics[1].slice(26)}`,
-          token1Address: `0x${log.topics[2].slice(26)}`,
-        };
-
-        return pairAddress;
-      })
-      .filter((address) => !pairExist[address]),
-  );
-
-  await basicUtil.saveIntoCache(
-    {
-      block,
-      pairs: pairAddresses,
-      token01: pairs,
-    },
-    'cache/v3Pairs.json',
-    chain,
-    provider,
-  );
 
   const tokens0 = await util.executeCallOfMultiTargets(
     pairAddresses,
