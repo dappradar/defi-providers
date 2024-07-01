@@ -1,31 +1,26 @@
-import BigNumber from 'bignumber.js';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import * as v3TVL from './v3';
+import uniswapV3 from '../../../../util/calculators/uniswapV3chain';
+
+const V3_START_BLOCK = 12369621;
+const V3_FACTORY_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
-
-  const v3 = await v3TVL.tvl(block, chain, provider, web3);
-
-  const balances = {};
-
-  for (const token in v3) {
-    const address = token.toLowerCase();
-    if (!balances[address]) {
-      balances[address] = BigNumber(0);
-    }
-    balances[address] = balances[address].plus(v3[token]);
+  if (block < V3_START_BLOCK) {
+    return { balances: {} };
   }
 
-  for (const token in balances) {
-    if (balances[token].isLessThan(10_000_000_000)) {
-      delete balances[token];
-    } else {
-      balances[token] = balances[token].toFixed();
-    }
-  }
+  const balances = await uniswapV3.getTvl(
+    V3_FACTORY_ADDRESS,
+    V3_START_BLOCK,
+    block,
+    chain,
+    provider,
+    web3,
+    true,
+  );
 
-  return { balances };
+  return { balances, poolBalances: {} };
 }
 
 export { tvl };
