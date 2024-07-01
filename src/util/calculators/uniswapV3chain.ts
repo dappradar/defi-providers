@@ -84,11 +84,11 @@ async function getTvl(
         detail: `Error: tvl of ethereum/uniswapv3`,
         endpoint: 'tvl',
       });
-      if (offset > 1000) {
+      if (offset > 3000) {
         offset -= 2000;
-      } else if (offset > 100) {
+      } else if (offset > 300) {
         offset -= 200;
-      } else if (offset > 10) {
+      } else if (offset > 30) {
         offset -= 20;
       } else {
         break;
