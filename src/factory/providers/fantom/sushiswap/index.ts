@@ -25,9 +25,9 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  const kashiBalances = await kashiLending(block, chain, web3);
+  //const kashiBalances = await kashiLending(block, chain, web3);
 
-  const balances = formatter.sum([dexBalances, kashiBalances]);
+  const balances = formatter.sum([dexBalances /*, kashiBalances*/]);
 
   for (const token in balances) {
     if (BigNumber(balances[token] || 0).isLessThan(100000)) {
