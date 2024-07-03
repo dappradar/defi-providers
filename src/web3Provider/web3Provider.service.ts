@@ -58,7 +58,6 @@ export class Web3ProviderService {
           nodeUrls[`ETHEREUM_NODE_URL`]);
 
     let web3;
-    console.log(nodeUrls[`${chain.toUpperCase()}_NODE_URL`]);
     switch (chain) {
       case 'everscale': {
         web3 = { eth: this.everscale };
