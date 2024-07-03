@@ -37,7 +37,10 @@ export class FactoryService {
     if (req.block === undefined) {
       throw new RpcException('Block is undefined');
     }
-    if (this.web3ProviderService.checkNodeUrl(req?.chain)) {
+    if (
+      this.web3ProviderService.checkNodeUrl(req?.chain) &&
+      req.chain !== 'ton'
+    ) {
       throw new RpcException('Node URL is not provided');
     }
 

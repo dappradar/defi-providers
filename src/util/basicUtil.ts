@@ -4,7 +4,7 @@ import data from './data';
 import { log } from './logger/logger';
 import { config } from '../app.config';
 import Redis from './redis';
-const DEFAULT_DELAY = 20;
+const DEFAULT_DELAY = 0;
 
 function basicUtil() {
   function getPath(chain, provider) {

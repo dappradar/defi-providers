@@ -99,6 +99,10 @@ const data = {
       prefix: 'apt_',
       delay: 4600,
     },
+    ton: {
+      prefix: 'ton_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
