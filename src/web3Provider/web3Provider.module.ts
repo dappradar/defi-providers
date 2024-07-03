@@ -8,6 +8,7 @@ import { Near } from './near';
 import { Tezos } from './tezos';
 import { Wax } from './wax';
 import { Aptos } from './aptos';
+import { Ton } from './ton';
 
 @Module({
   exports: [Web3ProviderService],
@@ -21,6 +22,7 @@ import { Aptos } from './aptos';
     Tezos,
     Wax,
     Aptos,
+    Ton,
   ],
 })
 export class Web3ProviderModule {}
