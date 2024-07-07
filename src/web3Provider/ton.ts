@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import Bottleneck from 'bottleneck';
 
 const ton_center_api_url = 'https://toncenter.com/api';
 const ton_center_api_headers = {
@@ -8,6 +9,10 @@ const ton_center_api_headers = {
   },
 };
 const ton_api_url = 'https://tonapi.io';
+
+const limiter = new Bottleneck({
+  minTime: 1000, // 1 request per second
+});
 
 @Injectable()
 export class Ton {
@@ -18,11 +23,13 @@ export class Ton {
       stack: params,
     };
 
-    const response = await axios
-      .post(
-        `${ton_center_api_url}/v2/runGetMethod`,
-        requestBody,
-        ton_center_api_headers,
+    const response = await limiter
+      .schedule(() =>
+        axios.post(
+          `${ton_center_api_url}/v2/runGetMethod`,
+          requestBody,
+          ton_center_api_headers,
+        ),
       )
       .then((response) => response.data.result);
 
@@ -45,22 +52,33 @@ export class Ton {
     let response = await axios
       .get(`${ton_api_url}/v2/accounts/${address}/jettons?currencies=usd`)
       .then((response) => response.data);
-
     for (const balance of response.balances) {
-      const packedAddress = await axios
-        .get(
-          `${ton_center_api_url}/v2/packAddress?address=${balance.jetton.address}`,
-          ton_center_api_headers,
+      const packedAddress = await limiter
+        .schedule(() =>
+          axios.get(
+            `${ton_center_api_url}/v2/packAddress?address=${balance.jetton.address}`,
+            ton_center_api_headers,
+          ),
         )
         .then((response) => response.data.result);
-      balances[packedAddress] = balance.balance;
+      const customSafePackedAddress = this.customUrlSafeEncode(packedAddress);
+      balances[customSafePackedAddress] = balance.balance;
     }
 
-    response = await axios
-      .get(`${ton_center_api_url}/v3/account?address=${address}`)
+    response = await limiter
+      .schedule(() =>
+        axios.get(
+          `${ton_center_api_url}/v3/account?address=${address}`,
+          ton_center_api_headers,
+        ),
+      )
       .then((response) => response.data);
     balances['ton'] = response.balance;
 
     return balances;
+  }
+
+  customUrlSafeEncode(address) {
+    return address.replace(/\//g, '_').replace(/\+/g, '-');
   }
 }
