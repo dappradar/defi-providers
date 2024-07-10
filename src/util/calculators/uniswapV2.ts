@@ -152,7 +152,6 @@ async function getTvl(
       );
     } catch {}
   }
-
   const contract = new web3.eth.Contract(
     FACTORY_ABI as AbiItem[],
     factoryAddress,
@@ -171,7 +170,13 @@ async function getTvl(
       len = await contract.methods.allPoolsLength().call(null, block);
     }
     len = Number(len);
-  } catch {
+  } catch (e) {
+    log.error({
+      message: e?.message || '',
+      stack: e?.stack || '',
+      detail: `Error: uniswapV2.getTvl of ${chain}/${provider}`,
+      endpoint: 'usePoolMethods',
+    });
     return;
   }
 
