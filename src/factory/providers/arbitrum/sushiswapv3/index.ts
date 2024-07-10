@@ -3,9 +3,11 @@ import { gql, request } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 
 const START_BLOCK = 75998697;
-const GRAPHQL_API =
-  'https://api.thegraph.com/subgraphs/name/sushi-v3/v3-arbitrum';
-const QUERY_SIZE = 200;
+
+const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
+const GRAPHQL_API = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/96EYD64NqmnFxMELu2QLWB95gqCmA9N96ssYsZfFiYHg`;
+
+const QUERY_SIZE = 1000;
 const TOKENS = gql`
   query getTokens($block: Int) {
     tokens(block: {number: $block}, first: ${QUERY_SIZE} orderBy: totalValueLockedUSD, orderDirection: desc) {
