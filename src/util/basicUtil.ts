@@ -20,7 +20,7 @@ function basicUtil() {
   }
 
   async function saveIntoCache(data, fileName, chain, provider) {
-    await new Promise<void>(function (resolve) {
+    /*await new Promise<void>(function (resolve) {
       fse.outputFile(
         `${getPath(chain, provider)}/${fileName}`,
         JSON.stringify(data, null, 2),
@@ -37,7 +37,7 @@ function basicUtil() {
           resolve();
         },
       );
-    });
+    });*/
     await Redis.setCache(`${chain}_${provider}_${fileName}`, data);
   }
 
