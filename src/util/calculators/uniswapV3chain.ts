@@ -41,10 +41,25 @@ async function getTvl(
     topic = UNISWAP_TOPIC;
   }
 
-  let v3Pairs = { block: startBlock, pairs: [], token0: [], token1: [] };
+  const v3Pairs = { block: startBlock, pairs: [], token0: [], token1: [] };
   try {
-    v3Pairs = await basicUtil.readFromCache(
-      'cache/v3Pairs.json',
+    v3Pairs.block = await basicUtil.readFromCache(
+      'cache/uniswapV3Block.json',
+      chain,
+      provider,
+    );
+    v3Pairs.pairs = await basicUtil.readFromCache(
+      'cache/uniswapV3Pairs.json',
+      chain,
+      provider,
+    );
+    v3Pairs.token0 = await basicUtil.readFromCache(
+      'cache/uniswapV3Token0.json',
+      chain,
+      provider,
+    );
+    v3Pairs.token1 = await basicUtil.readFromCache(
+      'cache/uniswapV3Token1.json',
       chain,
       provider,
     );
@@ -107,26 +122,67 @@ async function getTvl(
         token1.push(`0x${log.topics[2].slice(26)}`);
       });
 
-      basicUtil.saveIntoCache(
-        {
-          block: i,
+      // Save into cache every 25 iterations
+      if (((i - Math.max(v3Pairs.block, startBlock)) / offset) % 25 === 0) {
+        basicUtil.saveIntoCache(
+          i,
+          'cache/uniswapV3Block.json',
+          chain,
+          provider,
+        );
+        basicUtil.saveIntoCache(
           pairs,
+          'cache/uniswapV3Pairs.json',
+          chain,
+          provider,
+        );
+        basicUtil.saveIntoCache(
           token0,
+          'cache/uniswapV3Token0.json',
+          chain,
+          provider,
+        );
+        basicUtil.saveIntoCache(
           token1,
-        },
-        'cache/v3Pairs.json',
-        chain,
-        provider,
-      );
+          'cache/uniswapV3Token1.json',
+          chain,
+          provider,
+        );
+      }
 
       i += offset;
       if (block < i) {
         break;
       }
     }
+
+    // Save into cache on the last iteration
+    basicUtil.saveIntoCache(
+      block,
+      'cache/uniswapV3Block.json',
+      chain,
+      provider,
+    );
+    basicUtil.saveIntoCache(
+      pairs,
+      'cache/uniswapV3Pairs.json',
+      chain,
+      provider,
+    );
+    basicUtil.saveIntoCache(
+      token0,
+      'cache/uniswapV3Token0.json',
+      chain,
+      provider,
+    );
+    basicUtil.saveIntoCache(
+      token1,
+      'cache/uniswapV3Token1.json',
+      chain,
+      provider,
+    );
   }
 
-  console.log(pairs.length, token0.length, token1.length);
   const token0Balances = await util.getTokenBalancesOfHolders(
     pairs,
     token0,
