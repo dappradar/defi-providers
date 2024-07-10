@@ -9,9 +9,9 @@ import abi from './abi.json';
 import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 9562480;
-const POOLS_GRAPHQL_API =
-  'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2';
-const QUERY_SIZE = 400;
+const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
+const POOLS_GRAPHQL_API = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`;
+const QUERY_SIZE = 1000;
 const POOLS_QUERY = gql`
     query getTokens($block: Int!, $skip: Int!) {
       pools(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}) {
