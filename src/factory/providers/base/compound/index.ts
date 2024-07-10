@@ -4,8 +4,9 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import { request, gql } from 'graphql-request';
 
 const START_BLOCK = 2650000;
-const COMPOUND_V3_GRAPHQL_API =
-  'https://api.thegraph.com/subgraphs/name/messari/compound-v3-base';
+const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
+const COMPOUND_V3_GRAPHQL_API = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/99XPkR9F1exRDdCNyfXrCfEon4K34YoTDn6dgXKmxC72`;
+
 const V3_MARKETS = gql`
   query getMarkets($block: Int) {
     markets(
@@ -38,7 +39,8 @@ async function addV3MarketBalances(block, balances) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block } = params;
+  let { block } = params;
+  block = block - 100;
   if (block < START_BLOCK) {
     return { balances: {} };
   }

@@ -1,20 +1,19 @@
-import BigNumber from 'bignumber.js';
-import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import { request, gql } from 'graphql-request';
+import BigNumber from 'bignumber.js';
 import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const START_BLOCK = 10000835;
+const START_BLOCK = 6601915;
 const QUERY_SIZE = 1000;
 const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
-
-const SUBGRAPH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/EYCKATKGBKLWvSfwvBjzfCBmGwYNdVkduYXVivCsLRFu`;
+const SUBGRAPH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/4jGhpKjW4prWoyt5Bwk1ZHUwdEmNWveJcjEyjoTZWCY9`;
 const TOKENS = gql`
   query getTokens($id: String!, $block: Int!) {
     tokens(
       block: { number: $block }
       first: ${QUERY_SIZE}
       orderBy: id
-      where: { id_gt: $id tradeVolumeUSD_gt: 100 }
+      where: { id_gt: $id tradeVolumeUSD_gt: 10000 }
     ) {
       id
       decimals
