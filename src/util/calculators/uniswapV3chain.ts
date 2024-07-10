@@ -2,7 +2,6 @@ import formatter from '../../util/formatter';
 import basicUtil from '../../util/basicUtil';
 import util from '../../util/blockchainUtil';
 import { log } from '../../util/logger/logger';
-import PAIR_ABI from '../../constants/abi/uni.json';
 import { IBalances } from '../../interfaces/ITvl';
 import Web3 from 'web3';
 
@@ -42,7 +41,7 @@ async function getTvl(
     topic = UNISWAP_TOPIC;
   }
 
-  let v3Pairs = { block: startBlock, pairs: [], token01: [] };
+  let v3Pairs = { block: startBlock, pairs: [], token0: [], token1: [] };
   try {
     v3Pairs = await basicUtil.readFromCache(
       'cache/v3Pairs.json',
@@ -51,13 +50,11 @@ async function getTvl(
     );
   } catch {}
 
-  const pairs = v3Pairs.token01;
-  const pairAddresses = v3Pairs.pairs;
+  const token0 = v3Pairs.token0;
+  const token1 = v3Pairs.token1;
+  const pairs = v3Pairs.pairs;
   const start = 128 - 40 + 2;
   const end = 128 + 2;
-
-  const pairExist = {};
-  pairAddresses.forEach((address) => (pairExist[address] = true));
 
   console.log('[v3] start getting tvl');
 
@@ -77,9 +74,8 @@ async function getTvl(
             web3,
           )
         ).output;
-        console.log(`Trying from ${i} with offset ${offset}`);
       } catch (e) {
-        log.error({
+        log.warning({
           message: e?.message || '',
           stack: e?.stack || '',
           detail: `Error: tvl of ethereum/uniswapv3`,
@@ -106,27 +102,22 @@ async function getTvl(
         }
         pairAddress = pairAddress.toLowerCase();
 
-        pairs[pairAddress] = {
-          token0Address: `0x${log.topics[1].slice(26)}`,
-          token1Address: `0x${log.topics[2].slice(26)}`,
-        };
-
-        if (!pairExist[pairAddress]) {
-          pairExist[pairAddress] = true;
-          pairAddresses.push(pairAddress);
-        }
-
-        basicUtil.saveIntoCache(
-          {
-            block,
-            pairs: pairAddresses,
-            token01: pairs,
-          },
-          'cache/v3Pairs.json',
-          chain,
-          provider,
-        );
+        pairs.push(pairAddress);
+        token0.push(`0x${log.topics[1].slice(26)}`);
+        token1.push(`0x${log.topics[2].slice(26)}`);
       });
+
+      basicUtil.saveIntoCache(
+        {
+          block: i,
+          pairs,
+          token0,
+          token1,
+        },
+        'cache/v3Pairs.json',
+        chain,
+        provider,
+      );
 
       i += offset;
       if (block < i) {
@@ -135,36 +126,17 @@ async function getTvl(
     }
   }
 
-  const tokens0 = await util.executeCallOfMultiTargets(
-    pairAddresses,
-    PAIR_ABI,
-    'token0',
-    [],
-    block,
-    chain,
-    web3,
-  );
-  const tokens1 = await util.executeCallOfMultiTargets(
-    pairAddresses,
-    PAIR_ABI,
-    'token1',
-    [],
-    block,
-    chain,
-    web3,
-  );
-
+  console.log(pairs.length, token0.length, token1.length);
   const token0Balances = await util.getTokenBalancesOfHolders(
-    pairAddresses,
-    tokens0.filter(Boolean),
+    pairs,
+    token0,
     block,
     chain,
     web3,
   );
-
   const token1Balances = await util.getTokenBalancesOfHolders(
-    pairAddresses,
-    tokens1.filter(Boolean),
+    pairs,
+    token1,
     block,
     chain,
     web3,
