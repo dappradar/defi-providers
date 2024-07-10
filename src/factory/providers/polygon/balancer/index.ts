@@ -215,10 +215,11 @@ async function v2Tvl(balances, block) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  let { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
     return {};
   }
+  block = block - 100;
 
   const balances = {};
 
