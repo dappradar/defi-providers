@@ -7,7 +7,7 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import abi from './abi.json';
 import { log } from '../../../../util/logger/logger';
 
-const START_BLOCK = 11700000;
+const START_BLOCK = 72222060;
 const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
 const THEGRAPTH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/98cQDy6tufTJtshDCuhh9z2kWXsQWBHVh2bqnLHsGAeS`;
 const QUERY_SIZE = 1000;
@@ -215,10 +215,11 @@ async function v2Tvl(balances, block) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  let { block, chain, provider, web3 } = params;
   if (block < START_BLOCK) {
     return {};
   }
+  block = block - 100;
 
   const balances = {};
 
