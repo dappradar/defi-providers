@@ -6,7 +6,6 @@ import formatter from '../../../../util/formatter';
 const START_BLOCK = 10000835;
 const QUERY_SIZE = 1000;
 const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
-
 const SUBGRAPH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/EYCKATKGBKLWvSfwvBjzfCBmGwYNdVkduYXVivCsLRFu`;
 const TOKENS = gql`
   query getTokens($id: String!, $block: Int!) {
