@@ -15,10 +15,17 @@ import {
 import basicUtil from '../basicUtil';
 import util from '../blockchainUtil';
 import { log } from '../logger/logger';
+import { retryAsyncFunction, retryPromiseAll } from '../retry';
 
-async function getReserves(address, block, web3, chain, provider) {
+async function getReserves(
+  address: string,
+  block: number,
+  web3: Web3,
+  chain: string,
+  provider: string,
+) {
   try {
-    const contract = new web3.eth.Contract(PAIR_ABI, address);
+    const contract = new web3.eth.Contract(PAIR_ABI as AbiItem[], address);
     const reserves = await contract.methods.getReserves().call(null, block);
     return {
       pool_address: address,
@@ -27,7 +34,10 @@ async function getReserves(address, block, web3, chain, provider) {
     };
   } catch (e) {
     try {
-      const contract = new web3.eth.Contract(RESERVES_ABI, address);
+      const contract = new web3.eth.Contract(
+        RESERVES_ABI as AbiItem[],
+        address,
+      );
       const reserves = await contract.methods.getReserves().call(null, block);
       return {
         pool_address: address,
@@ -47,12 +57,12 @@ async function getReserves(address, block, web3, chain, provider) {
 }
 
 async function getPoolsReserves(
-  bulk_reserves_contract,
-  pInfos,
-  block,
-  chain,
-  web3,
-  provider,
+  bulk_reserves_contract: any,
+  pInfos: string[],
+  block: number,
+  chain: string,
+  web3: Web3,
+  provider: string,
 ) {
   let poolReserves = [];
   try {
@@ -61,7 +71,13 @@ async function getPoolsReserves(
       BULK_RESERVES_DEPOLYED[chain] === undefined
     ) {
       poolReserves = await Promise.all(
-        pInfos.map((pool) => getReserves(pool, block, web3, chain, provider)),
+        pInfos.map((pool) =>
+          retryAsyncFunction(
+            getReserves,
+            [pool, block, web3, chain, provider],
+            { retries: 2 },
+          ),
+        ),
       );
     } else {
       try {
@@ -72,7 +88,11 @@ async function getPoolsReserves(
         try {
           poolReserves = await Promise.all(
             pInfos.map((pool) =>
-              getReserves(pool, block, web3, chain, provider),
+              retryAsyncFunction(
+                getReserves,
+                [pool, block, web3, chain, provider],
+                { retries: 2 },
+              ),
             ),
           );
         } catch (e) {
@@ -98,7 +118,7 @@ async function getPoolsReserves(
 }
 
 /**
- * Gets TVL of Uniswap V2 (or it's clone) using factory address
+ * Gets TVL of Uniswap V2 (or its clone) using factory address
  *
  * @param factoryAddress - The address of factory
  * @param block - The block number for which data is requested
@@ -189,7 +209,7 @@ async function getTvl(
   const pairLength = _pairs.length;
 
   for (let start = pairLength; start < len; start += 300) {
-    let pInfos = [];
+    let pInfos: Promise<any>[] = [];
     const end = Math.min(start + 300, len);
     log.info({
       message: `Getting Pairs from ${start} to ${end}`,
@@ -203,9 +223,7 @@ async function getTvl(
       }
     }
     try {
-      console.log('start promiseAll');
-      pInfos = await Promise.all(pInfos);
-      console.log('finish promiseAll');
+      pInfos = await retryPromiseAll(pInfos, { retries: 2 });
       pInfos.forEach((info) => poolInfos.push(info));
     } catch (e) {
       log.error({

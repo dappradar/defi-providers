@@ -44,6 +44,7 @@
     "node-fetch": "^2.6.9",
     "redis": "^4.6.7",
     "reflect-metadata": "^0.1.13",
+    "retry": "^0.13.1",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "slack-notify": "^2.0.6",
