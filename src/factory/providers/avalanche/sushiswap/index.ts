@@ -2,7 +2,7 @@ import formatter from '../../../../util/formatter';
 import uniswapV2 from '../../../../util/calculators/uniswapV2';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const START_BLOCK = 70;
+const START_BLOCK = 506190;
 const FACTORY_ADDRESS = '0xc35DADB65012eC5796536bD9864eD8773aBc74C4';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
