@@ -1,8 +1,8 @@
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import uniswapV3 from '../../../../util/calculators/uniswapV3chain';
 
-const V3_START_BLOCK = 75998697;
-const V3_FACTORY_ADDRESS = '0x1af415a1EbA07a4986a52B6f2e7dE7003D82231e';
+const V3_START_BLOCK = 28186391;
+const V3_FACTORY_ADDRESS = '0x3e603C14aF37EBdaD31709C4f848Fc6aD5BEc715';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
