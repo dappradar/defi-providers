@@ -103,6 +103,10 @@ const data = {
       prefix: 'ton_',
       delay: 0,
     },
+    'skale-europa': {
+      prefix: 'skeur_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
