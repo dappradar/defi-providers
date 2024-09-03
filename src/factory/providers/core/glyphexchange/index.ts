@@ -4,7 +4,7 @@ import uniswapV3 from '../../../../util/calculators/uniswapV3chain';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 12515028;
-const V3_START_BLOCK = 	15770796;
+const V3_START_BLOCK = 15770796;
 const V2_FACTORY_ADDRESS = '0x3E723C7B6188E8Ef638DB9685Af45c7CB66f77B9';
 const V3_FACTORY_ADDRESS = '0x74EfE55beA4988e7D92D03EFd8ddB8BF8b7bD597'; //v4
 
