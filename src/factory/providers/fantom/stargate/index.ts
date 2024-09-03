@@ -1,21 +1,13 @@
 import util from '../../../../util/blockchainUtil';
-import ABI from '../../../../constants/abi/stargateV1Abi.json';
-import CONSTANTS from '../../../../constants/contracts.json';
-import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import basicUtil from '../../../../util/basicUtil';
 import formatter from '../../../../util/formatter';
-import stargateV2 from '../../../../util/calculators/stargateV2';
+import basicUtil from '../../../../util/basicUtil';
+import ABI from '../../../../constants/abi/stargateV1Abi.json';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
-const ROUTER = '0x45f1A95A4D3f3836523F5c83673c797f4d4d263B';
-const BASE_TOKENS = {
-  '0x224d8fd7ab6ad4c6eb4611ce56ef35dec2277f03': CONSTANTS.WMAIN_ADDRESS.base,
-};
+const ROUTER = '0xAf5191B0De278C7286d6C7CC6ab6BB8A73bA2Cd6';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
-  if (block < 2462703) {
-    return {};
-  }
 
   let store = {
     pools: [],
@@ -34,7 +26,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     web3,
   );
-
   const allPoolsLength = await util.executeCall(
     factory,
     ABI,
@@ -76,6 +67,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         break;
       }
     }
+
     await basicUtil.saveIntoCache(store, 'cache/store.json', chain, provider);
   }
 
@@ -86,21 +78,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     web3,
   );
-  tokenBalances.forEach((tokenBalance) => {
-    if (tokenBalance && BASE_TOKENS[tokenBalance.token]) {
-      tokenBalance.token = BASE_TOKENS[tokenBalance.token];
-    }
-  });
 
   const balances = {};
 
   formatter.sumMultiBalanceOf(balances, tokenBalances);
 
-  const v2TokenBalances = await stargateV2.getV2Tvl(chain, block, web3);
-  formatter.sumMultiBalanceOf(balances, v2TokenBalances);
-
   formatter.convertBalancesToFixed(balances);
-
   return { balances };
 }
 
