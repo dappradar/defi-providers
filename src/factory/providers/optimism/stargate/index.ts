@@ -1,25 +1,35 @@
-import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
-import FACTORY_ABI from './abi/factoryAbi.json';
-import POOL_ABI from './abi/poolAbi.json';
-import { WMAIN_ADDRESS } from '../../../../constants/contracts.json';
+import basicUtil from '../../../../util/basicUtil';
+import ABI from '../../../../constants/abi/stargateV1Abi.json';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import stargateV2 from '../../../../util/calculators/stargateV2';
 
-const START_BLOCK = 4535223;
-const FACTORY = '0xE3B53AF74a4BF62Ae5511055290838050bf764Df';
-const SGETH = '0xb69c8cbcd90a39d8d3d3ccf0a3e968511c3856a0';
+const ROUTER = '0xB0D502E938ed5f4df2E681fE6E419ff29631d62b';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
-  if (block < START_BLOCK) {
-    return {};
-  }
 
-  const balances = {};
+  let store = {
+    pools: [],
+    tokens: {},
+  };
+  try {
+    store = await basicUtil.readFromCache('cache/store.json', chain, provider);
+  } catch {}
 
+  const factory = await util.executeCall(
+    ROUTER,
+    ABI,
+    'factory',
+    [],
+    block,
+    chain,
+    web3,
+  );
   const allPoolsLength = await util.executeCall(
-    FACTORY,
-    FACTORY_ABI,
+    factory,
+    ABI,
     'allPoolsLength',
     [],
     block,
@@ -27,46 +37,58 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     web3,
   );
 
-  const contractParams = [];
-  for (let i = 0; i < allPoolsLength; i++) {
-    contractParams.push([i]);
+  if (store.pools.length < allPoolsLength) {
+    const newPools = await util.executeMultiCallsOfTarget(
+      factory,
+      ABI,
+      'allPools',
+      Array.from(
+        { length: allPoolsLength - store.pools.length },
+        (_, i) => store.pools.length + i,
+      ),
+      block,
+      chain,
+      web3,
+    );
+    const poolTokens = await util.executeCallOfMultiTargets(
+      newPools,
+      ABI,
+      'token',
+      [],
+      block,
+      chain,
+      web3,
+    );
+
+    for (const index in newPools) {
+      if (newPools[index] && poolTokens[index]) {
+        store.pools.push(newPools[index]);
+        store.tokens[newPools[index]] = poolTokens[index];
+      } else {
+        break;
+      }
+    }
+
+    await basicUtil.saveIntoCache(store, 'cache/store.json', chain, provider);
   }
 
-  const pools = await util.executeMultiCallsOfTarget(
-    FACTORY,
-    FACTORY_ABI,
-    'allPools',
-    contractParams,
+  const tokenBalances = await util.getTokenBalancesOfHolders(
+    Object.keys(store.tokens),
+    Object.values(store.tokens),
     block,
     chain,
     web3,
   );
 
-  const tokens = await util.executeCallOfMultiTargets(
-    pools,
-    POOL_ABI,
-    'token',
-    [],
-    block,
-    chain,
-    web3,
-  );
+  const balances = {};
 
-  const balanceResults = await util.getTokenBalancesOfHolders(
-    pools,
-    tokens,
-    block,
-    chain,
-    web3,
-  );
+  formatter.sumMultiBalanceOf(balances, tokenBalances);
 
-  formatter.sumMultiBalanceOf(balances, balanceResults);
+  const v2TokenBalances = await stargateV2.getV2Tvl(chain, block, web3);
+  formatter.sumMultiBalanceOf(balances, v2TokenBalances);
+
   formatter.convertBalancesToFixed(balances);
-
-  if (balances[SGETH]) {
-    balances[WMAIN_ADDRESS.optimism] = balances[SGETH];
-    delete balances[SGETH];
-  }
   return { balances };
 }
+
 export { tvl };
