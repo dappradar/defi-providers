@@ -83,7 +83,7 @@ async function getTvl(
         eventLog = (
           await util.getLogs(
             i,
-            Math.min(block, i + offset),
+            Math.min(block, i + offset - 1),
             topic,
             factoryAddress,
             web3,
@@ -96,8 +96,8 @@ async function getTvl(
           detail: `Error: tvl of ethereum/uniswapv3`,
           endpoint: 'tvl',
         });
-        if (offset > 3000) {
-          offset -= 2000;
+        if (offset >= 2000) {
+          offset -= 1000;
         } else if (offset > 300) {
           offset -= 200;
         } else if (offset > 30) {

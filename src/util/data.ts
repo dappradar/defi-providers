@@ -107,6 +107,10 @@ const data = {
       prefix: 'skeur_',
       delay: 0,
     },
+    etherlink: {
+      prefix: 'etherlink_', // TO DO: check prefix after chain integration
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
