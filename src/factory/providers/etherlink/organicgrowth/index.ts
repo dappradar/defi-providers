@@ -29,7 +29,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     i < block;
     i += BLOCK_LIMIT
   ) {
-    console.log('i', i);
     const logs = await util.getLogs(
       i,
       Math.min(i + BLOCK_LIMIT - 1, block),
