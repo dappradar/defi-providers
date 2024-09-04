@@ -1,12 +1,12 @@
 import formatter from '../../../../util/formatter';
 import uniswapV2 from '../../../../util/calculators/uniswapV2';
-import uniswapV3 from '../../../../util/calculators/uniswapV3chain';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import uniswapV3 from '../../../../util/calculators/uniswapV3chain';
 
-const START_BLOCK = 11700000;
-const V3_START_BLOCK = 101163738;
-const V2_FACTORY_ADDRESS = '0x6EcCab422D763aC031210895C81787E87B43A652';
-const V3_FACTORY_ADDRESS = '0x1a3c9B1d2F0529D97f2afC5136Cc23e58f1FD35B';
+const START_BLOCK = 3200559;
+const V2_FACTORY_ADDRESS = '0x420DD381b31aEf6683db6B902084cB0FFECe40Da';
+const V3_START_BLOCK = 13843704;
+const V3_FACTORY_ADDRESS = '0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -14,7 +14,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return { balances: {} };
   }
 
-  let balances = {};
+  let balances: any;
 
   const v2 = await uniswapV2.getTvl(
     V2_FACTORY_ADDRESS,
@@ -22,6 +22,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     provider,
     web3,
+    true,
   );
 
   if (block >= V3_START_BLOCK) {
@@ -32,13 +33,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       chain,
       provider,
       web3,
-      'algebra',
+      'aerodrome',
     );
   }
 
   balances = formatter.sum([v2.balances, balances]);
-
-  return { balances };
+  return { balances, poolBalances: v2.poolBalances };
 }
 
 export { tvl };

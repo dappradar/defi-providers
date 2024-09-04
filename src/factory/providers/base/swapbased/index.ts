@@ -46,7 +46,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       eventLog = (
         await util.getLogs(
           i,
-          Math.min(block, i + offset),
+          Math.min(block, i + offset - 1),
           '0x91ccaa7a278130b65168c3a0c8d3bcae84cf5e43704342bd3ec0b59e59c036db',
           V3_FACTORY_ADDRESS,
           web3,

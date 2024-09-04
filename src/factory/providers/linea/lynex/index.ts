@@ -20,7 +20,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     provider,
     web3,
-    true,
+    'algebra',
   );
 
   const tokenBalances = await util.getTokenBalances(
