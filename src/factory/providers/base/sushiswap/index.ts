@@ -21,7 +21,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   );
 
   formatter.convertBalancesToFixed(balances);
-
+  delete balances['0x7f12d13b34f5f4f0a9449c16bcd42f0da47af200']; // token was migrated to another address
   return { balances, poolBalances };
 }
 
