@@ -1,14 +1,11 @@
+import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
-import formatter from '../../../../util/formatter';
 import abi from '../../polygon/aave/abi.json';
 import BigNumber from 'bignumber.js';
 
-const START_BLOCK = 11700000;
-const STAKING_CONTRACT = '0xc2054A8C33bfce28De8aF4aF548C48915c455c13';
-const RADIANT = '0x0C4681e6C0235179ec3D4F4fc4DF3d14FDD96017';
-const REGISTERY = '0x7BB843f889e3a0B307299c3B65e089bFfe9c0bE0';
-const REGISTERY_V2 = '0x9D36DCe6c66E3c206526f5D7B3308fFF16c1aa5E';
+const START_BLOCK = 14597137;
+const REGISTERY_V2 = '0x3eAF348Cf1fEC09C0f8d4f52AD3B8D894206b724';
 
 async function balanceOfRegisteredAddress(register, params) {
   const { block, chain, provider, web3 } = params;
@@ -91,20 +88,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   if (block < START_BLOCK) {
     return {};
   }
-  const stakedBalance = {};
-  stakedBalance[RADIANT.toLowerCase()] = (
-    await util.getTokenBalances(STAKING_CONTRACT, [RADIANT], block, chain, web3)
-  )[0].balance;
-  const [registeredAddress, registeredAddressV2] = await Promise.all([
-    balanceOfRegisteredAddress(REGISTERY, params),
-    balanceOfRegisteredAddress(REGISTERY_V2, params),
-  ]);
 
-  const balances = formatter.sum([
-    stakedBalance,
-    registeredAddress,
-    registeredAddressV2,
-  ]);
+  const balances = await balanceOfRegisteredAddress(REGISTERY_V2, params);
+  formatter.convertBalancesToFixed(balances);
+
   return { balances };
 }
 export { tvl };
