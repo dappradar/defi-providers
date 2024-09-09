@@ -108,7 +108,7 @@ const data = {
       delay: 0,
     },
     etherlink: {
-      prefix: 'etherlink_', // TO DO: check prefix after chain integration
+      prefix: 'etherlink_',
       delay: 0,
     },
   },

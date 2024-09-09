@@ -7,6 +7,8 @@ import blockchainUtil from '../../../../util/blockchainUtil';
 const START_BLOCK = 308542;
 const FACTORY_ADDRESS = '0x9767E409259E314F3C69fe1E7cA0D3161Bba4F5a';
 const BLOCK_LIMIT = 1000;
+const OGW1_WXTZ = '0x3571aed54ccea5b69b00516d5a149a6baea77118';
+const WXTZ = '0xc9b53ab2679f573e480d01e0f49e2b5cfb7a3eab';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -68,6 +70,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   formatter.sumMultiBalanceOf(balances, tokenBalances);
   formatter.sumMultiBalanceOf(balances, tokenBalances); // sum second time, to get other pair token value
+
+  if (balances[OGW1_WXTZ]) {
+    balances[WXTZ] = balances[OGW1_WXTZ];
+    delete balances[OGW1_WXTZ];
+  }
 
   formatter.convertBalancesToFixed(balances);
   return { balances };
