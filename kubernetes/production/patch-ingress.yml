@@ -1,21 +1,6 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: defi-providers
-spec:
-  rules:
-    - host: defi-providers.dappradar.com
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: defi-providers
-              port:
-                number: 443
-
-  tls:
-    - hosts:
-      - defi-providers.dappradar.com
-      secretName: defi-providers-tls
+- op: replace
+  path: /spec/rules/0/host
+  value: defi-providers.dappradar.com
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: defi-providers.dappradar.com

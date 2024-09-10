@@ -31,11 +31,10 @@ spec:
         args: ["--requirepass", "$(REDIS_PASSWORD)"]
         resources:
           requests:
-            cpu: 100m
-            memory: 512M
+            cpu: 10m
+            memory: 100Mi
           limits:
-            cpu: 1000m
-            memory: 1G
+            memory: 100Mi
         ports:
           - name: redis-port
             containerPort: 6379
