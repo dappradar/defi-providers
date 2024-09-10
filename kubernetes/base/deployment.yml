@@ -21,3 +21,9 @@ spec:
           ports:
             - name: app-port
               containerPort: 3002
+          resources:
+            requests:
+              cpu: 300m
+              memory: 4Gi
+            limits:
+              memory: 4Gi
