@@ -7,5 +7,5 @@ spec:
     component: defi-providers
   ports:
     - name: defi-providers
-      port: 443
+      port: 8080
       targetPort: app-port

@@ -13,6 +13,11 @@ patches:
       kind: Ingress
       name: defi-providers
 
+  - path: ./patch-redis.yml
+    target:
+      kind: Deployment
+      name: defi-providers-redis
+
   - path: ./patch-secrets.yml
     target:
       kind: ExternalSecret
