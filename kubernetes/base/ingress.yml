@@ -3,10 +3,8 @@ kind: Ingress
 metadata:
   name: defi-providers
   annotations:
-    # SSL certificate
-    cert-manager.io/issuer: prod-issuer
-    cert-manager.io/issuer-kind: OriginIssuer
-    cert-manager.io/issuer-group: cert-manager.k8s.cloudflare.com
+    cert-manager.io/issuer: dappradar-cluster-issuer
+    cert-manager.io/issuer-kind: ClusterIssuer
 spec:
   ingressClassName: nginx
   rules:
