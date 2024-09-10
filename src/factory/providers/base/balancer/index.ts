@@ -29,7 +29,9 @@ const POOLS_QUERY = gql`
 `;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  const block = params.block - 100;
+  const { chain, provider, web3 } = params;
+
   if (block < START_BLOCK) {
     return {};
   }

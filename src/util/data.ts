@@ -99,6 +99,18 @@ const data = {
       prefix: 'apt_',
       delay: 4600,
     },
+    ton: {
+      prefix: 'ton_',
+      delay: 0,
+    },
+    'skale-europa': {
+      prefix: 'skeur_',
+      delay: 0,
+    },
+    etherlink: {
+      prefix: 'etherlink_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',

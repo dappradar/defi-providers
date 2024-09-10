@@ -2,7 +2,6 @@ import formatter from '../../util/formatter';
 import basicUtil from '../../util/basicUtil';
 import util from '../../util/blockchainUtil';
 import { log } from '../../util/logger/logger';
-import PAIR_ABI from '../../constants/abi/uni.json';
 import { IBalances } from '../../interfaces/ITvl';
 import Web3 from 'web3';
 
@@ -10,9 +9,11 @@ const UNISWAP_TOPIC =
   '0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118';
 const ALGEBRA_TOPIC =
   '0x91ccaa7a278130b65168c3a0c8d3bcae84cf5e43704342bd3ec0b59e59c036db';
+const AERODROME_TOPIC =
+  '0xab0d57f0df537bb25e80245ef7748fa62353808c54d6e528a9dd20887aed9ac2';
 
 /**
- * Gets TVL of Uniswap V2 (or it's clone) using factory address
+ * Gets TVL of Uniswap V3 (or its clone) using factory address
  *
  * @param factoryAddress - The address of factory
  * @param startBlock - The block number of factory deploying transaction
@@ -31,141 +32,173 @@ async function getTvl(
   chain: string,
   provider: string,
   web3: Web3,
-  isAlgebra = false,
+  type: 'default' | 'algebra' | 'aerodrome' = 'default',
 ): Promise<IBalances> {
   const balances = {};
 
   let topic: string;
-  if (isAlgebra) {
+  if (type === 'algebra') {
     topic = ALGEBRA_TOPIC;
+  } else if (type === 'aerodrome') {
+    topic = AERODROME_TOPIC;
   } else {
     topic = UNISWAP_TOPIC;
   }
 
-  let v3Pairs = { block: startBlock, pairs: [], token01: [] };
+  const v3Pairs = { block: startBlock, pairs: [], token0: [], token1: [] };
   try {
-    v3Pairs = await basicUtil.readFromCache(
-      'cache/v3Pairs.json',
+    v3Pairs.block = await basicUtil.readFromCache(
+      `${factoryAddress}/uniswapV3Block.json`,
+      chain,
+      provider,
+    );
+    v3Pairs.pairs = await basicUtil.readFromCache(
+      `${factoryAddress}/uniswapV3Pairs.json`,
+      chain,
+      provider,
+    );
+    v3Pairs.token0 = await basicUtil.readFromCache(
+      `${factoryAddress}/uniswapV3Token0.json`,
+      chain,
+      provider,
+    );
+    v3Pairs.token1 = await basicUtil.readFromCache(
+      `${factoryAddress}/uniswapV3Token1.json`,
       chain,
       provider,
     );
   } catch {}
+  console.log(v3Pairs);
 
-  let logs = [];
-  console.log('[v3] start getting tvl');
-  console.log('[v3] get logs1');
-
-  let offset = 10000;
-  for (let i = Math.max(v3Pairs.block, startBlock); ; ) {
-    console.log(`Trying from ${i} with offset ${offset}`);
-    let eventLog = [];
-    try {
-      eventLog = (
-        await util.getLogs(
-          i,
-          Math.min(block, i + offset),
-          topic,
-          factoryAddress,
-          web3,
-        )
-      ).output;
-      console.log(`Trying from ${i} with offset ${offset}`);
-    } catch (e) {
-      log.error({
-        message: e?.message || '',
-        stack: e?.stack || '',
-        detail: `Error: tvl of ethereum/uniswapv3`,
-        endpoint: 'tvl',
-      });
-      if (offset > 1000) {
-        offset -= 2000;
-      } else if (offset > 100) {
-        offset -= 200;
-      } else if (offset > 10) {
-        offset -= 20;
-      } else {
-        break;
-      }
-      continue;
-    }
-    logs = logs.concat(eventLog);
-
-    i += offset;
-    if (block < i) {
-      break;
-    }
-  }
-
-  const pairs = v3Pairs.token01;
-  let pairAddresses = v3Pairs.pairs;
+  const token0 = v3Pairs.token0;
+  const token1 = v3Pairs.token1;
+  const pairs = v3Pairs.pairs;
   const start = 128 - 40 + 2;
   const end = 128 + 2;
 
-  const pairExist = {};
-  pairAddresses.forEach((address) => (pairExist[address] = true));
+  console.log('[v3] start getting tvl');
 
-  pairAddresses = pairAddresses.concat(
-    logs
-      .map((log) => {
+  let offset = 10000;
+
+  if (Math.max(v3Pairs.block, startBlock) < block) {
+    for (let i = Math.max(v3Pairs.block, startBlock); ; ) {
+      console.log(`Trying from ${i} with offset ${offset}`);
+      let eventLog = [];
+      try {
+        eventLog = (
+          await util.getLogs(
+            i,
+            Math.min(block, i + offset - 1),
+            topic,
+            factoryAddress,
+            web3,
+          )
+        ).output;
+      } catch (e) {
+        log.warning({
+          message: e?.message || '',
+          stack: e?.stack || '',
+          detail: `Error: tvl of ethereum/uniswapv3`,
+          endpoint: 'tvl',
+        });
+        if (offset >= 2000) {
+          offset -= 1000;
+        } else if (offset > 300) {
+          offset -= 200;
+        } else if (offset > 30) {
+          offset -= 20;
+        } else {
+          break;
+        }
+        continue;
+      }
+
+      eventLog.forEach((log) => {
         let pairAddress: string;
-        if (isAlgebra) {
+        if (type !== 'default') {
           pairAddress = `0x${log.data.slice(-40)}`;
         } else {
           pairAddress = `0x${log.data.slice(start, end)}`;
         }
         pairAddress = pairAddress.toLowerCase();
 
-        pairs[pairAddress] = {
-          token0Address: `0x${log.topics[1].slice(26)}`,
-          token1Address: `0x${log.topics[2].slice(26)}`,
-        };
+        pairs.push(pairAddress);
+        token0.push(`0x${log.topics[1].slice(26)}`);
+        token1.push(`0x${log.topics[2].slice(26)}`);
+      });
 
-        return pairAddress;
-      })
-      .filter((address) => !pairExist[address]),
-  );
+      // Save into cache every 25 iterations
+      if (((i - Math.max(v3Pairs.block, startBlock)) / offset) % 25 === 0) {
+        console.log('save');
+        await basicUtil.saveIntoCache(
+          i,
+          `${factoryAddress}/uniswapV3Block.json`,
+          chain,
+          provider,
+        );
+        await basicUtil.saveIntoCache(
+          pairs,
+          `${factoryAddress}/uniswapV3Pairs.json`,
+          chain,
+          provider,
+        );
+        await basicUtil.saveIntoCache(
+          token0,
+          `${factoryAddress}/uniswapV3Token0.json`,
+          chain,
+          provider,
+        );
+        await basicUtil.saveIntoCache(
+          token1,
+          `${factoryAddress}/uniswapV3Token1.json`,
+          chain,
+          provider,
+        );
+      }
 
-  await basicUtil.saveIntoCache(
-    {
+      i += offset;
+      if (block < i) {
+        break;
+      }
+    }
+
+    // Save into cache on the last iteration
+    await basicUtil.saveIntoCache(
       block,
-      pairs: pairAddresses,
-      token01: pairs,
-    },
-    'cache/v3Pairs.json',
-    chain,
-    provider,
-  );
-
-  const tokens0 = await util.executeCallOfMultiTargets(
-    pairAddresses,
-    PAIR_ABI,
-    'token0',
-    [],
-    block,
-    chain,
-    web3,
-  );
-  const tokens1 = await util.executeCallOfMultiTargets(
-    pairAddresses,
-    PAIR_ABI,
-    'token1',
-    [],
-    block,
-    chain,
-    web3,
-  );
+      `${factoryAddress}/uniswapV3Block.json`,
+      chain,
+      provider,
+    );
+    await basicUtil.saveIntoCache(
+      pairs,
+      `${factoryAddress}/uniswapV3Pairs.json`,
+      chain,
+      provider,
+    );
+    await basicUtil.saveIntoCache(
+      token0,
+      `${factoryAddress}/uniswapV3Token0.json`,
+      chain,
+      provider,
+    );
+    await basicUtil.saveIntoCache(
+      token1,
+      `${factoryAddress}/uniswapV3Token1.json`,
+      chain,
+      provider,
+    );
+  }
 
   const token0Balances = await util.getTokenBalancesOfHolders(
-    pairAddresses,
-    tokens0.filter(Boolean),
+    pairs,
+    token0,
     block,
     chain,
     web3,
   );
-
   const token1Balances = await util.getTokenBalancesOfHolders(
-    pairAddresses,
-    tokens1.filter(Boolean),
+    pairs,
+    token1,
     block,
     chain,
     web3,

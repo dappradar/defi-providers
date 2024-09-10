@@ -1,8 +1,9 @@
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import basicUtil from '../../../../util/basicUtil';
-import ABI from './abi.json';
+import ABI from '../../../../constants/abi/stargateV1Abi.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import stargateV2 from '../../../../util/calculators/stargateV2';
 
 const ROUTER = '0x45A01E4e04F14f7A4a6702c74187c5F6222033cd';
 
@@ -86,8 +87,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const balances = {};
 
   formatter.sumMultiBalanceOf(balances, tokenBalances);
-  formatter.convertBalancesToFixed(balances);
 
+  const v2TokenBalances = await stargateV2.getV2Tvl(chain, block, web3);
+  formatter.sumMultiBalanceOf(balances, v2TokenBalances);
+
+  formatter.convertBalancesToFixed(balances);
   return { balances };
 }
 

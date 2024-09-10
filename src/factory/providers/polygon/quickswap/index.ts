@@ -7,9 +7,9 @@ import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 15474436;
 const FACTORY_ADDRESS = '0x5757371414417b8c6caad45baef941abc7d3ab32';
-const THEGRAPTH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/sameepsi/quickswap-v3';
-const QUERY_SIZE = 400;
+const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
+const THEGRAPTH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/FqsRcH1XqSjqVx9GRTvEJe959aCbKrcyGgDWBrUkG24g`;
+const QUERY_SIZE = 1000;
 const TOKENS_QUERY = gql`
   query getTokens($block: Int!, $skip: Int!) {
     tokens(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}) {
@@ -43,8 +43,8 @@ const POOLS_QUERY = gql`
 `;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
-
+  const { chain, provider, web3 } = params;
+  const block = params.block - 100;
   if (block < START_BLOCK) {
     return {};
   }

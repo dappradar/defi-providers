@@ -6,8 +6,9 @@ import formatter from '../../../../util/formatter';
 const START_BLOCK = 17445564;
 const SWETH = '0xf951e335afb289353dc249e82926178eac7ded78';
 
-const SUBGRAPH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/messari/eigenlayer-ethereum';
+const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
+const SUBGRAPH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/68g9WSC4QTUJmMpuSbgLNENrcYha4mPmXhWGCoupM7kB`;
+
 const STRATEGY_POOLS = gql`
   query getPools($block: Int!) {
     protocols(block: { number: $block }) {
@@ -23,7 +24,8 @@ const STRATEGY_POOLS = gql`
 `;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  const { chain, provider, web3 } = params;
+  const block = params.block - 10;
 
   if (block < START_BLOCK) {
     return {};

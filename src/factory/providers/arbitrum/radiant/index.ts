@@ -1,6 +1,5 @@
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
-import ERC20_ABI from '../../../../constants/abi/erc20.json';
 import formatter from '../../../../util/formatter';
 import abi from '../../polygon/aave/abi.json';
 import BigNumber from 'bignumber.js';

@@ -4,7 +4,7 @@ import data from './data';
 import { log } from './logger/logger';
 import { config } from '../app.config';
 import Redis from './redis';
-const DEFAULT_DELAY = 20;
+const DEFAULT_DELAY = 0;
 
 function basicUtil() {
   function getPath(chain, provider) {
@@ -16,11 +16,11 @@ function basicUtil() {
   }
 
   function getDelay(chain) {
-    return data.CHAINS[chain]?.delay || DEFAULT_DELAY;
+    return /*data.CHAINS[chain]?.delay ||*/ DEFAULT_DELAY;
   }
 
   async function saveIntoCache(data, fileName, chain, provider) {
-    await new Promise<void>(function (resolve) {
+    /*await new Promise<void>(function (resolve) {
       fse.outputFile(
         `${getPath(chain, provider)}/${fileName}`,
         JSON.stringify(data, null, 2),
@@ -37,7 +37,7 @@ function basicUtil() {
           resolve();
         },
       );
-    });
+    });*/
     await Redis.setCache(`${chain}_${provider}_${fileName}`, data);
   }
 
