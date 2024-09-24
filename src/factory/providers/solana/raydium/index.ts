@@ -18,6 +18,7 @@ const RAYDIUM_POOLS_ENDPOINT =
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { web3 } = params;
+
   const balances = {};
   const pools = await fetch(RAYDIUM_POOLS_ENDPOINT).then((res) => res.json());
   const RAYDIUM_POOLS = pools.official;
