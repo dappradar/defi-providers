@@ -3,9 +3,37 @@ import { getLogger, configure } from 'log4js';
 const logger = getLogger();
 
 interface ILogger {
-  info: ({ message, endpoint }) => void;
-  warning: ({ message, stack, detail, endpoint }) => void;
-  error: ({ message, stack, detail, endpoint }) => void;
+  info: ({
+    message,
+    detail,
+    endpoint,
+  }: {
+    message?: string;
+    detail?: string;
+    endpoint?: string;
+  }) => void;
+  warning: ({
+    message,
+    stack,
+    detail,
+    endpoint,
+  }: {
+    message?: string;
+    stack?: string;
+    detail?: string;
+    endpoint?: string;
+  }) => void;
+  error: ({
+    message,
+    stack,
+    detail,
+    endpoint,
+  }: {
+    message?: string;
+    stack?: string;
+    detail?: string;
+    endpoint?: string;
+  }) => void;
 }
 
 configure({
