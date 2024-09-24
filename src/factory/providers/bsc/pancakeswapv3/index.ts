@@ -7,7 +7,7 @@ const THEGRAPTH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { chain, provider, web3 } = params;
-  const block = params.block - 100;
+  const block = params.block - 1000;
 
   if (block < START_BLOCK) {
     return { balances: {} };

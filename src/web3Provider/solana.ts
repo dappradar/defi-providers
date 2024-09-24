@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { Injectable } from '@nestjs/common';
 import { config, nodeUrls } from '../app.config';
 import Bottleneck from 'bottleneck';
+import { log } from '../util/logger/logger';
 
 const nodeUrl = nodeUrls.SOLANA_NODE_URL;
 const solanaBottleNeckMinTime = config.SOLANA_BOTTLENECK_MIN_TIME;
@@ -13,12 +14,25 @@ const limiter = new Bottleneck({
 @Injectable()
 export class Solana {
   getNodeUrl() {
+    log.info({
+      message: 'Fetching Solana node URL',
+      detail: 'solana - Fetched Solana node URL.',
+      endpoint: 'solana.getNodeUrl',
+    });
     return nodeUrl;
   }
 
   async call(method, params) {
     return limiter.schedule(async () => {
       try {
+        log.info({
+          message: `Calling method: ${method} with params: ${JSON.stringify(
+            params,
+          )}`,
+          detail: `solana - API call initiated.`,
+          endpoint: 'solana.call',
+        });
+
         const res = await fetch(nodeUrl, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
@@ -31,11 +45,29 @@ export class Solana {
         }).then((res) => res.json());
 
         if (res.error) {
+          log.error({
+            message: `Error in method ${method}: ${res.error.message}`,
+            detail: `solana - API call encountered an error.`,
+            endpoint: 'solana.call',
+          });
           throw res.error;
         }
 
+        log.info({
+          message: `Response from method ${method}: ${JSON.stringify(
+            res.result,
+          )}`,
+          detail: `solana - API call returned successfully.`,
+          endpoint: 'solana.call',
+        });
+
         return res.result;
-      } catch {
+      } catch (e) {
+        log.error({
+          message: `Exception in method ${method}: ${e.message}`,
+          detail: `solana - API call failed with exception.`,
+          endpoint: 'solana.call',
+        });
         return null;
       }
     });
@@ -43,19 +75,29 @@ export class Solana {
 
   async getBlockNumber() {
     const res = await this.call('getSlot', []);
+    log.info({
+      message: `Fetched block number: ${res}`,
+      detail: `solana - Fetched block number using getSlot.`,
+      endpoint: 'solana.getBlockNumber',
+    });
     return res;
   }
 
   async getBlock(slotNumber) {
     let slot = slotNumber || 0;
     if (slotNumber == 'latest') {
-      slot = await module.exports.eth.getBlockNumber();
+      slot = await this.getBlockNumber();
     }
     let res;
     while (true) {
       res = await this.call('getBlockTime', [slot]);
 
       if (res && !res.error) {
+        log.info({
+          message: `Found block at slot ${slot} with timestamp: ${res}`,
+          detail: `solana - Block found successfully.`,
+          endpoint: 'solana.getBlock',
+        });
         break;
       }
       slot += 1;
@@ -76,11 +118,24 @@ class Contract {
   constructor(abi, address) {
     this.abi = abi;
     this.address = address;
+    log.info({
+      message: `Contract instance created for address: ${address}`,
+      detail: `solana - Contract creation logged.`,
+      endpoint: 'solana.Contract.constructor',
+    });
   }
 
   async call(method, params) {
     return limiter.schedule(async () => {
       try {
+        log.info({
+          message: `Calling method: ${method} with params: ${JSON.stringify(
+            params,
+          )} for contract ${this.address}`,
+          detail: `solana - Contract API call initiated.`,
+          endpoint: 'solana.Contract.call',
+        });
+
         const res = await fetch(nodeUrl, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
@@ -93,11 +148,29 @@ class Contract {
         }).then((res) => res.json());
 
         if (res.error) {
+          log.error({
+            message: `Error in method ${method}: ${res.error.message} for contract ${this.address}`,
+            detail: `solana - Contract API call encountered an error.`,
+            endpoint: 'solana.Contract.call',
+          });
           throw res.error;
         }
 
+        log.info({
+          message: `Response from method ${method}: ${JSON.stringify(
+            res.result,
+          )} for contract ${this.address}`,
+          detail: `solana - Contract API call returned successfully.`,
+          endpoint: 'solana.Contract.call',
+        });
+
         return res.result;
-      } catch {
+      } catch (e) {
+        log.error({
+          message: `Exception in method ${method}: ${e.message} for contract ${this.address}`,
+          detail: `solana - Contract API call failed with exception.`,
+          endpoint: 'solana.Contract.call',
+        });
         return null;
       }
     });
@@ -109,6 +182,11 @@ class Contract {
         return {
           call: async () => {
             const res = await this.call('getTokenSupply', [this.address]);
+            log.info({
+              message: `Total supply fetched: ${res.value.amount} for contract ${this.address}`,
+              detail: `solana - Fetched total supply of contract.`,
+              endpoint: 'solana.Contract.methods.totalSupply.call',
+            });
             return res.value.amount;
           },
         };
@@ -125,6 +203,7 @@ class Contract {
                 encoding: 'jsonParsed',
               },
             ]);
+
             let balance = BigNumber(0);
             res.value.forEach((value) => {
               if (value && value.account && value.account.data) {
@@ -133,6 +212,15 @@ class Contract {
                 );
               }
             });
+
+            log.info({
+              message: `Balance fetched for account ${account}: ${balance.toFixed()} for contract ${
+                this.address
+              }`,
+              detail: `solana - Balance fetched successfully.`,
+              endpoint: 'solana.Contract.methods.balanceOf.call',
+            });
+
             return balance.toFixed();
           },
         };
