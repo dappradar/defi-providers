@@ -68,11 +68,6 @@ export class Solana {
 
   async getBlockNumber() {
     const res = await this.call('getSlot', []);
-    log.info({
-      message: `Fetched block number: ${res}`,
-      detail: `solana - Fetched block number using getSlot.`,
-      endpoint: 'solana.getBlockNumber',
-    });
     return res;
   }
 
@@ -86,11 +81,6 @@ export class Solana {
       res = await this.call('getBlockTime', [slot]);
 
       if (res && !res.error) {
-        log.info({
-          message: `Found block at slot ${slot} with timestamp: ${res}`,
-          detail: `solana - Block found successfully.`,
-          endpoint: 'solana.getBlock',
-        });
         break;
       }
       slot += 1;
@@ -162,11 +152,6 @@ class Contract {
         return {
           call: async () => {
             const res = await this.call('getTokenSupply', [this.address]);
-            log.info({
-              message: `Total supply fetched: ${res.value.amount} for contract ${this.address}`,
-              detail: `solana - Fetched total supply of contract.`,
-              endpoint: 'solana.Contract.methods.totalSupply.call',
-            });
             return res.value.amount;
           },
         };
@@ -191,14 +176,6 @@ class Contract {
                   value.account.data.parsed.info.tokenAmount.amount,
                 );
               }
-            });
-
-            log.info({
-              message: `Balance fetched for account ${account}: ${balance.toFixed()} for contract ${
-                this.address
-              }`,
-              detail: `solana - Balance fetched successfully.`,
-              endpoint: 'solana.Contract.methods.balanceOf.call',
             });
 
             return balance.toFixed();
