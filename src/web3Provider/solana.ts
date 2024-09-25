@@ -53,14 +53,6 @@ export class Solana {
           throw res.error;
         }
 
-        log.info({
-          message: `Response from method ${method}: ${JSON.stringify(
-            res.result,
-          )}`,
-          detail: `solana - API call returned successfully.`,
-          endpoint: 'solana.call',
-        });
-
         return res.result;
       } catch (e) {
         log.error({
@@ -118,11 +110,6 @@ class Contract {
   constructor(abi, address) {
     this.abi = abi;
     this.address = address;
-    log.info({
-      message: `Contract instance created for address: ${address}`,
-      detail: `solana - Contract creation logged.`,
-      endpoint: 'solana.Contract.constructor',
-    });
   }
 
   async call(method, params) {
@@ -155,14 +142,6 @@ class Contract {
           });
           throw res.error;
         }
-
-        log.info({
-          message: `Response from method ${method}: ${JSON.stringify(
-            res.result,
-          )} for contract ${this.address}`,
-          detail: `solana - Contract API call returned successfully.`,
-          endpoint: 'solana.Contract.call',
-        });
 
         return res.result;
       } catch (e) {
