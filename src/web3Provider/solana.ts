@@ -50,6 +50,7 @@ export class Solana {
             detail: `solana - API call encountered an error.`,
             endpoint: 'solana.call',
           });
+
           throw res.error;
         }
 
