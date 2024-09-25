@@ -58,7 +58,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   const poolInfo = (await axios.get(WHIRLPOOL_Endpoint)).data;
-  const filteredPools = poolInfo.whirlpools.filter((pool) => pool.tvl >= 1000);
+  const filteredPools = poolInfo.whirlpools.filter((pool) => pool.tvl >= 5000);
 
   const promisesForTokenBalance = [];
   filteredPools.forEach((pool) => {
