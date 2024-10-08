@@ -30,19 +30,15 @@ const QUERY_NO_BLOCK = gql`
 
 async function getSnxHolders(block, chain) {
   let holders = [];
-  try {
-    for (let i = 0; i <= 5000; i += 1000) {
-      const holder = (
-        await request(GRAPHQL_ENDPOINT, QUERY_NO_BLOCK, {
-          block,
-          skip: i,
-        })
-      ).snxholders;
-      holders = [...holders, ...holder];
-    }
-  } catch (e) {
-    console.log(`Issue with SubGraph on block ${block}`);
-    holders = await getSnxHolders(block - basicUtil.getDelay(chain), chain);
+
+  for (let i = 0; i <= 5000; i += 1000) {
+    const holder = (
+      await request(GRAPHQL_ENDPOINT, QUERY_NO_BLOCK, {
+        block,
+        skip: i,
+      })
+    ).snxholders;
+    holders = [...holders, ...holder];
   }
 
   return holders;

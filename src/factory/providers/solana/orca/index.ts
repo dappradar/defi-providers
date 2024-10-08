@@ -58,8 +58,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   const poolInfo = (await axios.get(WHIRLPOOL_Endpoint)).data;
+  const filteredPools = poolInfo.whirlpools.filter((pool) => pool.tvl >= 50000);
+
   const promisesForTokenBalance = [];
-  poolInfo.whirlpools.forEach((pool) => {
+  filteredPools.forEach((pool) => {
     promisesForTokenBalance.push(
       getTokenBalance(pool.tokenA.mint, pool.address, web3),
     );
@@ -68,7 +70,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     );
   });
   const results = await Promise.all(promisesForTokenBalance);
-  poolInfo.whirlpools.forEach((pool) => {
+  filteredPools.forEach((pool) => {
     if (!balances[pool.tokenA.mint]) {
       balances[pool.tokenA.mint] = BigNumber(results[0]);
     } else {

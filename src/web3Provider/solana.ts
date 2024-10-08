@@ -50,16 +50,9 @@ export class Solana {
             detail: `solana - API call encountered an error.`,
             endpoint: 'solana.call',
           });
+
           throw res.error;
         }
-
-        log.info({
-          message: `Response from method ${method}: ${JSON.stringify(
-            res.result,
-          )}`,
-          detail: `solana - API call returned successfully.`,
-          endpoint: 'solana.call',
-        });
 
         return res.result;
       } catch (e) {
@@ -75,11 +68,6 @@ export class Solana {
 
   async getBlockNumber() {
     const res = await this.call('getSlot', []);
-    log.info({
-      message: `Fetched block number: ${res}`,
-      detail: `solana - Fetched block number using getSlot.`,
-      endpoint: 'solana.getBlockNumber',
-    });
     return res;
   }
 
@@ -93,11 +81,6 @@ export class Solana {
       res = await this.call('getBlockTime', [slot]);
 
       if (res && !res.error) {
-        log.info({
-          message: `Found block at slot ${slot} with timestamp: ${res}`,
-          detail: `solana - Block found successfully.`,
-          endpoint: 'solana.getBlock',
-        });
         break;
       }
       slot += 1;
@@ -118,11 +101,6 @@ class Contract {
   constructor(abi, address) {
     this.abi = abi;
     this.address = address;
-    log.info({
-      message: `Contract instance created for address: ${address}`,
-      detail: `solana - Contract creation logged.`,
-      endpoint: 'solana.Contract.constructor',
-    });
   }
 
   async call(method, params) {
@@ -156,14 +134,6 @@ class Contract {
           throw res.error;
         }
 
-        log.info({
-          message: `Response from method ${method}: ${JSON.stringify(
-            res.result,
-          )} for contract ${this.address}`,
-          detail: `solana - Contract API call returned successfully.`,
-          endpoint: 'solana.Contract.call',
-        });
-
         return res.result;
       } catch (e) {
         log.error({
@@ -182,11 +152,6 @@ class Contract {
         return {
           call: async () => {
             const res = await this.call('getTokenSupply', [this.address]);
-            log.info({
-              message: `Total supply fetched: ${res.value.amount} for contract ${this.address}`,
-              detail: `solana - Fetched total supply of contract.`,
-              endpoint: 'solana.Contract.methods.totalSupply.call',
-            });
             return res.value.amount;
           },
         };
@@ -211,14 +176,6 @@ class Contract {
                   value.account.data.parsed.info.tokenAmount.amount,
                 );
               }
-            });
-
-            log.info({
-              message: `Balance fetched for account ${account}: ${balance.toFixed()} for contract ${
-                this.address
-              }`,
-              detail: `solana - Balance fetched successfully.`,
-              endpoint: 'solana.Contract.methods.balanceOf.call',
             });
 
             return balance.toFixed();
