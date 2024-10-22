@@ -43,7 +43,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     totalNativeBalance = totalNativeBalance.plus(nativeBalance);
   }
 
-  balances['pol'] = totalNativeBalance.toString();
+  balances['matic'] = totalNativeBalance.toString();
 
   formatter.convertBalancesToFixed(balances);
 
