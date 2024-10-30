@@ -444,14 +444,14 @@ async function getPoolVolumes(
     try {
       const pairData = await request(queryApi, POOL_VOLUMES_QUERY(), {
         pairs: pools.slice(i, i + querySize),
-      }).then((res) => res.pairs);
+      }).then((res: any) => res.pairs);
       const pairData24hAgo = await request(
         queryApi,
         POOL_VOLUMES_QUERY(priorBlockNumber),
         {
           pairs: pools.slice(i, i + querySize),
         },
-      ).then((res) => res.pairs);
+      ).then((res: any) => res.pairs);
 
       pairData.forEach((pair) => {
         poolVolumes[pair.id] = {
@@ -536,14 +536,14 @@ async function getTokenVolumes(
     try {
       const tokenData = await request(queryApi, TOKEN_VOLUMES_QUERY(), {
         tokens: tokens.slice(i, i + querySize),
-      }).then((res) => res.tokens);
+      }).then((res: any) => res.tokens);
       const tokenData24hAgo = await request(
         queryApi,
         TOKEN_VOLUMES_QUERY(priorBlockNumber),
         {
           tokens: tokens.slice(i, i + querySize),
         },
-      ).then((res) => res.tokens);
+      ).then((res: any) => res.tokens);
 
       tokenData.forEach((token) => {
         tokenVolumes[token.id] = {

@@ -38,6 +38,7 @@
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "fs-extra": "^10.1.0",
+    "graphql": "^16.9.0",
     "graphql-request": "^5.0.0",
     "log4js": "^6.7.1",
     "near-api-js": "^1.1.0",

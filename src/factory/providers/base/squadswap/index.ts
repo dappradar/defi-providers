@@ -1,42 +1,69 @@
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
-import uniswapV3 from '../../../../util/calculators/uniswapV3chain';
-import uniswapV2 from '../../../../util/calculators/uniswapV2';
+import uniswapV3 from '../../../../util/calculators/uniswapV3';
+import BigNumber from 'bignumber.js';
+import { request, gql } from 'graphql-request';
 
 const V2_START_BLOCK = 19727118;
-const V2_FACTORY_ADDRESS = '0xba34aA640b8Be02A439221BCbea1f48c1035EEF9';
-
 const V3_START_BLOCK = 19730499;
-const V3_FACTORY_ADDRESS = '0xa1288b64F2378276d0Cc56F08397F70BecF7c0EA';
+
+const SUBGRAPH_ENDPOINT_V2 = `https://api.studio.thegraph.com/query/76181/exchangev2-base/version/latest`;
+const SUBGRAPH_ENDPOINT_V3 = `https://api.studio.thegraph.com/query/76181/exchangev3-base/version/latest`;
+
+const QUERY_SIZE = 1000;
+const TOKENS = gql`
+  query getTokens($id: String!, $block: Int!) {
+    tokens(
+      block: { number: $block }
+      first: ${QUERY_SIZE}
+      orderBy: id
+      where: { id_gt: $id }
+    ) {
+      id
+      decimals
+      totalLiquidity
+    }
+  }
+`;
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  const { block, chain, provider } = params;
   if (block < V2_START_BLOCK) {
     return {};
   }
-  let balancesV3 = {};
+  const balancesV2 = {};
+  let balancesV3: any = {};
 
-  const { balances: balancesV2 } = await uniswapV2.getTvl(
-    V2_FACTORY_ADDRESS,
-    block,
-    chain,
-    provider,
-    web3,
-  );
+  let lastId = '';
+  while (true) {
+    const requestResult: any = await request(SUBGRAPH_ENDPOINT_V2, TOKENS, {
+      block: block - 100,
+      id: lastId,
+    });
+
+    for (const token of requestResult.tokens) {
+      balancesV2[token.id.toLowerCase()] = BigNumber(
+        token.totalLiquidity,
+      ).shiftedBy(Number(token.decimals));
+    }
+
+    if (requestResult.tokens.length < QUERY_SIZE) {
+      break;
+    }
+
+    lastId = requestResult.tokens[requestResult.tokens.length - 1].id;
+  }
 
   if (block >= V3_START_BLOCK) {
-    balancesV3 = await uniswapV3.getTvl(
-      V3_FACTORY_ADDRESS,
-      V3_START_BLOCK,
+    balancesV3 = await uniswapV3.getTvlFromSubgraph(
+      SUBGRAPH_ENDPOINT_V3,
       block,
       chain,
       provider,
-      web3,
-      'algebra',
     );
   }
 
-  const balances = formatter.sum([balancesV2, balancesV3]);
+  const balances = formatter.sum([balancesV2, balancesV3.balances]);
 
   return { balances };
 }
