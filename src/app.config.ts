@@ -71,5 +71,6 @@ nodeUrls['XAI_NODE_URL'] = process.env['XAI_NODE_URL'];
 nodeUrls['BAHAMUT_NODE_URL'] = process.env['BAHAMUT_NODE_URL'];
 nodeUrls['SKALE-EUROPA_NODE_URL'] = process.env['SKALE-EUROPA_NODE_URL'];
 nodeUrls['ETHERLINK_NODE_URL'] = process.env['ETHERLINK_NODE_URL'];
+nodeUrls['BLAST_NODE_URL'] = process.env['BLAST_NODE_URL'];
 
 export { config, nodeUrls };
