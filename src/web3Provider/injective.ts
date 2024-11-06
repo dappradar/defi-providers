@@ -6,7 +6,7 @@ import { nodeUrls } from '../app.config';
 const url = nodeUrls.INJECTIVE_NODE_URL;
 
 const limiter = new Bottleneck({
-  minTime: 1000, // 1 request per second
+  minTime: 100, // 10 request per second
 });
 
 @Injectable()
@@ -15,7 +15,6 @@ export class Injective {
     let data = {
       [method]: params,
     };
-
     data = Buffer.from(JSON.stringify(data)).toString('base64');
 
     const response = await limiter
@@ -24,7 +23,7 @@ export class Injective {
       )
       .then((response) => response.data.data);
 
-    return response[method];
+    return response;
   }
 
   async getAccountBalances(
@@ -50,7 +49,9 @@ export class Injective {
 
     await Promise.all(
       cw20TokenAddresses.map(async (token) => {
-        balances[token] = await this.call(token, 'balance', { address });
+        balances[token] = await this.call(token, 'balance', { address }).then(
+          (response) => response['balance'],
+        );
       }),
     );
 
