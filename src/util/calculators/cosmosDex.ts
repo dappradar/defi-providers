@@ -1,50 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { PromisePool } from '@supercharge/promise-pool';
-import { request, gql } from 'graphql-request';
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-import { ITvlReturn } from '../../interfaces/ITvl';
-import FACTORY_ABI from '../../constants/abi/factory.json';
-import PAIR_ABI from '../../constants/abi/uni.json';
-import RESERVES_ABI from '../../constants/abi/uniReserves.json';
-import BULK_RESERVES_ABI from '../../constants/abi/bulkReserves.json';
-import {
-  BULK_RESERVES_ADDRESSES,
-  BULK_RESERVES_DEPOLYED,
-} from '../../constants/contracts.json';
-import basicUtil from '../basicUtil';
-import util from '../blockchainUtil';
-import { log } from '../logger/logger';
-import { retryAsyncFunction, retryPromiseAll } from '../retry';
-
-async function getPairs(factoryAddress, web3) {
-  const limit = 30;
-  let pairs = [];
-  let iterationPairs = [];
-
-  do {
-    const start_after = pairs.length
-      ? pairs[pairs.length - 1].asset_infos
-      : undefined;
-
-    const query = {
-      limit,
-      ...(start_after && { start_after }),
-    };
-
-    console.log('Query:', query);
-
-    iterationPairs = await web3.eth
-      .call(factoryAddress, 'pairs', query)
-      .then((response) => response['pairs']);
-
-    console.log('Fetched pairs:', iterationPairs);
-
-    pairs = pairs.concat(iterationPairs);
-  } while (iterationPairs.length > 100); //0);
-
-  return pairs;
-}
 
 /**
  * Gets TVL of comonly used cosmos DEX clone
@@ -62,13 +16,55 @@ async function getTvl(
   block: number,
   chain: string,
   provider: string,
-  web3: Web3,
+  web3: any,
 ): Promise<{ [key: string]: string }> {
+  const limit = 30;
+  let pairs = [];
+  let iterationPairs = [];
+
+  do {
+    const start_after = pairs.length
+      ? pairs[pairs.length - 1].asset_infos
+      : undefined;
+
+    const query = {
+      limit,
+      ...(start_after && { start_after }),
+    };
+
+    iterationPairs = await web3.eth
+      .call(factoryAddress, 'pairs', query)
+      .then((response) => response['pairs']);
+
+    pairs = pairs.concat(iterationPairs);
+  } while (iterationPairs.length > 0);
+
   const balances = {};
 
-  const pairs = await getPairs(factoryAddress, web3);
-  console.log(pairs[0].asset_infos[0]);
-  console.log(pairs[0].asset_infos[1]);
+  for (const pair of pairs) {
+    const poolData = await web3.eth.call(pair.contract_addr, 'pool', {});
+
+    if (poolData.assets[0].amount !== '0')
+      try {
+        balances[poolData.assets[0].info.native_token.denom] = BigNumber(
+          balances[poolData.assets[0].info.native_token.denom] || 0,
+        ).plus(poolData.assets[0].amount);
+      } catch {
+        balances[poolData.assets[0].info.token.contract_addr] = BigNumber(
+          balances[poolData.assets[0].info.token.contract_addr] || 0,
+        ).plus(poolData.assets[0].amount);
+      }
+    if (poolData.assets[1].amount !== '0')
+      try {
+        balances[poolData.assets[1].info.native_token.denom] = BigNumber(
+          balances[poolData.assets[1].info.native_token.denom] || 0,
+        ).plus(poolData.assets[1].amount);
+      } catch {
+        balances[poolData.assets[1].info.token.contract_addr] = BigNumber(
+          balances[poolData.assets[1].info.token.contract_addr] || 0,
+        ).plus(poolData.assets[1].amount);
+      }
+  }
   return balances;
 }
 
