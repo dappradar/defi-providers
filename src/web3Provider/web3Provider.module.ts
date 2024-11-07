@@ -9,6 +9,7 @@ import { Tezos } from './tezos';
 import { Wax } from './wax';
 import { Aptos } from './aptos';
 import { Ton } from './ton';
+import { Injective } from './injective';
 
 @Module({
   exports: [Web3ProviderService],
@@ -20,6 +21,7 @@ import { Ton } from './ton';
     Solana,
     Stacks,
     Tezos,
+    Injective,
     Wax,
     Aptos,
     Ton,

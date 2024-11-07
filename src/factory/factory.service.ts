@@ -75,7 +75,11 @@ export class FactoryService {
       });
     }
 
-    const balances = basicUtil.checkZeroBalance(tvlData.balances);
+    let balances = basicUtil.checkZeroBalance(tvlData.balances);
+    balances = Object.keys(balances).reduce((acc, key) => {
+      acc[key.toLowerCase()] = balances[key];
+      return acc;
+    }, {} as { [key: string]: string });
     return { balances, poolBalances: tvlData.poolBalances };
   }
 
