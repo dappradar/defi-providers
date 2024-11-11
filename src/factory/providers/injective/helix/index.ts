@@ -49,21 +49,19 @@ async function getBalances(
   for (const { quoteDenom, baseDenom, orderbook } of markets) {
     const { buys, sells } = orderbook || { buys: [], sells: [] };
 
-    if (balanceType === 'spot') {
-      for (const { quantity } of sells) {
+    for (const { price, quantity } of buys) {
+      balances[quoteDenom] = new BigNumber(balances[quoteDenom] || 0).plus(
+        new BigNumber(quantity).multipliedBy(price),
+      );
+    }
+
+    for (const { quantity } of sells) {
+      if (balanceType === 'spot') {
         balances[baseDenom] = new BigNumber(balances[baseDenom] || 0).plus(
           quantity,
         );
-      }
-    } else if (balanceType === 'derivatives') {
-      for (const { price, quantity } of buys) {
-        balances[quoteDenom] = new BigNumber(balances[quoteDenom] || 0).plus(
-          new BigNumber(quantity).multipliedBy(price),
-        );
-      }
-
-      const firstBuyPrice = buys.length ? buys[0].price : 0;
-      for (const { quantity } of sells) {
+      } else if (balanceType === 'derivatives') {
+        const firstBuyPrice = buys.length ? buys[0].price : 0;
         balances[quoteDenom] = new BigNumber(balances[quoteDenom] || 0).plus(
           new BigNumber(quantity).multipliedBy(firstBuyPrice),
         );
