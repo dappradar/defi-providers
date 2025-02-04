@@ -80,6 +80,8 @@ async function getTvl(
 
   let offset = 10000;
 
+  let iterationCount = 0; // New iteration counter
+
   if (Math.max(v3Pairs.block, startBlock) < block) {
     for (let i = Math.max(v3Pairs.block, startBlock); ; ) {
       console.log(`Trying from ${i} with offset ${offset}`);
@@ -127,8 +129,10 @@ async function getTvl(
         token1.push(`0x${log.topics[2].slice(26)}`);
       });
 
+      iterationCount++; // Increment the iteration counter
+
       // Save into cache every 25 iterations
-      if (((i - Math.max(v3Pairs.block, startBlock)) / offset) % 25 === 0) {
+      if (iterationCount % 25 === 0) {
         console.log('save');
         await basicUtil.saveIntoCache(
           i,
