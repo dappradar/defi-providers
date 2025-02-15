@@ -73,5 +73,6 @@ nodeUrls['SKALE-EUROPA_NODE_URL'] = process.env['SKALE-EUROPA_NODE_URL'];
 nodeUrls['ETHERLINK_NODE_URL'] = process.env['ETHERLINK_NODE_URL'];
 nodeUrls['BLAST_NODE_URL'] = process.env['BLAST_NODE_URL'];
 nodeUrls['INJECTIVE_NODE_URL'] = process.env['INJECTIVE_NODE_URL'];
+nodeUrls['UNICHAIN_NODE_URL'] = process.env['UNICHAIN_NODE_URL'];
 
 export { config, nodeUrls };
