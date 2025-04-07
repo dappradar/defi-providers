@@ -65,10 +65,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   // Original V2 (SquadSwap) balances
-  const balancesV2 =
-    block >= V2_START_BLOCK
+  // Subgraph stopped indexing after 46928463
+  const balancesV2 = /*block >= V2_START_BLOCK
       ? await fetchTokenBalances(V2_SUBGRAPH_ENDPOINT, block)
-      : {};
+      :*/ {};
 
   // Original V3 (SquadSwap) balances
   let balancesV3 = {};
