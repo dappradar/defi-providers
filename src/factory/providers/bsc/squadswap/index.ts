@@ -80,7 +80,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       chain,
       provider,
       web3,
-      'algebra',
     );
   }
 
@@ -100,7 +99,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       chain,
       provider,
       web3,
-      'algebra',
     );
   }
 
