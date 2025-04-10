@@ -6,7 +6,7 @@ const REF_FINANCE_CONTRACT = 'v2.ref-finance.near';
 const PROJECT_DCL_CONTRACT = 'dclv2.ref-labs.near';
 const BURROW_CONTRACT = 'contract.main.burrow.near';
 const LINEAR_ADDRESS = 'linear-protocol.near';
-const WRAP_NEAR = 'wrap.near';
+const WRAP_NEAR_ADDRESS = 'wrap.near';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -65,13 +65,12 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
             .plus(amounts[index])
             .toFixed();
         });
-        // Check if this pool contains both LINEAR and USDT tokens
         if (
           token_account_ids.includes(LINEAR_ADDRESS) &&
-          token_account_ids.includes(WRAP_NEAR)
+          token_account_ids.includes(WRAP_NEAR_ADDRESS)
         ) {
           const linearIndex = token_account_ids.indexOf(LINEAR_ADDRESS);
-          const usdtIndex = token_account_ids.indexOf(WRAP_NEAR);
+          const usdtIndex = token_account_ids.indexOf(WRAP_NEAR_ADDRESS);
 
           // Calculate the ratio of USDT to LINEAR
           if (BigNumber(amounts[linearIndex]).gt(0)) {
@@ -110,7 +109,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     const linearBalance = BigNumber(balances[LINEAR_ADDRESS]);
     const usdtEquivalent = linearBalance.times(linearToUsdtRatio);
 
-    balances[WRAP_NEAR] = BigNumber(balances[WRAP_NEAR] || 0)
+    balances[WRAP_NEAR_ADDRESS] = BigNumber(balances[WRAP_NEAR_ADDRESS] || 0)
       .plus(usdtEquivalent)
       .toFixed();
 
