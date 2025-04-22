@@ -5,7 +5,8 @@ const CONTRACT_ADDRESSES = [
   'EQDynReiCeK8xlKRbYArpp4jyzZuF6-tYfhFM0O5ulOs5H0L',
   'EQDpJnZP89Jyxz3euDaXXFUhwCWtaOeRmiUJTi3jGYgF8fnj',
   'EQAz6ehNfL7_8NI7OVh1Qg46HsuC4kFpK-icfqK9J3Frd6CJ',
-  'EQBwfRtqEf3ZzhkeGsmXiC7hzTh1C5zZZzLgDH5VL8gENQ2A',
+  'EQBwfRtqEf3ZzhkeGsmXiC7hzTh1C5zZZzLgDH5VL8gENQ2A', // Notcoin prelaunch
+  'EQAG8_BzwlWkmqb9zImr9RJjjgZZCLMOQXP9PR0B1PYHvfSS', // Notcoin vault
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {

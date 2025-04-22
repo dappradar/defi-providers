@@ -49,6 +49,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       basicUtil.saveIntoCache(cache, 'cache.json', chain, provider);
     });
   }
+  cache.start = block;
+  basicUtil.saveIntoCache(cache, 'cache.json', chain, provider);
 
   const tokens: string[] = [];
   const holders: string[] = [];

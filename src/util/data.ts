@@ -111,6 +111,14 @@ const data = {
       prefix: 'etherlink_',
       delay: 0,
     },
+    unichain: {
+      prefix: 'unichain_',
+      delay: 0,
+    },
+    'boba-eth': {
+      prefix: 'boba_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',

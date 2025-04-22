@@ -10,6 +10,7 @@ import Web3 from 'web3';
 import { Wax } from './wax';
 import { Aptos } from './aptos';
 import { Ton } from './ton';
+import { Injective } from './injective';
 
 const webSocketConfig = {
   timeout: 60000,
@@ -40,6 +41,7 @@ export class Web3ProviderService {
     private readonly wax: Wax,
     private readonly aptos: Aptos,
     private readonly ton: Ton,
+    private readonly injective: Injective,
   ) {}
 
   async getWeb3(chain = 'ethereum') {
@@ -95,6 +97,10 @@ export class Web3ProviderService {
       }
       case 'ton': {
         web3 = { eth: this.ton };
+        break;
+      }
+      case 'injective': {
+        web3 = { eth: this.injective };
         break;
       }
       default: {
