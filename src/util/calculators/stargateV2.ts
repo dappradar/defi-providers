@@ -52,6 +52,9 @@ const CONFIG = {
   aurora: {
     pools: ['0x81F6138153d473E8c5EcebD3DC8Cd4903506B075'],
   },
+  unichain: {
+    pools: ['0xe9aBA835f813ca05E50A6C0ce65D0D74390F7dE7'],
+  },
 };
 
 async function getV2Tvl(
