@@ -1,0 +1,88 @@
+import formatter from '../../../../util/formatter';
+import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import util from '../../../../util/blockchainUtil';
+import basicUtil from '../../../../util/basicUtil';
+import ABI from './abi.json';
+
+const START_BLOCK = 21593771;
+const FACTORY_ADDRESS = '0xC177118F005F87C2e96869A03Bb258481A2Af455';
+const BLOCK_LIMIT = 10000;
+
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block, chain, provider, web3 } = params;
+
+  const balances = {};
+  if (block < START_BLOCK) {
+    return { balances };
+  }
+
+  let cache: {
+    start: number;
+    tokens: string[];
+  } = { start: START_BLOCK, tokens: [] };
+  try {
+    cache = await basicUtil.readFromCache('cache.json', chain, provider);
+  } catch {}
+
+  for (
+    let i = Math.max(cache.start, START_BLOCK);
+    i < block;
+    i += BLOCK_LIMIT
+  ) {
+    const logs = await util.getLogs(
+      i,
+      Math.min(i + BLOCK_LIMIT - 1, block),
+      '0x2e2b3f61b70d2d131b2a807371103cc98d51adcaa5e9a8f9c32658ad8426e74e',
+      FACTORY_ADDRESS,
+      web3,
+    );
+
+    logs.output.forEach((log) => {
+      const address = `0x${log.data.substring(26, 66)}`;
+
+      if (!cache.tokens.includes(address)) {
+        cache.tokens.push(address);
+      }
+
+      cache.start = i += BLOCK_LIMIT;
+      basicUtil.saveIntoCache(cache, 'cache.json', chain, provider);
+    });
+  }
+
+  if (cache.tokens.length > 0) {
+    const treasuryAddresses = await util.executeCallOfMultiTargets(
+      cache.tokens,
+      ABI,
+      'treasury',
+      [],
+      block,
+      chain,
+      web3,
+    );
+
+    const underlyingAssets = await util.executeCallOfMultiTargets(
+      cache.tokens,
+      ABI,
+      'underlyingAsset',
+      [],
+      block,
+      chain,
+      web3,
+    );
+
+    const tokenBalances = await util.getTokenBalancesOfHolders(
+      treasuryAddresses,
+      underlyingAssets,
+      block,
+      chain,
+      web3,
+    );
+
+    formatter.sumMultiBalanceOf(balances, tokenBalances);
+    formatter.convertBalancesToFixed(balances);
+  }
+
+  return { balances };
+}
+
+export { tvl };
