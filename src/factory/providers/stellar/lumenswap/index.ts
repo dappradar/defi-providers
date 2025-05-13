@@ -62,9 +62,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
         if (pool && pool.reserves && Array.isArray(pool.reserves)) {
           pool.reserves.forEach((reserve) => {
             if (reserve.asset && reserve.amount) {
-              const assetKey = reserve.asset.toLowerCase();
+              const assetKey = formatter.formatStellarAddresses(reserve.asset);
 
-              // Add to balances using the Dodo-style pattern
               balances[assetKey] = BigNumber(balances[assetKey] || 0)
                 .plus(BigNumber(reserve.amount))
                 .toString();
