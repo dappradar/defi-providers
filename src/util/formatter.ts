@@ -161,7 +161,14 @@ function formatStellarAddresses(assetName: string): string {
   }
 
   // Replace ":" with "-" in non-native asset names
-  return formattedName.replace(/:/g, '-');
+  let result = formattedName.replace(/:/g, '-');
+
+  // Remove '-1' suffix if it exists
+  if (result.endsWith('-1')) {
+    result = result.slice(0, -2);
+  }
+
+  return result;
 }
 
 /**
