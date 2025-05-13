@@ -10,6 +10,7 @@ import { Wax } from './wax';
 import { Aptos } from './aptos';
 import { Ton } from './ton';
 import { Injective } from './injective';
+import { Stellar } from './stellar';
 
 @Module({
   exports: [Web3ProviderService],
@@ -25,6 +26,7 @@ import { Injective } from './injective';
     Wax,
     Aptos,
     Ton,
+    Stellar,
   ],
 })
 export class Web3ProviderModule {}

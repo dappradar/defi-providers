@@ -39,7 +39,8 @@ export class FactoryService {
     }
     if (
       this.web3ProviderService.checkNodeUrl(req?.chain) &&
-      req.chain !== 'ton'
+      req.chain !== 'ton' &&
+      req.chain !== 'stellar'
     ) {
       throw new RpcException('Node URL is not provided');
     }
