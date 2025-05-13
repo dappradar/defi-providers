@@ -71,11 +71,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
           });
         }
       }
-
-      // Add a delay between batches to avoid rate limiting
-      if (batches.length > 1) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
     }
   }
 
