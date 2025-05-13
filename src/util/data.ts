@@ -119,6 +119,10 @@ const data = {
       prefix: 'boba_',
       delay: 0,
     },
+    stellar: {
+      prefix: 'stellar_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',

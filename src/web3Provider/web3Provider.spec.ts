@@ -61,4 +61,32 @@ describe('web3', () => {
       expect(typeof (await tezos.eth.getBlockNumber())).toBe(typeof 123);
     });
   });
+  describe('stellar providers', () => {
+    it('should get contract balances', async () => {
+      const stellar = await web3ProviderService.getWeb3('stellar');
+      const testContractAddresses = [
+        'CDCART6WRSM2K4CKOAOB5YKUVBSJ6KLOVS7ZEJHA4OAQ2FXX7JOHLXIP',
+        // Add more test addresses if needed
+      ];
+      const balances = await stellar.eth.getAddressesBalances(
+        testContractAddresses,
+      );
+      expect(Array.isArray(balances)).toBe(true);
+    });
+
+    it('should get liquidity pool details', async () => {
+      const stellar = await web3ProviderService.getWeb3('stellar');
+      const testPoolIds = [
+        '454bce4433390c49d88eff01d5885e6bf18ca4c63ae75ffb20fda3434e9798b3',
+        // Add more test pool IDs if needed
+      ];
+      const poolDetails = await stellar.eth.getLiquidityPoolsBalances(
+        testPoolIds,
+      );
+      expect(Array.isArray(poolDetails)).toBe(true);
+      if (poolDetails.length > 0) {
+        expect(poolDetails[0]).toHaveProperty('reserves');
+      }
+    });
+  });
 });

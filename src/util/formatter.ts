@@ -102,10 +102,9 @@ function sumMultiBalanceOf(balances, results, chain = '', provider = '') {
             ? result.token.toLowerCase()
             : result.token;
 
-          if (!balances[address]) {
-            balances[address] = new BigNumber(0);
-          }
-          balances[address] = balances[address].plus(result.balance);
+          balances[address] = BigNumber(balances[address] || 0).plus(
+            result.balance,
+          );
         }
       });
     }
@@ -146,6 +145,68 @@ function swapTokenAddresses(
   });
 }
 
+/**
+ * Formats Stellar asset names by standardizing native assets and replacing separators
+ * @param assetName The Stellar asset name (e.g. "native" or "USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN")
+ * @returns Formatted asset name (e.g. "xlm" or "usdc-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN")
+ */
+function formatStellarAddresses(assetName: string): string {
+  const formattedName = assetName.toLowerCase();
+
+  // Handle native asset
+  if (formattedName === 'native') {
+    return 'xlm';
+  } else if (formattedName.startsWith('native:')) {
+    return 'xlm';
+  }
+
+  // Replace ":" with "-" in non-native asset names
+  let result = formattedName.replace(/:/g, '-');
+
+  // Remove '-1' suffix if it exists
+  if (result.endsWith('-1')) {
+    result = result.slice(0, -2);
+  }
+
+  return result;
+}
+
+/**
+ * Maps specific Stellar token addresses to their corresponding tokens
+ * @param balances Object with balances to be mapped
+ * @returns Updated balances object
+ */
+function mapStellarTokenAddresses(balances) {
+  const mappings = {
+    'usdx-gavh5zwacay2phpug4fl3lhhjiyihofpsiugm2khk25cjwxhav6qkdmn':
+      'usdc-ga5zsejyb37jrc5avcia5mop4rhtm335x2kgx3ihojapp5re34k4kzvn',
+    'eurx-gavh5zwacay2phpug4fl3lhhjiyihofpsiugm2khk25cjwxhav6qkdmn':
+      'eurc-gdhu6wrg4ieqxm5nz4bmpkoxhw76mzm4y2iemfdvxbsdp6sjy4itnpp2',
+    'yusdc-gdgtvwsm4mgs4t7z6w4rpwoche2i6rdfcifzgs3doa63lwqtrnznttff':
+      'usdc-ga5zsejyb37jrc5avcia5mop4rhtm335x2kgx3ihojapp5re34k4kzvn',
+    'yeth-gdyqnef2uwtk4l6hitmt53mz6f5qwo3q4uve6scgc4omeqizqqderqfd':
+      'eth-gbfxohvas43oiwnio7xlrjaht3bicfeikojlzvxnt572mism4cmgsocc',
+    'ybtc-gbuvrnh4rw4vlhp4c5mof46rrirzlavhygx45mvstka2f6tmr7e7l6nw':
+      'btc-gdpjali4azkuu2w426u5wkmat6cn3ajrpiiryr2ym54tl2gdwo5o2mzm',
+    'susd-gchw7cwi7gmiyqyfxmfjnjx5645xgwiiniaeqk3sabqo6cayl5t7jyih':
+      'usdc-ga5zsejyb37jrc5avcia5mop4rhtm335x2kgx3ihojapp5re34k4kzvn',
+  };
+
+  Object.keys(mappings).forEach((sourceToken) => {
+    if (balances[sourceToken]) {
+      const targetToken = mappings[sourceToken];
+
+      balances[targetToken] = BigNumber(balances[targetToken] || 0)
+        .plus(BigNumber(balances[sourceToken]))
+        .toString();
+
+      delete balances[sourceToken];
+    }
+  });
+
+  return balances;
+}
+
 export default {
   encodeParameters,
   decodeParameters,
@@ -156,4 +217,6 @@ export default {
   sum,
   sumMultiBalanceOf,
   swapTokenAddresses,
+  formatStellarAddresses,
+  mapStellarTokenAddresses,
 };
