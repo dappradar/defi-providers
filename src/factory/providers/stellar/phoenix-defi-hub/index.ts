@@ -3,8 +3,8 @@ import formatter from '../../../../util/formatter';
 import fetch from 'node-fetch';
 import basicUtil from '../../../../util/basicUtil';
 
-const DUNE_API_ENDPOINT =
-  'https://api.dune.com/api/v1/query/4341139/results?limit=100';
+const PHOENIX_API_ENDPOINT =
+  'https://api-phoenix-v2.decentrio.ventures/tickers';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { web3, chain, provider } = params;
@@ -13,41 +13,35 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   let pools: string[] = [];
 
   try {
-    console.log('Fetching Soroswap pools from Dune Analytics API...');
-    const response = await fetch(DUNE_API_ENDPOINT, {
-      headers: {
-        'X-Dune-API-Key': process.env.DUNE_API_KEY,
-      },
-    }).then((res) => res.json());
+    console.log('Fetching Phoenix DeFi Hub pools...');
+    const response = await fetch(PHOENIX_API_ENDPOINT).then((res) =>
+      res.json(),
+    );
 
-    if (
-      response.result &&
-      response.result.rows &&
-      Array.isArray(response.result.rows)
-    ) {
-      pools = response.result.rows
-        .filter((row) => row.pool)
-        .map((row) => row.pool);
+    if (Array.isArray(response)) {
+      pools = response
+        .filter((item) => item.pool_id)
+        .map((item) => item.pool_id);
 
-      console.log(`Found ${pools.length} Soroswap pools`);
+      console.log(`Found ${pools.length} Phoenix DeFi Hub pools`);
 
       // Cache the pools for fallback
-      const cache = { pools };
+      const cache = { pools, rawData: response };
       await basicUtil.saveIntoCache(
         cache,
-        'soroswap-pools.json',
+        'phoenix-defi-hub-pools.json',
         chain,
         provider,
       );
     }
   } catch (error) {
-    console.error('Error fetching data from Dune Analytics API:', error);
+    console.error('Error fetching data from Phoenix DeFi Hub API:', error);
 
     // Fallback to cached pools
     try {
       console.log('Falling back to cached pool data...');
       const cache = await basicUtil.readFromCache(
-        'soroswap-pools.json',
+        'phoenix-defi-hub-pools.json',
         chain,
         provider,
       );

@@ -14,7 +14,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const balances = {};
 
-  const tokenBalances = await web3.eth.getAddressesBalances(HOLDERS);
+  const tokenBalances = await web3.eth.getContractsBalances(HOLDERS);
 
   formatter.sumMultiBalanceOf(balances, tokenBalances);
   formatter.mapStellarTokenAddresses(balances);

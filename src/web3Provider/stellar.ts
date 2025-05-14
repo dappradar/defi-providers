@@ -15,7 +15,7 @@ export class Stellar {
    * @param addresses Single address or array of Stellar contract addresses
    * @returns Promise with array of token and balance pairs
    */
-  async getAddressesBalances(
+  async getContractsBalances(
     addresses: string | string[],
   ): Promise<{ token: string; balance: BigNumber }[]> {
     // Normalize input to array
@@ -44,6 +44,65 @@ export class Stellar {
       }
 
       if (addressArray.length > 1) {
+        await delay(500);
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Get balances for one or multiple Stellar accounts
+   * @param accountIds Single account ID or array of Stellar account IDs
+   * @returns Promise with array of token and balance pairs
+   */
+  async getAccountsBalances(
+    accountIds: string | string[],
+  ): Promise<{ token: string; balance: BigNumber }[]> {
+    // Normalize input to array
+    const accountIdArray = Array.isArray(accountIds)
+      ? accountIds
+      : [accountIds];
+    let results: { token: string; balance: BigNumber }[] = [];
+
+    // Process each account ID sequentially
+    for (const accountId of accountIdArray) {
+      console.log('Processing account', accountId);
+      const url = `${STELLAR_HORIZON_API}/accounts/${accountId}`;
+
+      try {
+        const response = await fetch(url).then((res) => res.json());
+
+        if (response.balances && Array.isArray(response.balances)) {
+          const accountBalances = response.balances.map((balance) => {
+            let asset;
+            if (balance.asset_type === 'native') {
+              asset = 'native';
+            } else {
+              asset = `${balance.asset_code}:${balance.asset_issuer}`;
+            }
+
+            // Use formatter utility to format asset names
+            const normalizedAsset = formatter.formatStellarAddresses(asset);
+
+            // Add 7 decimal places to the balance
+            const balanceWithDecimals = new BigNumber(
+              balance.balance,
+            ).shiftedBy(7);
+
+            return {
+              token: normalizedAsset,
+              balance: new BigNumber(balanceWithDecimals.toString()),
+            };
+          });
+
+          results = [...results, ...accountBalances];
+        }
+      } catch (error) {
+        console.error(`Error fetching account ${accountId}:`, error);
+      }
+
+      if (accountIdArray.length > 1) {
         await delay(500);
       }
     }
