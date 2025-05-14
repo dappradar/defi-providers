@@ -68,7 +68,7 @@ describe('web3', () => {
         'CDCART6WRSM2K4CKOAOB5YKUVBSJ6KLOVS7ZEJHA4OAQ2FXX7JOHLXIP',
         // Add more test addresses if needed
       ];
-      const balances = await stellar.eth.getAddressesBalances(
+      const balances = await stellar.eth.getContractsBalances(
         testContractAddresses,
       );
       expect(Array.isArray(balances)).toBe(true);
