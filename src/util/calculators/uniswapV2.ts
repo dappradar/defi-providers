@@ -17,6 +17,8 @@ import util from '../blockchainUtil';
 import { log } from '../logger/logger';
 import { retryAsyncFunction, retryPromiseAll } from '../retry';
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function getReserves(
   address: string,
   block: number,
@@ -126,6 +128,7 @@ async function getPoolsReserves(
  * @param provider - the provider folder name
  * @param web3 - The Web3 object
  * @param usePoolMethods - some factories use pool methods and other pair methods
+ * @param withConcurrency - whether to use concurrency in PromisePool
  * @returns The object containing object with token addresses and their locked values and object with pool balances
  *
  */
@@ -136,6 +139,7 @@ async function getTvl(
   provider: string,
   web3: Web3,
   usePoolMethods = false,
+  withConcurrency = true,
 ): Promise<ITvlReturn> {
   const balances = {};
   const poolBalances = {};
@@ -335,9 +339,14 @@ async function getTvl(
       );
     }
 
-    const { results: poolReserves } = await PromisePool.withConcurrency(10)
+    const { results: poolReserves } = await PromisePool.withConcurrency(
+      withConcurrency ? 10 : 1,
+    )
       .for(getMultiPoolsReserves)
       .process(async (data) => {
+        if (!withConcurrency) {
+          await delay(500); // 2 second delay when not using concurrency
+        }
         return data;
       });
 

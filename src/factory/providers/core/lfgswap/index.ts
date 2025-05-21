@@ -24,6 +24,8 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     chain,
     provider,
     web3,
+    false,
+    false,
   );
 
   const stakedBalance = await util.getTokenBalancesOfEachHolder(
