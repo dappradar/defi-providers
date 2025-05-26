@@ -3,10 +3,26 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import util from '../../../../util/blockchainUtil';
 import basicUtil from '../../../../util/basicUtil';
 import ABI from './abi.json';
+import BigNumber from 'bignumber.js';
 
 const START_BLOCK = 21593771;
 const FACTORY_ADDRESS = '0xC177118F005F87C2e96869A03Bb258481A2Af455';
 const BLOCK_LIMIT = 10000;
+const DECIMALS_ABI = [
+  {
+    inputs: [],
+    name: 'decimals',
+    outputs: [
+      {
+        internalType: 'uint8',
+        name: '',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -50,16 +66,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   }
 
   if (cache.tokens.length > 0) {
-    const treasuryAddresses = await util.executeCallOfMultiTargets(
-      cache.tokens,
-      ABI,
-      'treasury',
-      [],
-      block,
-      chain,
-      web3,
-    );
-
     const underlyingAssets = await util.executeCallOfMultiTargets(
       cache.tokens,
       ABI,
@@ -70,13 +76,81 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       web3,
     );
 
-    const tokenBalances = await util.getTokenBalancesOfHolders(
-      treasuryAddresses,
-      underlyingAssets,
+    const totalSupplies = await util.executeCallOfMultiTargets(
+      cache.tokens,
+      ABI,
+      'totalSupply',
+      [],
       block,
       chain,
       web3,
     );
+
+    const tokenDecimals = await util.executeCallOfMultiTargets(
+      cache.tokens,
+      DECIMALS_ABI,
+      'decimals',
+      [],
+      block,
+      chain,
+      web3,
+    );
+
+    const underlyingAssetAddresses = underlyingAssets.filter(
+      (asset) => asset != null,
+    );
+    const underlyingAssetDecimals = await util.executeCallOfMultiTargets(
+      underlyingAssetAddresses,
+      DECIMALS_ABI,
+      'decimals',
+      [],
+      block,
+      chain,
+      web3,
+    );
+
+    const underlyingDecimalMap = {};
+    underlyingAssetAddresses.forEach((address, index) => {
+      if (address && underlyingAssetDecimals[index]) {
+        underlyingDecimalMap[address.toLowerCase()] =
+          underlyingAssetDecimals[index];
+      }
+    });
+
+    const tokenBalances = [];
+    if (
+      underlyingAssets &&
+      underlyingAssets.length > 0 &&
+      totalSupplies &&
+      totalSupplies.length > 0 &&
+      tokenDecimals &&
+      tokenDecimals.length > 0
+    ) {
+      const maxLength = Math.min(
+        underlyingAssets.length,
+        totalSupplies.length,
+        tokenDecimals.length,
+      );
+      for (let i = 0; i < maxLength; i++) {
+        const underlyingAssetAddress = underlyingAssets[i];
+        const supply = totalSupplies[i];
+        const mainTokenDecimal = tokenDecimals[i];
+
+        if (underlyingAssetAddress && supply && mainTokenDecimal) {
+          const underlyingDecimal =
+            underlyingDecimalMap[underlyingAssetAddress.toLowerCase()];
+          if (underlyingDecimal !== undefined) {
+            const decimalShiftFactor = new BigNumber(underlyingDecimal)
+              .minus(new BigNumber(mainTokenDecimal))
+              .toNumber();
+            tokenBalances.push({
+              token: underlyingAssetAddress,
+              balance: new BigNumber(supply).shiftedBy(decimalShiftFactor),
+            });
+          }
+        }
+      }
+    }
 
     formatter.sumMultiBalanceOf(balances, tokenBalances);
     formatter.convertBalancesToFixed(balances);
