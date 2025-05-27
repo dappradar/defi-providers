@@ -1,8 +1,10 @@
+import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import uniswapV3 from '../../../../util/calculators/uniswapV3chain';
+import uniswapV3 from '../../../../util/calculators/uniswapV3';
 
 const V3_START_BLOCK = 1371680;
-const V3_FACTORY_ADDRESS = '0x33128a8fC17869897dcE68Ed026d694621f6FDfD';
+const SUBGRAPH_URL =
+  'https://gateway.thegraph.com/api/subgraphs/id/HMuAwufqZ1YCRmzL2SfHTVkzZovC9VL2UAKhjvRqKiR1';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -10,16 +12,15 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     return { balances: {} };
   }
 
-  const balances = await uniswapV3.getTvl(
-    V3_FACTORY_ADDRESS,
-    V3_START_BLOCK,
-    block,
+  const { balances, poolBalances } = await uniswapV3.getTvlFromSubgraph(
+    SUBGRAPH_URL,
+    block - 1000,
     chain,
     provider,
-    web3,
   );
 
-  return { balances, poolBalances: {} };
+  formatter.convertBalancesToFixed(balances);
+  return { balances, poolBalances };
 }
 
 export { tvl };

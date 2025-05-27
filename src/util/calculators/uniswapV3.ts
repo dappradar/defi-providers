@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { gql } from 'graphql-request';
-import basicUtil from '../basicUtil';
 import { parse } from 'graphql';
 import { print } from 'graphql/language/printer';
 import { ITvlReturn } from '../../interfaces/ITvl';
@@ -35,19 +34,25 @@ async function getPools(
   provider: string,
 ) {
   let data;
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (process.env.THE_GRAPH_API_KEY) {
+    headers['Authorization'] = `Bearer ${process.env.THE_GRAPH_API_KEY}`;
+  }
+
   try {
-    data = (
-      await (
-        await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: print(parse(POOLS_QUERY(querySize))),
-            variables: { block: block, skip: skip },
-          }),
-        })
-      ).json()
-    ).data;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        query: print(parse(POOLS_QUERY(querySize))),
+        variables: { block: block, skip: skip },
+      }),
+    });
+    const rawResponse = await response.json();
+    console.log('Raw response:', JSON.stringify(rawResponse, null, 2));
+    data = rawResponse.data;
   } catch (e) {
     try {
       log.warning({
@@ -60,11 +65,11 @@ async function getPools(
         await (
           await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({
               query: print(parse(POOLS_QUERY(querySize))),
               variables: {
-                block: block - basicUtil.getDelay(chain),
+                block: block,
                 skip: skip,
               },
             }),
@@ -107,6 +112,7 @@ async function getTvlFromSubgraph(
   try {
     let skip = 0;
     while (skip <= 5000) {
+      console.log('skip', skip);
       const pools = await getPools(
         endpoint,
         block,
