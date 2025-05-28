@@ -51,7 +51,7 @@ export class Aptos {
     return response;
   }
 
-  async function_view({ functionStr, type_arguments = [], args = [] }) {
+  async functionView({ functionStr, type_arguments = [], args = [] }) {
     const response = (
       await axios.post(`${nodeUrl}/view`, {
         function: functionStr,
