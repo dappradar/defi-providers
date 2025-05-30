@@ -10,6 +10,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     token0Reserve: (i) => i.data.reserve_x,
     token1Reserve: (i) => i.data.reserve_y,
   });
+  formatter.mapAptosTokenAddresses(balances);
   formatter.convertBalancesToFixed(balances);
   return {
     balances,

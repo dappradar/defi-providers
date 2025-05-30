@@ -207,6 +207,29 @@ function mapStellarTokenAddresses(balances) {
   return balances;
 }
 
+function mapAptosTokenAddresses(balances) {
+  const mappings = {
+    /*'0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3::wrapped_coins::wrappedxbtc':
+      '0x4e1854f6d332c9525e258fb6e66f84b6af8aba687bbcb832a24768c4e175feec::abtc::abtc',
+    */
+  };
+
+  Object.keys(mappings).forEach((sourceToken) => {
+    if (balances[sourceToken]) {
+      console.log('sourceToken', sourceToken);
+      const targetToken = mappings[sourceToken];
+      console.log('targetToken', targetToken);
+      balances[targetToken] = BigNumber(balances[targetToken] || 0)
+        .plus(BigNumber(balances[sourceToken]))
+        .toString();
+
+      delete balances[sourceToken];
+    }
+  });
+
+  return balances;
+}
+
 export default {
   encodeParameters,
   decodeParameters,
@@ -219,4 +242,5 @@ export default {
   swapTokenAddresses,
   formatStellarAddresses,
   mapStellarTokenAddresses,
+  mapAptosTokenAddresses,
 };

@@ -34,6 +34,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log('Error fetching Thala data:', error);
   }
 
+  formatter.mapAptosTokenAddresses(balances);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }

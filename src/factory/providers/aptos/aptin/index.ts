@@ -63,6 +63,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log('Error fetching Aptin data:', error);
   }
 
+  formatter.mapAptosTokenAddresses(balances);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }
