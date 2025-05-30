@@ -209,9 +209,14 @@ function mapStellarTokenAddresses(balances) {
 
 function mapAptosTokenAddresses(balances) {
   const mappings = {
-    /*'0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3::wrapped_coins::wrappedxbtc':
-      '0x4e1854f6d332c9525e258fb6e66f84b6af8aba687bbcb832a24768c4e175feec::abtc::abtc',
-    */
+    '0x335b730acf9259669924b1a703a710ef335e0bc90794d92de5e876bf0de70672':
+      '0xb30a694a344edee467d9f82330bbe7c3b89f440a1ecd2da1f3bca266560fce69',
+    '0x5b07f08f0c43104b1dcb747273c5fc13bd86074f6e8e591bf0d8c5b08720cbd4':
+      '0xb30a694a344edee467d9f82330bbe7c3b89f440a1ecd2da1f3bca266560fce69',
+    '0x35c3e420fa4fd925628366f1977865d62432c8856a2db147a1cb13f7207f6a79':
+      '0xb30a694a344edee467d9f82330bbe7c3b89f440a1ecd2da1f3bca266560fce69',
+    '0xcfea864b32833f157f042618bd845145256b1bf4c0da34a7013b76e42daa53cc::usdy::usdy':
+      '0xcfea864b32833f157f042618bd845145256b1bf4c0da34a7013b76e42daa53cc',
   };
 
   Object.keys(mappings).forEach((sourceToken) => {

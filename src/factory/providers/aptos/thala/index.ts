@@ -1,5 +1,7 @@
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import fetch from 'node-fetch';
+import basicUtil from '../../../../util/basicUtil';
 
 const MOVE_DOLLAR_ADDRESS =
   '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01';
@@ -9,6 +11,8 @@ const LSD_ACCOUNT =
   '0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6';
 const THALA_VALIDATOR =
   '0xe888a0adfb4ca871bfe6aada8511f5326e877a8ce66a9980ef089eb2218d740c';
+const THALASWAP_LENS_ADDRESS =
+  '0xff1ac437457a839f7d07212d789b85dd77b3df00f59613fcba02388464bfcacb';
 
 const extractCoinAddress = (resource: any) =>
   resource.type.split('<')[1].replace('>', '').split(', ');
@@ -22,7 +26,6 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     const thalaswapV1Tvl = await getThalaswapV1Tvl(params);
     const thalaLsdTvl = await getThalaLsdTvl(params);
     const thalaswapV2Tvl = await getThalaswapV2Tvl(params);
-
     [moveDollarTvl, thalaswapV1Tvl, thalaLsdTvl, thalaswapV2Tvl].forEach(
       (result) => {
         Object.entries(result.balances || {}).forEach(([address, balance]) => {
@@ -141,18 +144,15 @@ async function getThalaLsdTvl(
   const balances = {};
 
   try {
-    // Get thAPT supply
     const supplyResponse = await web3.eth.query(
       `/accounts/${LSD_ACCOUNT}/resource/0x1::coin::CoinInfo%3C${LSD_ACCOUNT}::staking::ThalaAPT%3E`,
     );
 
     const supply = supplyResponse.data?.data?.supply;
     if (!supply?.vec?.[0]?.integer?.vec?.[0]?.value) {
-      console.log('No thAPT supply data found');
       return { balances };
     }
 
-    // Get validator stake
     const validatorStake = await web3.eth.functionView({
       functionStr: '0x1::delegation_pool::get_delegation_pool_stake',
       type_arguments: [],
@@ -187,15 +187,70 @@ async function getThalaLsdTvl(
 async function getThalaswapV2Tvl(
   params: ITvlParams,
 ): Promise<Partial<ITvlReturn>> {
-  const { web3 } = params;
+  const { web3, chain, provider } = params;
   const balances = {};
 
   try {
-    // Note: This would require fetching pool data from Thala API and then querying lens contract
-    // For now, we'll skip V2 as it requires external API calls that aren't available in this context
-    console.log('Thalaswap V2 TVL calculation skipped - requires external API');
+    let poolsData = [];
+
+    try {
+      const response = await fetch('https://app.thala.fi/api/liquidity-pools');
+      const apiData = await response.json();
+
+      if (apiData.data && Array.isArray(apiData.data)) {
+        poolsData = apiData.data.filter((pool) => pool.metadata.isV2);
+
+        const cache = { pools: poolsData };
+        await basicUtil.saveIntoCache(
+          cache,
+          'thalaswap-v2-pools.json',
+          chain,
+          provider,
+        );
+      }
+    } catch (error) {
+      try {
+        const cache = await basicUtil.readFromCache(
+          'thalaswap-v2-pools.json',
+          chain,
+          provider,
+        );
+
+        if (cache.pools && Array.isArray(cache.pools)) {
+          poolsData = cache.pools;
+        }
+      } catch (cacheError) {}
+    }
+
+    const errors = [];
+
+    for (const pool of poolsData) {
+      try {
+        const poolInfo = await web3.eth.functionView({
+          functionStr: `${THALASWAP_LENS_ADDRESS}::lens::get_pool_info`,
+          type_arguments: [],
+          args: [pool.metadata.lptAddress],
+        });
+
+        const poolData = poolInfo[0];
+        const assets = poolData.assets_metadata.map((asset) => asset.inner);
+        const balances_data = poolData.balances;
+
+        assets.forEach((asset, index) => {
+          if (asset && balances_data[index] && balances_data[index] !== '0') {
+            formatter.merge(balances, asset, balances_data[index]);
+          }
+        });
+      } catch (poolError) {
+        errors.push(poolError);
+      }
+    }
+
+    if (errors.length > 0) {
+      throw errors[0];
+    }
   } catch (error) {
-    console.log('Error fetching Thalaswap V2 data:', error);
+    throw error;
   }
 
   return { balances };
