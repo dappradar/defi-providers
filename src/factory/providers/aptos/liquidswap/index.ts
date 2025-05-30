@@ -1,3 +1,4 @@
+import formatter from 'src/util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
@@ -17,6 +18,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       balances[address] = balance;
     } else balances[address] = balances[address].plus(balance);
   });
+  formatter.mapAptosTokenAddresses(balances);
   return {
     balances,
   };

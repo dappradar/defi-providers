@@ -87,6 +87,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log('Error fetching fungible asset balances:', error);
   }
 
+  formatter.mapAptosTokenAddresses(balances);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }

@@ -45,6 +45,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     console.log('Error fetching Aries data:', error);
   }
 
+  formatter.mapAptosTokenAddresses(balances);
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }
