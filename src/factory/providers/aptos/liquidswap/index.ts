@@ -1,4 +1,4 @@
-import formatter from 'src/util/formatter';
+import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
