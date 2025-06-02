@@ -13,7 +13,7 @@ const TOKENS = gql`
       block: { number: $block }
       first: ${QUERY_SIZE}
       orderBy: id
-      where: { id_gt: $id tradeVolumeUSD_gt: 10000 }
+      where: { id_gt: $id tradeVolumeUSD_gt: 100000 }
     ) {
       id
       decimals
@@ -35,6 +35,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       block: block - 100,
       id: lastId,
     });
+    console.log('lastId', lastId);
 
     for (const token of requestResult.tokens) {
       balances[token.id.toLowerCase()] = BigNumber(
