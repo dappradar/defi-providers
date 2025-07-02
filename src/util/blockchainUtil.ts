@@ -815,16 +815,15 @@ async function GetTokenBalancesOfHolders(
     ) {
       for (let first = 0; first < tokenLength; first += 25) {
         const last = Math.min(tokenLength, first + 25);
-        try {
-          const results = await Promise.all(
-            holders
-              .slice(first, last)
-              .map((address, index) =>
-                GetTokenBalance(address, tokens[first + index], block, web3),
-              ),
-          );
-          balanceResults = balanceResults.concat(results);
-        } catch {}
+
+        const results = await Promise.all(
+          holders
+            .slice(first, last)
+            .map((address, index) =>
+              GetTokenBalance(address, tokens[first + index], block, web3),
+            ),
+        );
+        balanceResults = balanceResults.concat(results);
       }
     } else {
       const contract = new web3.eth.Contract(
