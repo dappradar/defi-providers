@@ -3,20 +3,14 @@ import axios from 'axios';
 import formatter from '../../../../util/formatter';
 import BigNumber from 'bignumber.js';
 
-const POOLS_URI = 'https://app.ston.fi/rpc';
+const POOLS_URI = 'https://api.ston.fi/v1/pools?dex_v2=true';
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
 
   const balances = {};
-  const pools = (
-    await axios.post(POOLS_URI, {
-      jsonrpc: '2.0',
-      id: 2,
-      method: 'pool.list',
-      params: {},
-    })
-  ).data.result.pools;
+  const result = await axios.get(POOLS_URI);
+  const pools = result.data.pool_list;
 
   pools.forEach((pool) => {
     balances[pool.token0_address] = BigNumber(
