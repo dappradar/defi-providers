@@ -120,15 +120,28 @@ async function getTvl(
     );
   }
 
-  const tokenBalances = await util.getTokenBalances(
-    poolManagerAddress,
-    tokens,
-    block,
-    chain,
-    web3,
-  );
+  // Process tokens in batches of 100,000 to save memory
+  const batchSize = 100000;
 
-  formatter.sumMultiBalanceOf(balances, tokenBalances);
+  for (let i = 0; i < tokens.length; i += batchSize) {
+    const tokenBatch = tokens.slice(i, i + batchSize);
+    console.log(
+      `Processing token batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(
+        tokens.length / batchSize,
+      )} (${tokenBatch.length} tokens)`,
+    );
+
+    const batchBalances = await util.getTokenBalances(
+      poolManagerAddress,
+      tokenBatch,
+      block,
+      chain,
+      web3,
+    );
+
+    // Sum batch results directly into main balances to save memory
+    formatter.sumMultiBalanceOf(balances, batchBalances);
+  }
   formatter.convertBalancesToFixed(balances);
 
   return balances;
