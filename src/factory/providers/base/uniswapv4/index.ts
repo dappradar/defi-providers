@@ -20,6 +20,7 @@ const TOKENS = gql`
     ) {
       id
       totalValueLocked
+      decimals
     }
   }
 `;
@@ -48,19 +49,11 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
     console.log(`Found ${requestResult.tokens.length} tokens from subgraph`);
 
-    const tokenAddresses = requestResult.tokens.map((token) =>
-      token.id.toLowerCase(),
-    );
-
-    const tokenBalances = await util.getTokenBalances(
-      V4_POOL_MANAGER_ADDRESS,
-      tokenAddresses,
-      block,
-      chain,
-      web3,
-    );
-
-    formatter.sumMultiBalanceOf(balances, tokenBalances);
+    for (const token of requestResult.tokens) {
+      balances[token.id.toLowerCase()] = BigNumber(
+        token.totalValueLocked,
+      ).shiftedBy(Number(token.decimals));
+    }
   } catch (error) {
     console.log(
       'Subgraph query failed, falling back to empty balances:',
