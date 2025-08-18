@@ -42,7 +42,6 @@ async function _getV1Assets(lendingPoolCore, block, chain, web3) {
 
   reserves.map((reserve) => {
     if (reserve === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') return;
-
     assets.push({
       address: reserve,
     });
