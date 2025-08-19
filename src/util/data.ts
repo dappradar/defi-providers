@@ -123,6 +123,10 @@ const data = {
       prefix: 'stellar_',
       delay: 0,
     },
+    soneium: {
+      prefix: 'soneium_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',

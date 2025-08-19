@@ -75,5 +75,6 @@ nodeUrls['BLAST_NODE_URL'] = process.env['BLAST_NODE_URL'];
 nodeUrls['INJECTIVE_NODE_URL'] = process.env['INJECTIVE_NODE_URL'];
 nodeUrls['UNICHAIN_NODE_URL'] = process.env['UNICHAIN_NODE_URL'];
 nodeUrls['BOBA-ETH_NODE_URL'] = process.env['BOBA-ETH_NODE_URL'];
+nodeUrls['SONEIUM_NODE_URL'] = process.env['SONEIUM_NODE_URL'];
 
 export { config, nodeUrls };
