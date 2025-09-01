@@ -4,16 +4,16 @@ import aaveV3 from '../../../../util/calculators/aaveV3';
 import erc4626Vault from '../../../../util/calculators/erc4626Vault';
 import BigNumber from 'bignumber.js';
 
-const START_BLOCK = 2786931;
+const START_BLOCK = 19356962;
 const MARKETS = [
-  '0x67f93d36792c49a4493652B91ad4bD59f428AD15',
-  '0x9aFB91a3cfB9aBc8Cbc8429aB57b6593FE36E173',
-  '0xEe9ec60657B714E3FAC5255a5443AC5EC7Ba5bB0',
+  '0x47223D4eA966a93b2cC96FFB4D42c22651FADFcf',
+  '0x31063F7CA8ef4089Db0dEdf8D6e35690B468A611',
+  '0x298ECDcb0369Aef75cBbdA3e46a224Cfe622E287',
 ];
 const VAULTS = [
-  '0x14efcc1ae56e2ff75204ef2fb0de43378d0beada',
-  '0x085f80df643307e04f23281f6fdbfaa13865e852',
-  '0x9ac2f0a564b7396a8692e1558d23a12d5a2abb1f',
+  '0xc42d337861878baa4dc820d9e6b6c667c2b57e8a',
+  '0x1ab9e92cfde84f38868753d30ffc43f812b803c5',
+  '0xc364fd9637fe562a2d5a1cbc7d1ab7f32be900ef',
 ];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
