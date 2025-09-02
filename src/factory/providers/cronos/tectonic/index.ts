@@ -1,47 +1,155 @@
+import basicUtil from '../../../../util/basicUtil';
+import BigNumber from 'bignumber.js';
+import ABI from './abi.json';
+import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import util from '../../../../util/blockchainUtil';
-import underlyingAbi from './abi.json';
-const START_BLOCK = 2100000;
 
-const MARKETS = [
-  '0x543F4Db9BD26C9Eb6aD4DD1C33522c966C625774', // WETH
-  '0x67fD498E94d95972a4A2a44AccE00a000AF7Fe00', // WBTC
-  '0xB3bbf1bE947b245Aef26e3B6a9D777d7703F4c8e', // USDC
-  '0xA683fdfD9286eeDfeA81CF6dA14703DA683c44E5', // USDT
-  '0xE1c4c56f772686909c28C319079D41adFD6ec89b', // DAI
-  '0x4bD41f188f6A05F02b46BB2a1f8ba776e528F9D2', // TUSD
-  '0xfe6934FDf050854749945921fAA83191Bccf20Ad', // TONIC
-  '0x498BD0Cbdf3ba43c02fE768F8E993d4bF21d011d', // USDC (LCRO Pool)
-  '0xcd8f4147a4f9452e027f5203bfc5b7a786055138', // LCRO (LCRO Pool)
-  '0x3C920600e049A128b01D2Ef0b932108687196502', // USDT (LCRO Pool)
-];
+const WCRO_ADDRESS = '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23';
 
-async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
-  const balances = {};
-  if (block < START_BLOCK) {
-    return { balances };
+async function getMarketsForComptroller(
+  comptrollerAddress: string,
+  cetherAddress: string,
+  block,
+  chain,
+  web3,
+) {
+  const ctokens = {};
+  try {
+    const contract = new web3.eth.Contract(ABI, comptrollerAddress);
+    const allCTokens = await contract.methods.getAllMarkets().call(null, block);
+
+    const underlyings = await util.executeCallOfMultiTargets(
+      allCTokens,
+      ABI,
+      'underlying',
+      [],
+      block,
+      chain,
+      web3,
+    );
+
+    underlyings.forEach((underlying, index) => {
+      const ctoken = allCTokens[index].toLowerCase();
+      // If this is the cether token, use WCRO address, otherwise use the underlying
+      if (ctoken === cetherAddress.toLowerCase()) {
+        ctokens[ctoken] = WCRO_ADDRESS.toLowerCase();
+      } else {
+        ctokens[ctoken] = (underlying || WCRO_ADDRESS).toLowerCase();
+      }
+    });
+  } catch (error) {
+    // Silent error handling
   }
-  const underlyings = await util.executeCallOfMultiTargets(
-    MARKETS,
-    underlyingAbi,
-    'underlying',
+
+  return ctokens;
+}
+
+async function getTvlForComptroller(
+  comptrollerAddress: string,
+  cetherAddress: string,
+  params: ITvlParams,
+) {
+  const { block, chain, provider, web3 } = params;
+
+  const cacheKey = `cache/pools_${comptrollerAddress.toLowerCase()}.json`;
+  let ctokens = {};
+
+  try {
+    ctokens = await basicUtil.readFromCache(cacheKey, chain, provider);
+  } catch {}
+
+  const newCtokens = await getMarketsForComptroller(
+    comptrollerAddress,
+    cetherAddress,
+    block,
+    chain,
+    web3,
+  );
+  Object.assign(ctokens, newCtokens);
+
+  await basicUtil.saveIntoCache(ctokens, cacheKey, chain, provider);
+
+  const ctokenList = Object.keys(ctokens);
+  if (ctokenList.length === 0) {
+    return {};
+  }
+
+  const results = await util.executeCallOfMultiTargets(
+    ctokenList,
+    ABI,
+    'getCash',
     [],
     block,
     chain,
     web3,
   );
-  const balanceResults = await util.getTokenBalancesOfHolders(
-    MARKETS,
-    underlyings,
-    block,
-    chain,
-    web3,
+
+  const balanceResults = [];
+  results.forEach((result, index) => {
+    if (result) {
+      balanceResults.push({
+        token: ctokens[ctokenList[index]],
+        balance: BigNumber(result),
+      });
+    }
+  });
+
+  const tokenBalances = {};
+  formatter.sumMultiBalanceOf(tokenBalances, balanceResults, chain, provider);
+
+  return tokenBalances;
+}
+
+async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
+  const { block } = params;
+
+  if (block < 2100000) {
+    return {};
+  }
+
+  // Define the three comptroller/cether pairs
+  const comptrollers = [
+    {
+      comptroller: '0xb3831584acb95ed9ccb0c11f677b5ad01deaeec0',
+      cether: '0xeadf7c01da7e93fdb5f16b0aa9ee85f978e89e95',
+    },
+    {
+      comptroller: '0x8312A8d5d1deC499D00eb28e1a2723b13aA53C1e',
+      cether: '0xf4ff4b8ee660d4276eda17e79094a7cc519e9606',
+    },
+    {
+      comptroller: '0x7E0067CEf1e7558daFbaB3B1F8F6Fa75Ff64725f',
+      cether: '0x972173afb7eefb80a0815831b318a643442ad0c1',
+    },
+  ];
+
+  // Get TVL for each comptroller
+  const tvlPromises = comptrollers.map(({ comptroller, cether }) =>
+    getTvlForComptroller(comptroller, cether, params),
   );
 
-  formatter.sumMultiBalanceOf(balances, balanceResults);
-  formatter.convertBalancesToFixed(balances);
+  const tvlResults = await Promise.all(tvlPromises);
+
+  // Merge all results
+  const mergedBalances = {};
+  tvlResults.forEach((tokenBalances) => {
+    Object.entries(tokenBalances).forEach(([token, balance]) => {
+      if (!mergedBalances[token]) {
+        mergedBalances[token] = new BigNumber(0);
+      }
+      mergedBalances[token] = mergedBalances[token].plus(balance);
+    });
+  });
+
+  const balances = await util.convertToUnderlyings(
+    mergedBalances,
+    block,
+    params.chain,
+    params.provider,
+    params.web3,
+  );
+
   return { balances };
 }
 
