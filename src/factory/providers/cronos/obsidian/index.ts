@@ -36,7 +36,8 @@ async function getSmartChefStaking(
       web3,
     );
 
-    const [stakedTokens, stakedAmounts] = result;
+    const stakedTokens = result.stakedTokens.split(',');
+    const stakedAmounts = result.stakedAmounts.split(',');
     const balanceResults = [];
 
     for (let i = 0; i < stakedTokens.length; i++) {
