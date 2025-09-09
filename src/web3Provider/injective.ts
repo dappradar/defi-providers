@@ -9,6 +9,14 @@ const limiter = new Bottleneck({
   minTime: 100, // 10 request per second
 });
 
+// Multiple endpoints to try
+const multipleEndpoints = [
+  'https://injective-rest.publicnode.com',
+  'https://injective-api.polkachu.com',
+  'https://injective-rest.brocha.in',
+  'https://injective-api.lavenderfive.com',
+];
+
 @Injectable()
 export class Injective {
   async call(address: string, method, params = {}): Promise<any> {
@@ -17,13 +25,52 @@ export class Injective {
     };
     data = Buffer.from(JSON.stringify(data)).toString('base64');
 
-    const response = await limiter
-      .schedule(() =>
-        axios.get(`${url}/cosmwasm/wasm/v1/contract/${address}/smart/${data}`),
-      )
-      .then((response) => response.data.data);
+    // Try each endpoint
+    for (
+      let endpointIndex = 0;
+      endpointIndex < multipleEndpoints.length;
+      endpointIndex++
+    ) {
+      const endpoint = multipleEndpoints[endpointIndex];
 
-    return response;
+      try {
+        if (endpointIndex > 0) {
+          console.log(
+            `Trying endpoint ${endpointIndex + 1}/${
+              multipleEndpoints.length
+            }: ${endpoint}`,
+          );
+        }
+
+        const response = await limiter
+          .schedule(() =>
+            axios.get(
+              `${endpoint}/cosmwasm/wasm/v1/contract/${address}/smart/${data}`,
+            ),
+          )
+          .then((response) => response.data.data);
+
+        if (endpointIndex > 0) {
+          console.log(
+            `Success with endpoint ${endpointIndex + 1}: ${endpoint}`,
+          );
+        }
+        return response;
+      } catch (error) {
+        console.log(
+          `Endpoint ${endpointIndex + 1}/${
+            multipleEndpoints.length
+          } (${endpoint}) failed for ${address}: ${error.message}`,
+        );
+
+        if (endpointIndex >= multipleEndpoints.length - 1) {
+          console.log(
+            `All ${multipleEndpoints.length} endpoints failed for ${address}`,
+          );
+          throw error;
+        }
+      }
+    }
   }
 
   async getAccountBalances(

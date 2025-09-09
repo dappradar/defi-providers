@@ -13,12 +13,17 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
   const balances = {};
 
-  let farmBalance = await web3.eth.call(FARM_ADDRESSES[0], METHOD);
-  balances[USDT_ADDRESS] = farmBalance;
-  farmBalance = await web3.eth.call(FARM_ADDRESSES[1], METHOD);
-  balances[USDT_ADDRESS] = BigNumber(balances[USDT_ADDRESS] || 0).plus(
-    farmBalance,
-  );
+  for (let i = 0; i < FARM_ADDRESSES.length; i++) {
+    try {
+      const farmBalance = await web3.eth.call(FARM_ADDRESSES[i], METHOD);
+      balances[USDT_ADDRESS] = BigNumber(balances[USDT_ADDRESS] || 0).plus(
+        farmBalance,
+      );
+    } catch (error) {
+      // Skip failed contracts and continue with others
+      console.warn(`Skipping farm ${i}: ${error.message}`);
+    }
+  }
 
   formatter.convertBalancesToFixed(balances);
   return { balances };
