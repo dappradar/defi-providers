@@ -10,8 +10,8 @@ import { log } from '../../../../util/logger/logger';
 const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 const V3_START_BLOCK = 14609331;
 const BANCOR_VAULT_V3 = '0x649765821D9f64198c905eC0B2B037a4a52Bc373';
-const THEGRAPTH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/messari/bancor-v3-ethereum';
+const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
+const THEGRAPTH_ENDPOINT = `https://gateway.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/4Q4eEMDBjYM8JGsvnWCafFB5wCu6XntmsgxsxwYSnMib`;
 const TOKENS_QUERY = gql`
   query getTokens($block: Int!) {
     tokens(first: 1000, block: { number: $block }) {
