@@ -1,5 +1,6 @@
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import BigNumber from 'bignumber.js';
 
 const PORTAL_ADDRESS = 'inj1ghd753shjuwexxywmgs4xz7x2q732vcnxxynfn';
 

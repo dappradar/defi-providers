@@ -1,5 +1,6 @@
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
+import BigNumber from 'bignumber.js';
 
 const LEVANA_FACTORY_ADDRESS = 'inj1vdu3s39dl8t5l88tyqwuhzklsx9587adv8cnn9';
 const MARKETS = 'markets';
