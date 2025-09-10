@@ -77,6 +77,13 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const derivativeBalances = await getBalances('derivatives');
   const balances = formatter.sum([spotBalances, derivativeBalances]);
 
+  if (balances['inj18luqttqyckgpddndh8hvaq25d5nfwjc78m56lc']) {
+    balances['inj'] = BigNumber(balances['inj'] || 0)
+      .plus(balances['inj18luqttqyckgpddndh8hvaq25d5nfwjc78m56lc'])
+      .toFixed();
+    delete balances['inj18luqttqyckgpddndh8hvaq25d5nfwjc78m56lc'];
+  }
+
   formatter.convertBalancesToFixed(balances);
   return { balances };
 }
