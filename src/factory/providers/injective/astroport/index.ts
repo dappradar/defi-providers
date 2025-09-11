@@ -1,6 +1,7 @@
 import formatter from '../../../../util/formatter';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import cosmosDex from '../../../../util/calculators/cosmosDex';
+import BigNumber from 'bignumber.js';
 
 const ASTROPORT_FACTORY_ADDRESS = 'inj19aenkaj6qhymmt746av8ck4r8euthq3zmxr2r6';
 
