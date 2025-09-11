@@ -5,7 +5,7 @@ import { request, gql } from 'graphql-request';
 
 const START_BLOCK = 2650000;
 const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
-const COMPOUND_V3_GRAPHQL_API = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/99XPkR9F1exRDdCNyfXrCfEon4K34YoTDn6dgXKmxC72`;
+const COMPOUND_V3_GRAPHQL_API = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/45pWUGZUkuuJe8RgqyGmrs9qdjqUiSdaz7xvr7KAPXFp`;
 
 const V3_MARKETS = gql`
   query getMarkets($block: Int) {

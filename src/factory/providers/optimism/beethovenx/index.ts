@@ -4,10 +4,10 @@ import util from '../../../../util/blockchainUtil';
 import { request, gql } from 'graphql-request';
 import { log } from '../../../../util/logger/logger';
 
-const START_BLOCK = 17286147;
-const V2_ADDRESS = '0x20dd72Ed959b6147912C2e529F0a0C651c33c9ce';
+const START_BLOCK = 7003431;
+const V2_ADDRESS = '0xBA12222222228d8Ba445958a75a0704d566BF2C8';
 const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
-const TOKEN_API = `https://gateway.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/CcWtE5UMUaoKTRu8LWjzambKJtgUVjcN31pD5BdffVzK`;
+const TOKEN_API = `https://gateway.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/F5jeL2nMXZt5LU6kSway7Vi2PTUcqDbw1gMQEbrmiVdJ`;
 
 function extractLatestBlockFromError(errorMessage: string): number | null {
   const match = errorMessage.match(/latest:\s*(\d+)/);
