@@ -127,6 +127,10 @@ const data = {
       prefix: 'soneium_',
       delay: 0,
     },
+    unitzero: {
+      prefix: 'unit0_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',
