@@ -1,109 +1,146 @@
 import BigNumber from 'bignumber.js';
-import basicUtil from '../../../../util/basicUtil';
 import util from '../../../../util/blockchainUtil';
 import formatter from '../../../../util/formatter';
-import ROCKET_MINIPOOL_MANAGER_ABI from './abi/rocketMinipoolManager.json';
+import ROCKET_NODE_MANAGER_ABI from './abi/rocketNodeManager.json';
 import ROCKET_NODE_STAKING_ABI from './abi/rocketNodeStaking.json';
 import ROCKET_VAULT_ABI from './abi/rocketVault.json';
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 
 const START_BLOCK = 13325306;
-const ROCKET_MINIPOOL_MANAGER = '0x6293b8abc1f36afb22406be5f96d893072a8cf3a';
-const ROCKET_NODE_STAKING = '0x3019227b2b8493e45bf5d25302139c9a2713bf15';
+const ROCKET_NODE_MANAGER = '0x2b52479F6ea009907e46fc43e91064D1b92Fdc86';
+const ROCKET_NODE_STAKING = '0xF18Dc176C10Ff6D8b5A17974126D43301F8EEB95';
 const ROCKET_VAULT = '0x3bdc69c4e5e13e52a65f5583c23efb9636b469d6';
 const RPL = '0xd33526068d116ce69f19a9ee46f0bd304f21a51f';
-const RETH = '0xae78736cd615f374d3085123a210448e74fc6393';
+const BACKFILL_NODE_FIRST_BLOCK = 21060563;
 
-async function getEthLockedInMinipools(block, web3) {
-  const limit = 400;
+async function getNodeBalances(block, chain, provider, web3) {
+  const nodeBlock =
+    block < BACKFILL_NODE_FIRST_BLOCK ? BACKFILL_NODE_FIRST_BLOCK : block;
 
-  let offset = 0;
-  let initialisedMinipools = 0;
-  let prelaunchMinipools = 0;
-  let stakingMinipools = 0;
-  let withdrawableMinipools = 0;
-  const ROCKET_MINIPOOL_MANAGER_CONTRACT = new web3.eth.Contract(
-    ROCKET_MINIPOOL_MANAGER_ABI,
-    ROCKET_MINIPOOL_MANAGER,
+  const nodeLength = await util.executeCall(
+    ROCKET_NODE_MANAGER,
+    ROCKET_NODE_MANAGER_ABI,
+    'getNodeCount',
+    [],
+    nodeBlock,
+    chain,
+    web3,
   );
-  while (true) {
-    const activeMinipools = await ROCKET_MINIPOOL_MANAGER_CONTRACT.methods
-      .getMinipoolCountPerStatus(offset, limit)
-      .call(null, block);
 
-    initialisedMinipools += parseInt(activeMinipools['initialisedCount']);
-    prelaunchMinipools += parseInt(activeMinipools['prelaunchCount']);
-    stakingMinipools += parseInt(activeMinipools['stakingCount']);
-    withdrawableMinipools += parseInt(activeMinipools['withdrawableCount']);
+  const batchSize = 100;
+  const allNodes = [];
 
-    if (
-      activeMinipools['initialisedCount'] +
-        activeMinipools['prelaunchCount'] +
-        activeMinipools['stakingCount'] +
-        activeMinipools['withdrawableCount'] +
-        activeMinipools['dissolvedCount'] <
-      limit
-    ) {
-      break;
-    }
+  for (let i = 0; i < nodeLength; i += batchSize) {
+    const limit = Math.min(batchSize, nodeLength - i);
 
-    offset += limit;
-  }
-
-  return BigNumber(initialisedMinipools * 16)
-    .plus(prelaunchMinipools * 32)
-    .plus(stakingMinipools * 32)
-    .plus(withdrawableMinipools * 32)
-    .shiftedBy(18);
-}
-
-async function calculateEthTvl(block, balances, chain, web3) {
-  const ethLockedInMinipools = await getEthLockedInMinipools(block, web3);
-
-  const [rocketDepositPoolEthBalance, rocketTokenRethBalance] =
-    await util.executeMultiCallsOfTarget(
-      ROCKET_VAULT,
-      ROCKET_VAULT_ABI,
-      'balanceOf',
-      ['rocketDepositPool', 'rocketTokenRETH'],
-      block,
+    const nodeAddresses = await util.executeCall(
+      ROCKET_NODE_MANAGER,
+      ROCKET_NODE_MANAGER_ABI,
+      'getNodeAddresses',
+      [i, limit],
+      nodeBlock,
       chain,
       web3,
     );
 
-  balances['eth'] = BigNumber(ethLockedInMinipools).plus(
-    rocketDepositPoolEthBalance,
+    allNodes.push(...nodeAddresses);
+  }
+
+  const processBatchSize = 100;
+  let totalEthMatched = BigNumber(0);
+  let totalNodeEthProvided = BigNumber(0);
+
+  for (let i = 0; i < allNodes.length; i += processBatchSize) {
+    const batchNodes = allNodes.slice(i, i + processBatchSize);
+    const nodeDetailsCalls = batchNodes.map((address) => [address]);
+
+    const [nodeDetails, ethProvided] = await Promise.all([
+      util.executeMultiCallsOfTarget(
+        ROCKET_NODE_MANAGER,
+        ROCKET_NODE_MANAGER_ABI,
+        'getNodeDetails',
+        nodeDetailsCalls,
+        nodeBlock,
+        chain,
+        web3,
+      ),
+      util.executeMultiCallsOfTarget(
+        ROCKET_NODE_STAKING,
+        ROCKET_NODE_STAKING_ABI,
+        'getNodeETHProvided',
+        nodeDetailsCalls,
+        nodeBlock,
+        chain,
+        web3,
+      ),
+    ]);
+
+    nodeDetails.forEach((detail, index) => {
+      if (detail && detail[0] === 'true') {
+        const ethMatched = detail[10] || '0';
+        const nodeEthProvided = ethProvided[index] || '0';
+
+        totalEthMatched = totalEthMatched.plus(ethMatched);
+        totalNodeEthProvided = totalNodeEthProvided.plus(nodeEthProvided);
+      }
+    });
+  }
+
+  return {
+    ethMatched: totalEthMatched,
+    nodeEthProvided: totalNodeEthProvided,
+  };
+}
+
+async function calculateEthTvl(block, balances, chain, provider, web3) {
+  const { ethMatched, nodeEthProvided } = await getNodeBalances(
+    block,
+    chain,
+    provider,
+    web3,
   );
-  balances[RETH] = rocketTokenRethBalance;
+
+  const rocketDepositPoolEthBalance = await util.executeCall(
+    ROCKET_VAULT,
+    ROCKET_VAULT_ABI,
+    'balanceOf',
+    ['rocketDepositPool'],
+    block,
+    chain,
+    web3,
+  );
+
+  balances['eth'] = BigNumber(ethMatched)
+    .plus(nodeEthProvided)
+    .plus(rocketDepositPoolEthBalance);
 }
 
 async function calculateRplTvl(block, balances, chain, web3) {
+  const totalRplStake = await util.executeCall(
+    ROCKET_NODE_STAKING,
+    ROCKET_NODE_STAKING_ABI,
+    'getTotalRPLStake',
+    [],
+    block,
+    chain,
+    web3,
+  );
+
   const [
-    totalRplStake,
-    [rocketDaoNodeTrustedActionsRplBalance, rocketAuctionManagerRplBalance],
-  ] = await Promise.all([
-    util.executeCall(
-      ROCKET_NODE_STAKING,
-      ROCKET_NODE_STAKING_ABI,
-      'getTotalRPLStake',
-      [],
-      block,
-      chain,
-      web3,
-    ),
-    util.executeMultiCallsOfTarget(
-      ROCKET_VAULT,
-      ROCKET_VAULT_ABI,
-      'balanceOfToken',
-      [
-        ['rocketDAONodeTrustedActions', RPL],
-        ['rocketAuctionManager', RPL],
-      ],
-      block,
-      chain,
-      web3,
-    ),
-  ]);
+    rocketDaoNodeTrustedActionsRplBalance,
+    rocketAuctionManagerRplBalance,
+  ] = await util.executeMultiCallsOfTarget(
+    ROCKET_VAULT,
+    ROCKET_VAULT_ABI,
+    'balanceOfToken',
+    [
+      ['rocketDAONodeTrustedActions', RPL],
+      ['rocketAuctionManager', RPL],
+    ],
+    block,
+    chain,
+    web3,
+  );
 
   balances[RPL] = BigNumber(totalRplStake)
     .plus(rocketDaoNodeTrustedActionsRplBalance)
@@ -118,7 +155,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
 
   const balances = {};
   await Promise.all([
-    calculateEthTvl(block, balances, chain, web3),
+    calculateEthTvl(block, balances, chain, provider, web3),
     calculateRplTvl(block, balances, chain, web3),
   ]);
 

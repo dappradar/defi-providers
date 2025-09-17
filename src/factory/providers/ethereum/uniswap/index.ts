@@ -21,6 +21,7 @@ const TOKENS = gql`
     }
   }
 `;
+const BLACKLIST = ['0x1c9491865a1de77c5b6e19d2e6a5f1d7a6f2b25f'];
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   const { block, chain, provider, web3 } = params;
@@ -47,6 +48,10 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     }
 
     lastId = requestResult.tokens[requestResult.tokens.length - 1].id;
+  }
+
+  for (const blacklistedToken of BLACKLIST) {
+    delete balances[blacklistedToken.toLowerCase()];
   }
 
   formatter.convertBalancesToFixed(balances);
