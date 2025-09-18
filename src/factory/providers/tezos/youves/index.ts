@@ -5,8 +5,7 @@ import formatter from '../../../../util/formatter';
 
 const START_BLOCK = 1568116;
 
-const THEGRAPTH_ENDPOINT =
-  'https://youves-mainnet-indexer.prod.gke.papers.tech/v1/graphql';
+const THEGRAPTH_ENDPOINT = 'https://indexer.youves.com/v1/graphql';
 
 const TZBTC_XTZ_POOL_ADDRESS = 'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5';
 const TZBTC_ADDRESS = 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn';
@@ -107,8 +106,6 @@ async function getEnginesTvl(block, web3) {
     }).then((data) => data.vault_aggregate.aggregate.sum.balance);
 
     if (engine.token === TZBTC_XTZ_POOL_ADDRESS) {
-      console.log(xtzPool);
-      console.log(lqtTotal);
       balances['xtz'] = BigNumber(balances['xtz'] || 0).plus(
         (balance * xtzPool) / lqtTotal,
       );
