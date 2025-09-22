@@ -26,6 +26,7 @@
     "@hashgraph/hethers": "^1.2.6",
     "@injectivelabs/networks": "^1.14.16",
     "@injectivelabs/sdk-ts": "^1.14.16",
+    "@mysten/sui": "^1.38.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/microservices": "^9.2.0",
