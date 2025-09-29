@@ -59,7 +59,8 @@ async function fetchTokenBalances(endpoint: string, block: number) {
 }
 
 async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
-  const { block, chain, provider, web3 } = params;
+  const { chain, provider, web3 } = params;
+  const block = params.block - 1000;
   if (block < V2_START_BLOCK) {
     return {};
   }
