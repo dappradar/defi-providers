@@ -100,4 +100,8 @@ export class Sui {
       transactionBlock: txBytes,
     });
   }
+
+  async getCoinMetadata(coinType: string) {
+    return await this.client.getCoinMetadata({ coinType });
+  }
 }
