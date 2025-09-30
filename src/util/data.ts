@@ -131,6 +131,10 @@ const data = {
       prefix: 'unit0_',
       delay: 0,
     },
+    sui: {
+      prefix: 'sui_',
+      delay: 0,
+    },
   },
   FILTERS: {
     MarketCapInFiat: 'marketCapInFiat',

@@ -115,7 +115,7 @@ function parseAddress(buffer: Buffer, offset: number) {
   return { wc, addressHash, offset: reader.byteOffset };
 }
 
-function computeCRC16(buffer: Buffer): number {
+function computeCRC16(buffer: Uint8Array): number {
   let crc = 0x0000;
   let polynomial = 0x1021;
 
@@ -138,9 +138,9 @@ function serializeAddress(wc: number, addressHash: Buffer): string {
   let fullAddress = Buffer.alloc(36);
   fullAddress[0] = bounceableTag;
   fullAddress[1] = wc;
-  addressHash.copy(fullAddress, 2);
+  fullAddress.set(addressHash, 2);
 
-  let crc16 = computeCRC16(fullAddress.slice(0, 34));
+  let crc16 = computeCRC16(new Uint8Array(fullAddress.slice(0, 34)));
   fullAddress.writeUInt16BE(crc16, 34);
 
   return fullAddress.toString('base64').replace(/\+/g, '-').replace(/\//g, '_');

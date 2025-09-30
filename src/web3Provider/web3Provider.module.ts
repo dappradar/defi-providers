@@ -11,6 +11,7 @@ import { Aptos } from './aptos';
 import { Ton } from './ton';
 import { Injective } from './injective';
 import { Stellar } from './stellar';
+import { Sui } from './sui';
 
 @Module({
   exports: [Web3ProviderService],
@@ -27,6 +28,7 @@ import { Stellar } from './stellar';
     Aptos,
     Ton,
     Stellar,
+    Sui,
   ],
 })
 export class Web3ProviderModule {}

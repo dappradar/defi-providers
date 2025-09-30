@@ -12,6 +12,7 @@ import { Aptos } from './aptos';
 import { Ton } from './ton';
 import { Injective } from './injective';
 import { Stellar } from './stellar';
+import { Sui } from './sui';
 
 const webSocketConfig = {
   timeout: 60000,
@@ -44,6 +45,7 @@ export class Web3ProviderService {
     private readonly ton: Ton,
     private readonly injective: Injective,
     private readonly stellar: Stellar,
+    private readonly sui: Sui,
   ) {}
 
   async getWeb3(chain = 'ethereum') {
@@ -107,6 +109,10 @@ export class Web3ProviderService {
       }
       case 'stellar': {
         web3 = { eth: this.stellar };
+        break;
+      }
+      case 'sui': {
+        web3 = this.sui;
         break;
       }
       default: {
