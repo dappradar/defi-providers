@@ -72,21 +72,10 @@ export class Sui {
         limit,
       });
 
-      for (const field of result.data) {
-        try {
-          const obj = await this.client.getObject({
-            id: field.objectId,
-            options: {
-              showType: true,
-              showOwner: true,
-              showContent: true,
-            },
-          });
-          items.push(obj.data.content);
-        } catch (error) {
-          continue;
-        }
-      }
+      const objectIds = result.data.map((field) => field.objectId);
+      const objects = await this.getObjects(objectIds);
+      items.push(...objects.map((obj) => obj.fields));
+
       nextCursor = result.nextCursor;
       hasNextPage = result.hasNextPage;
     }
@@ -106,25 +95,60 @@ export class Sui {
   }
 
   async getObjects(objectIds) {
+    if (objectIds.length === 0) return [];
+
+    const BATCH_SIZE = 50;
     const objects = [];
-    for (const objectId of objectIds) {
+
+    // Process in batches to respect the limit
+    for (let i = 0; i < objectIds.length; i += BATCH_SIZE) {
+      const batch = objectIds.slice(i, i + BATCH_SIZE);
+
       try {
-        const result = await this.client.getObject({
-          id: objectId,
+        const results = await this.client.multiGetObjects({
+          ids: batch,
           options: {
             showType: true,
             showOwner: true,
             showContent: true,
           },
         });
-        objects.push({
-          type: result.data.type,
-          fields: (result.data.content as any).fields,
+
+        // Process results and filter out errors
+        results.forEach((result) => {
+          if (result.data && result.data.content) {
+            objects.push({
+              type: result.data.type,
+              fields: (result.data.content as any).fields,
+            });
+          }
         });
       } catch (error) {
-        continue;
+        console.log(`Error in batch ${i}-${i + batch.length}:`, error.message);
+        // Fallback to individual calls for this batch if multiGet fails
+        for (const objectId of batch) {
+          try {
+            const result = await this.client.getObject({
+              id: objectId,
+              options: {
+                showType: true,
+                showOwner: true,
+                showContent: true,
+              },
+            });
+            if (result.data && result.data.content) {
+              objects.push({
+                type: result.data.type,
+                fields: (result.data.content as any).fields,
+              });
+            }
+          } catch (error) {
+            continue;
+          }
+        }
       }
     }
+
     return objects;
   }
 }
