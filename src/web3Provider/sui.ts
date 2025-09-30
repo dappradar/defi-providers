@@ -104,4 +104,27 @@ export class Sui {
   async getCoinMetadata(coinType: string) {
     return await this.client.getCoinMetadata({ coinType });
   }
+
+  async getObjects(objectIds) {
+    const objects = [];
+    for (const objectId of objectIds) {
+      try {
+        const result = await this.client.getObject({
+          id: objectId,
+          options: {
+            showType: true,
+            showOwner: true,
+            showContent: true,
+          },
+        });
+        objects.push({
+          type: result.data.type,
+          fields: (result.data.content as any).fields,
+        });
+      } catch (error) {
+        continue;
+      }
+    }
+    return objects;
+  }
 }

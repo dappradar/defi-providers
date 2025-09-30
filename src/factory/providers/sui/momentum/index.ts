@@ -1,13 +1,9 @@
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
 import { log } from '../../../../util/logger/logger';
-import BigNumber from 'bignumber.js';
-import suiTokens from '../../../../constants/tokens/sui.json';
 
 const EVENT_FILTER =
   '0x70285592c97965e811e0c6f98dccc3a9c2b4ad854b3594faab9597ada267b860::create_pool::PoolCreatedEvent';
-const SUI_FULL_ADDRESS =
-  '0x0000000000000000000000000000000000000000000000000000000000000002::sui::sui';
 
 async function getMomentumTVL(web3: any): Promise<{ [key: string]: string }> {
   const balances = {};
