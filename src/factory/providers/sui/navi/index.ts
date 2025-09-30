@@ -134,16 +134,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
     });
   }
 
-  if (balances[SUI_FULL_ADDRESS]) {
-    balances[suiTokens.SUI.toLowerCase()] = BigNumber(
-      balances[suiTokens.SUI.toLowerCase()] || 0,
-    )
-      .plus(balances[SUI_FULL_ADDRESS])
-      .toFixed();
-    delete balances[SUI_FULL_ADDRESS];
-  }
-
-  formatter.convertBalancesToFixed(balances);
+  formatter.convertSuiBalancesToFixed(balances);
   return { balances };
 }
 

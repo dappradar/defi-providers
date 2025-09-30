@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import _ from 'underscore';
 import { log } from './logger/logger';
+import suiTokens from '../constants/tokens/sui.json';
 
 function encodeParameters(types, values) {
   const abi = new ethers.utils.AbiCoder();
@@ -235,12 +236,48 @@ function mapAptosTokenAddresses(balances) {
   return balances;
 }
 
+function convertSuiBalancesToFixed(balances) {
+  // SUI token address mappings - convert various formats to standard tokens
+  const SUI_TOKEN_MAPPINGS = {
+    // SUI address conversions
+    '0x0000000000000000000000000000000000000000000000000000000000000002::sui::sui':
+      suiTokens.SUI.toLowerCase(),
+    '0x2::sui::sui': suiTokens.SUI.toLowerCase(),
+    // BTC variant conversions
+    '0xace81f8a3bcaeea116ff3af06453f422d85f08e809ddf28d1a68742a180f6daf::zbtcvc::zbtcvc':
+      suiTokens.BTC,
+    '0x647ac1a9d158fed6fe4cba5bf42c51eceb2638518d1a9e71343f8e92ba7349fe::btcvc::btcvc':
+      suiTokens.BTC,
+  };
+
+  // Convert token addresses first
+  Object.keys(SUI_TOKEN_MAPPINGS).forEach((sourceAddress) => {
+    if (balances[sourceAddress]) {
+      const targetAddress = SUI_TOKEN_MAPPINGS[sourceAddress];
+      balances[targetAddress] = BigNumber(balances[targetAddress] || 0)
+        .plus(balances[sourceAddress])
+        .toFixed();
+      delete balances[sourceAddress];
+    }
+  });
+
+  // Convert all balances to fixed format
+  for (const token in balances) {
+    try {
+      balances[token] = balances[token].toFixed();
+    } catch {}
+  }
+
+  return balances;
+}
+
 export default {
   encodeParameters,
   decodeParameters,
   decodeResult,
   convertBalancesToFixed,
   convertBalancesToBigNumber,
+  convertSuiBalancesToFixed,
   merge,
   sum,
   sumMultiBalanceOf,
