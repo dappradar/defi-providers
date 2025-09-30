@@ -124,7 +124,6 @@ export class Sui {
           }
         });
       } catch (error) {
-        console.log(`Error in batch ${i}-${i + batch.length}:`, error.message);
         // Fallback to individual calls for this batch if multiGet fails
         for (const objectId of batch) {
           try {
