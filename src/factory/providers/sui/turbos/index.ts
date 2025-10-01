@@ -12,30 +12,12 @@ async function getTurbosBalances(
 
   const parent = await web3.getObject(POOL_FACTORY_CONFIG);
 
-  log.info({
-    message: 'Turbos pool factory config object response',
-    detail: JSON.stringify(parent, null, 2),
-    endpoint: 'getTurbosBalances',
-  });
-
   const poolFields = await web3.getDynamicFieldObjects({
     parent: parent.pools.fields.id.id,
   });
 
-  log.info({
-    message: 'Turbos pool fields response',
-    detail: JSON.stringify(poolFields, null, 2),
-    endpoint: 'getTurbosBalances',
-  });
-
   const poolIds = poolFields.map((item: any) => item.value.fields.pool_id);
   const poolList = await web3.getObjects(poolIds);
-
-  log.info({
-    message: 'Turbos pool list response',
-    detail: JSON.stringify(poolList, null, 2),
-    endpoint: 'getTurbosBalances',
-  });
 
   poolList.forEach(({ type, fields }: any) => {
     const [coinA, coinB] = type.replace('>', '').split('<')[1].split(', ');
