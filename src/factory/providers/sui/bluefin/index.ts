@@ -29,11 +29,8 @@ async function getAlphalendBalances(
   });
 
   for (const market of marketData) {
-    const { fields } = market;
-    if (!fields) continue;
-
-    const coinType = '0x' + fields.value.fields.coin_type.fields.name;
-    const balance = new BigNumber(fields.value.fields.balance_holding);
+    const coinType = '0x' + market.value.fields.coin_type.fields.name;
+    const balance = new BigNumber(market.value.fields.balance_holding);
 
     if (balance.isGreaterThan(0)) {
       formatter.merge(balances, coinType, balance.toFixed(0));

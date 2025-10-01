@@ -2,7 +2,6 @@ import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
 import { log } from '../../../../util/logger/logger';
 import BigNumber from 'bignumber.js';
-import suiTokens from '../../../../constants/tokens/sui.json';
 
 const SCALLOP_SUI_MARKET_ID =
   '0xa757975255146dc9686aa823b7838b507f315d704f428cbadad2f4ea061939d9';
@@ -19,7 +18,7 @@ async function getScallopTvl(web3: any): Promise<{ [key: string]: string }> {
     parent: balanceSheetsTableId,
   });
 
-  const balanceSheetIds = balanceSheetsFields.map((e: any) => e.fields.id.id);
+  const balanceSheetIds = balanceSheetsFields.map((e: any) => e.id.id);
   const balanceSheets = await web3.getObjects(balanceSheetIds);
 
   balanceSheets.forEach((sheet: any) => {
@@ -40,9 +39,7 @@ async function getScallopTvl(web3: any): Promise<{ [key: string]: string }> {
     parent: collateralStatsTableId,
   });
 
-  const collateralStatIds = collateralStatsFields.map(
-    (e: any) => e.fields.id.id,
-  );
+  const collateralStatIds = collateralStatsFields.map((e: any) => e.id.id);
   const collateralStats = await web3.getObjects(collateralStatIds);
 
   collateralStats.forEach((stat: any) => {

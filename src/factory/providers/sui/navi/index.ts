@@ -8,8 +8,6 @@ const VOLO_NATIVE_POOL_ID =
   '0x7fa2faa111b8c65bea48a23049bfd81ca8f971a262d981dcd9a17c3825cb5baf';
 const NAVI_STORAGE_ID =
   '0xbb4e2f4b6205c2e2a2db47aeb4f830796ec7c005f88537ee775986639bc442fe';
-const SUI_FULL_ADDRESS =
-  '0x0000000000000000000000000000000000000000000000000000000000000002::sui::sui';
 
 async function getVoloBalances(web3: any): Promise<{ [key: string]: string }> {
   const balances = {};
@@ -56,9 +54,8 @@ async function getLendingBalances(
   const dynamicFields = await web3.getDynamicFieldObjects({
     parent: reservesId,
   });
-
   for (const object of dynamicFields) {
-    const coin = '0x' + object.fields.value.fields.coin_type;
+    const coin = '0x' + object.value.fields.coin_type;
 
     try {
       // Get coin metadata to determine correct decimals
@@ -69,19 +66,15 @@ async function getLendingBalances(
       const decimals = metadata.decimals;
 
       const totalSupply = new BigNumber(
-        object.fields.value.fields.supply_balance.fields.total_supply,
+        object.value.fields.supply_balance.fields.total_supply,
       )
-        .multipliedBy(
-          new BigNumber(object.fields.value.fields.current_supply_index),
-        )
+        .multipliedBy(new BigNumber(object.value.fields.current_supply_index))
         .dividedBy(new BigNumber('1e27'));
 
       const borrowed = new BigNumber(
-        object.fields.value.fields.borrow_balance.fields.total_supply,
+        object.value.fields.borrow_balance.fields.total_supply,
       )
-        .multipliedBy(
-          new BigNumber(object.fields.value.fields.current_borrow_index),
-        )
+        .multipliedBy(new BigNumber(object.value.fields.current_borrow_index))
         .dividedBy(new BigNumber('1e27'));
 
       const netAmount = totalSupply.minus(borrowed);
