@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
+import { Transaction } from '@mysten/sui/transactions';
+import BigNumber from 'bignumber.js';
+import formatter from '../util/formatter';
 
 const nodeUrl = getFullnodeUrl('mainnet');
 
@@ -21,6 +24,18 @@ export class Sui {
       },
     });
     return (result.data.content as any).fields;
+  }
+
+  async getFullObject(objectId) {
+    const result = await this.client.getObject({
+      id: objectId,
+      options: {
+        showType: true,
+        showOwner: true,
+        showContent: true,
+      },
+    });
+    return result.data;
   }
 
   async getDynamicFieldObject(parent, id, { idType = 'u64' } = {}) {
@@ -149,5 +164,69 @@ export class Sui {
     }
 
     return objects;
+  }
+
+  // Helper function for tick to price conversion
+  tickToPrice(tick: number): number {
+    return Math.pow(1.0001, tick);
+  }
+
+  // Helper function to calculate UniV3-like position balances
+  addUniV3LikePosition(
+    balances: { [key: string]: string },
+    token0: string,
+    token1: string,
+    liquidity: string,
+    tickLower: number,
+    tickUpper: number,
+    tick: number,
+  ): void {
+    const sa = this.tickToPrice(tickLower / 2);
+    const sb = this.tickToPrice(tickUpper / 2);
+    const liquidityBN = new BigNumber(liquidity);
+
+    let amount0BN = new BigNumber(0);
+    let amount1BN = new BigNumber(0);
+
+    if (tick < tickLower) {
+      amount0BN = liquidityBN.multipliedBy(sb - sa).dividedBy(sa * sb);
+    } else if (tick < tickUpper) {
+      const price = this.tickToPrice(tick);
+      const sp = Math.pow(price, 0.5);
+
+      amount0BN = liquidityBN.multipliedBy(sb - sp).dividedBy(sp * sb);
+      amount1BN = liquidityBN.multipliedBy(sp - sa);
+    } else {
+      amount1BN = liquidityBN.multipliedBy(sb - sa);
+    }
+
+    if (amount0BN.isGreaterThan(0)) {
+      formatter.merge(balances, token0, amount0BN.integerValue().toString());
+    }
+    if (amount1BN.isGreaterThan(0)) {
+      formatter.merge(balances, token1, amount1BN.integerValue().toString());
+    }
+  }
+
+  async query({ target, contractId, typeArguments = [], sender }) {
+    const [packageId, module, functionName] = target.split('::');
+
+    const tx = new Transaction();
+    tx.moveCall({
+      target: `${packageId}::${module}::${functionName}`,
+      arguments: [tx.object(contractId)],
+      typeArguments,
+    });
+
+    const result = await this.client.devInspectTransactionBlock({
+      sender,
+      transactionBlock: tx,
+    });
+
+    if (result?.effects?.status?.status !== 'success') {
+      throw new Error(`Move call failed: ${JSON.stringify(result, null, 2)}`);
+    }
+
+    return result.results?.[0]?.returnValues?.map((rv: any) => rv[0]) || [];
   }
 }
