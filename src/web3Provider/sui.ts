@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
+import { Transaction } from '@mysten/sui/transactions';
 import BigNumber from 'bignumber.js';
 import formatter from '../util/formatter';
 
@@ -205,5 +206,27 @@ export class Sui {
     if (amount1BN.isGreaterThan(0)) {
       formatter.merge(balances, token1, amount1BN.integerValue().toString());
     }
+  }
+
+  async query({ target, contractId, typeArguments = [], sender }) {
+    const [packageId, module, functionName] = target.split('::');
+
+    const tx = new Transaction();
+    tx.moveCall({
+      target: `${packageId}::${module}::${functionName}`,
+      arguments: [tx.object(contractId)],
+      typeArguments,
+    });
+
+    const result = await this.client.devInspectTransactionBlock({
+      sender,
+      transactionBlock: tx,
+    });
+
+    if (result?.effects?.status?.status !== 'success') {
+      throw new Error(`Move call failed: ${JSON.stringify(result, null, 2)}`);
+    }
+
+    return result.results?.[0]?.returnValues?.map((rv: any) => rv[0]) || [];
   }
 }
