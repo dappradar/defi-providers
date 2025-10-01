@@ -284,7 +284,6 @@ async function vaultBalances(web3: any): Promise<{ [key: string]: string }> {
         continue;
       }
 
-      // Get vault and pool object details for correct initial_shared_version
       let vaultObjectData;
       try {
         vaultObjectData = await web3.getFullObject(id);
