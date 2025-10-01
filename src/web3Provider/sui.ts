@@ -23,6 +23,18 @@ export class Sui {
     return (result.data.content as any).fields;
   }
 
+  async getFullObject(objectId) {
+    const result = await this.client.getObject({
+      id: objectId,
+      options: {
+        showType: true,
+        showOwner: true,
+        showContent: true,
+      },
+    });
+    return result.data;
+  }
+
   async getDynamicFieldObject(parent, id, { idType = 'u64' } = {}) {
     const result = await this.client.getDynamicFieldObject({
       parentId: parent,
