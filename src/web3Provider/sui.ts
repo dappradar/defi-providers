@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
+import BigNumber from 'bignumber.js';
+import formatter from '../util/formatter';
 
 const nodeUrl = getFullnodeUrl('mainnet');
 
@@ -161,5 +163,47 @@ export class Sui {
     }
 
     return objects;
+  }
+
+  // Helper function for tick to price conversion
+  tickToPrice(tick: number): number {
+    return Math.pow(1.0001, tick);
+  }
+
+  // Helper function to calculate UniV3-like position balances
+  addUniV3LikePosition(
+    balances: { [key: string]: string },
+    token0: string,
+    token1: string,
+    liquidity: string,
+    tickLower: number,
+    tickUpper: number,
+    tick: number,
+  ): void {
+    const sa = this.tickToPrice(tickLower / 2);
+    const sb = this.tickToPrice(tickUpper / 2);
+    const liquidityBN = new BigNumber(liquidity);
+
+    let amount0BN = new BigNumber(0);
+    let amount1BN = new BigNumber(0);
+
+    if (tick < tickLower) {
+      amount0BN = liquidityBN.multipliedBy(sb - sa).dividedBy(sa * sb);
+    } else if (tick < tickUpper) {
+      const price = this.tickToPrice(tick);
+      const sp = Math.pow(price, 0.5);
+
+      amount0BN = liquidityBN.multipliedBy(sb - sp).dividedBy(sp * sb);
+      amount1BN = liquidityBN.multipliedBy(sp - sa);
+    } else {
+      amount1BN = liquidityBN.multipliedBy(sb - sa);
+    }
+
+    if (amount0BN.isGreaterThan(0)) {
+      formatter.merge(balances, token0, amount0BN.integerValue().toString());
+    }
+    if (amount1BN.isGreaterThan(0)) {
+      formatter.merge(balances, token1, amount1BN.integerValue().toString());
+    }
   }
 }

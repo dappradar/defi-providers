@@ -100,46 +100,6 @@ const SCA_ADDRESS =
 const SUI_HASUI_CETUS_VAULT_LP_ADDRESS =
   '0x828b452d2aa239d48e4120c24f4a59f451b8cd8ac76706129f4ac3bd78ac8809::lp_token::LP_TOKEN';
 
-function tickToPrice(tick: number): number {
-  return Math.pow(1.0001, tick);
-}
-
-function addUniV3LikePosition(
-  balances: { [key: string]: string },
-  token0: string,
-  token1: string,
-  liquidity: string,
-  tickLower: number,
-  tickUpper: number,
-  tick: number,
-): void {
-  const sa = tickToPrice(tickLower / 2);
-  const sb = tickToPrice(tickUpper / 2);
-  const liquidityBN = new BigNumber(liquidity);
-
-  let amount0BN = new BigNumber(0);
-  let amount1BN = new BigNumber(0);
-
-  if (tick < tickLower) {
-    amount0BN = liquidityBN.multipliedBy(sb - sa).dividedBy(sa * sb);
-  } else if (tick < tickUpper) {
-    const price = tickToPrice(tick);
-    const sp = Math.pow(price, 0.5);
-
-    amount0BN = liquidityBN.multipliedBy(sb - sp).dividedBy(sp * sb);
-    amount1BN = liquidityBN.multipliedBy(sp - sa);
-  } else {
-    amount1BN = liquidityBN.multipliedBy(sb - sa);
-  }
-
-  if (amount0BN.isGreaterThan(0)) {
-    formatter.merge(balances, token0, amount0BN.integerValue().toString());
-  }
-  if (amount1BN.isGreaterThan(0)) {
-    formatter.merge(balances, token1, amount1BN.integerValue().toString());
-  }
-}
-
 async function calculateGSUIunderlyingSui(
   gSuiAmount: string,
   web3: any,
@@ -233,7 +193,7 @@ async function calculatehaSuiSuiVaultShares(
     const tickLower = Number(clmmPosition.tick_lower_index.fields.bits);
     const tickUpper = Number(clmmPosition.tick_upper_index.fields.bits);
 
-    addUniV3LikePosition(
+    web3.addUniV3LikePosition(
       balances,
       token0,
       token1,
