@@ -77,6 +77,33 @@ export class Sui {
     return items.map((i) => i.parsedJson).map(transform);
   }
 
+  async getDynamicFields({ parent, cursor = null, limit = 50 }) {
+    const items = [];
+    let nextCursor = cursor;
+    let hasNextPage = true;
+
+    while (hasNextPage) {
+      const result = await withRetry(() =>
+        this.client.getDynamicFields({
+          parentId: parent,
+          cursor: nextCursor,
+          limit,
+        }),
+      );
+
+      items.push(...result.data);
+
+      nextCursor = result.nextCursor;
+      hasNextPage = result.hasNextPage;
+
+      if (hasNextPage) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
+    }
+
+    return items;
+  }
+
   async getDynamicFieldObjects({ parent, cursor = null, limit = 50 }) {
     const items = [];
     let nextCursor = cursor;
