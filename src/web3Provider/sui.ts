@@ -4,6 +4,7 @@ import { Transaction } from '@mysten/sui/transactions';
 import BigNumber from 'bignumber.js';
 import formatter from '../util/formatter';
 import { log } from '../util/logger/logger';
+import { withRetry } from '../util/retry';
 
 const nodeUrl = getFullnodeUrl('mainnet');
 
@@ -82,11 +83,13 @@ export class Sui {
     let hasNextPage = true;
 
     while (hasNextPage) {
-      const result = await this.client.getDynamicFields({
-        parentId: parent,
-        cursor: nextCursor,
-        limit,
-      });
+      const result = await withRetry(() =>
+        this.client.getDynamicFields({
+          parentId: parent,
+          cursor: nextCursor,
+          limit,
+        }),
+      );
 
       const objectIds = result.data.map((field) => field.objectId);
       const objects = await this.getObjects(objectIds);
@@ -125,14 +128,16 @@ export class Sui {
       const batch = objectIds.slice(i, i + BATCH_SIZE);
 
       try {
-        const results = await this.client.multiGetObjects({
-          ids: batch,
-          options: {
-            showType: true,
-            showOwner: true,
-            showContent: true,
-          },
-        });
+        const results = await withRetry(() =>
+          this.client.multiGetObjects({
+            ids: batch,
+            options: {
+              showType: true,
+              showOwner: true,
+              showContent: true,
+            },
+          }),
+        );
 
         // Process results and filter out errors
         results.forEach((result) => {
