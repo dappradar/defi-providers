@@ -3,6 +3,7 @@ import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 import BigNumber from 'bignumber.js';
 import formatter from '../util/formatter';
+import { log } from '../util/logger/logger';
 
 const nodeUrl = getFullnodeUrl('mainnet');
 
@@ -93,6 +94,10 @@ export class Sui {
 
       nextCursor = result.nextCursor;
       hasNextPage = result.hasNextPage;
+
+      if (hasNextPage) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
     }
 
     return items;
@@ -139,6 +144,12 @@ export class Sui {
           }
         });
       } catch (error) {
+        log.error({
+          message: error?.message || '',
+          stack: error?.stack || '',
+          detail: 'Error fetching objects',
+          endpoint: 'getObjects',
+        });
         // Fallback to individual calls for this batch if multiGet fails
         for (const objectId of batch) {
           try {
