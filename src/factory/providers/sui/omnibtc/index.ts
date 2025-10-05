@@ -60,7 +60,6 @@ function calculateAndAdd(
       .dividedBy(new BigNumber(10).pow(27))
       .toNumber();
 
-
     if (amount > 0) {
       formatter.merge(balances, address, amount.toString());
     }
