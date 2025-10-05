@@ -1,9 +1,44 @@
 import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
 import formatter from '../../../../util/formatter';
 import { log } from '../../../../util/logger/logger';
+import suiTokens from '../../../../constants/tokens/sui.json';
 
 const EVENT_FILTER =
   '0x70285592c97965e811e0c6f98dccc3a9c2b4ad854b3594faab9597ada267b860::create_pool::PoolCreatedEvent';
+
+const XSUI_INFO_ID =
+  '0x0431232199873db77a92aa645cd43521437e9cc5c6fff07fd03edb88afe0b25a';
+
+async function loadXSuiInfo(
+  web3: any,
+): Promise<{ totalSupply: bigint; stakedSui: bigint }> {
+  const obj = await web3.getObject(XSUI_INFO_ID);
+
+  const totalSupply = BigInt(
+    obj.lst_treasury_cap.fields.total_supply.fields.value,
+  );
+  const stakedSui = BigInt(obj.storage.fields.total_sui_supply);
+
+  return { totalSupply, stakedSui };
+}
+
+async function getXSuiTVL(web3: any): Promise<{ [key: string]: string }> {
+  const balances = {};
+
+  try {
+    const { stakedSui } = await loadXSuiInfo(web3);
+    formatter.merge(balances, suiTokens.SUI, stakedSui.toString());
+  } catch (error) {
+    log.error({
+      message: error?.message || '',
+      stack: error?.stack || '',
+      detail: 'Error fetching xSUI TVL',
+      endpoint: 'getXSuiTVL',
+    });
+  }
+
+  return balances;
+}
 
 async function getMomentumTVL(web3: any): Promise<{ [key: string]: string }> {
   const balances = {};
@@ -51,6 +86,18 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
       stack: error?.stack || '',
       detail: `Error: getMomentumTVL`,
       endpoint: 'getMomentumTVL',
+    });
+  }
+
+  try {
+    const xSuiBalances = await getXSuiTVL(web3);
+    balances = formatter.sum([balances, xSuiBalances]);
+  } catch (error) {
+    log.error({
+      message: error?.message || '',
+      stack: error?.stack || '',
+      detail: `Error: getXSuiTVL`,
+      endpoint: 'getXSuiTVL',
     });
   }
 
