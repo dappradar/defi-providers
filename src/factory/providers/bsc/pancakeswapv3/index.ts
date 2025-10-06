@@ -1,10 +1,54 @@
-import { ITvlParams, ITvlReturn } from '../../../../interfaces/ITvl';
-import pancakeswapV3subgraph from '../../../../util/calculators/pancakeswapV3subgraph';
+import { ITvlParams, ITvlReturn, IBalances } from '../../../../interfaces/ITvl';
+import { request, gql } from 'graphql-request';
+import BigNumber from 'bignumber.js';
+import formatter from '../../../../util/formatter';
 import { log } from '../../../../util/logger/logger';
 
 const START_BLOCK = 26956207;
 const THE_GRAPH_API_KEY = process.env?.THE_GRAPH_API_KEY;
-const THEGRAPTH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/A1BC1hzDsK4NTeXBpKQnDBphngpYZAwDUF7dEBfa3jHK`;
+const THEGRAPTH_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${THE_GRAPH_API_KEY}/subgraphs/id/Hv1GncLY5docZoGtXjo4kwbTvxm3MAhVZqBZE4sUT9eZ`;
+
+const QUERY_SIZE = 1000;
+const TOKENS = gql`
+  query getTokens($block: Int!, $skip: Int!) {
+    tokens(block: { number: $block }, skip: $skip, first: ${QUERY_SIZE}, orderBy: totalValueLockedUSD, orderDirection: desc) {
+      id
+      totalValueLocked
+      decimals
+    }
+  }
+`;
+const MAX_SKIP = 2000;
+
+async function getTvlFromSubgraph(
+  endpoint: string,
+  block: number,
+): Promise<IBalances> {
+  const balances = {};
+
+  const promises = [];
+  for (let i = 0; i <= MAX_SKIP; i += QUERY_SIZE) {
+    promises.push(
+      request(endpoint, TOKENS, {
+        block,
+        skip: i,
+      }),
+    );
+  }
+
+  const results = await Promise.all(promises);
+  for (const result of results) {
+    for (const token of result.tokens) {
+      const decimalValue = BigNumber(token.totalValueLocked);
+      const decimals = parseInt(token.decimals) || 18;
+      const rawValue = decimalValue.multipliedBy(BigNumber(10).pow(decimals));
+      balances[token.id.toLowerCase()] = rawValue;
+    }
+  }
+  formatter.convertBalancesToFixed(balances);
+
+  return balances;
+}
 
 function extractLatestBlockFromError(errorMessage: string): number | null {
   const match = errorMessage.match(/latest:\s*(\d+)/);
@@ -22,14 +66,10 @@ async function getTvlWithRetry(
 
   while (retryCount < maxRetries) {
     try {
-      return await pancakeswapV3subgraph.getTvlFromSubgraph(
-        THEGRAPTH_ENDPOINT,
-        currentBlock,
-      );
+      return await getTvlFromSubgraph(THEGRAPTH_ENDPOINT, currentBlock);
     } catch (error) {
       const errorMessage = error?.message || '';
 
-      // Check if it's a "missing block" error with latest block info
       if (
         errorMessage.includes('Unavailable(missing block:') &&
         errorMessage.includes('latest:')
@@ -55,7 +95,6 @@ async function getTvlWithRetry(
         }
       }
 
-      // If it's not a missing block error or we can't extract a valid latest block, throw the error
       throw error;
     }
   }
