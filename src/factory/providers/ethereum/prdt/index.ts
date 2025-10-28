@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 const contracts = [
   '0x062EB9830D1f1f0C64ac598eC7921f0cbD6d4841',
   '0x792b18ec0d39093f10f8b34676e2f8669a495e9b',
+  '0xd9632d09518D940E307580Dd1D7B4abd22A77dd4',
 ];
 
 const TOKENS = [
