@@ -25,6 +25,7 @@ async function tvl(params: ITvlParams): Promise<Partial<ITvlReturn>> {
   if (block < 35598746) {
     return {};
   }
+
   const balances = {};
   let totalNativeBalance = new BigNumber(0);
 
