@@ -6,3 +6,4 @@ resources:
 - ingress.yml
 - secrets.yml
 - redis.yml
+- redis-weekly-restart.yml

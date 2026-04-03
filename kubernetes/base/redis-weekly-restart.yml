@@ -1,0 +1,51 @@
+# Weekly rolling restart of Redis (mitigates long-lived process drift / memory creep).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: defi-providers-redis-restart
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: defi-providers-redis-restart
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["defi-providers-redis"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: defi-providers-redis-restart
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: defi-providers-redis-restart
+subjects:
+  - kind: ServiceAccount
+    name: defi-providers-redis-restart
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: defi-providers-redis-weekly-restart
+spec:
+  schedule: "0 9 * * 1"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          serviceAccountName: defi-providers-redis-restart
+          restartPolicy: OnFailure
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl:1.31
+              command:
+                - /bin/sh
+                - -c
+                - kubectl rollout restart deployment/defi-providers-redis -n dappradar-defi
