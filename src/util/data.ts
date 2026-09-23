@@ -79,6 +79,10 @@ const data = {
       prefix: 'arb_',
       delay: 400,
     },
+    robinhood: {
+      prefix: 'robinhood_',
+      delay: 250,
+    },
     'zksync-era': {
       prefix: 'zke_',
       delay: 200,
